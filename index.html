@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizualizator Drzwi Premium 3D</title>
+    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-gradient); 
+            margin: 0; 
+            padding: 0; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: white; 
+        }
+        
+        h1 { 
+            margin-top: 30px; 
+            font-weight: 600; 
+            letter-spacing: -1px;
+            font-size: 2rem;
+        }
+
+        /* Panel Sterowania - Glassmorphism */
+        .ui-panel { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 25px; 
+            border-radius: 24px; 
+            width: 90%; 
+            max-width: 800px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Nowoczesne Przyciski */
+        button { 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 14px;
+            transition: all 0.3s ease; 
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-active { 
+            background: var(--primary) !important; 
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-open { 
+            background: #10b981; 
+            border-color: #10b981;
+            width: 100%; 
+            font-size: 16px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-open:hover {
+            background: #059669;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Obszar roboczy */
+        #workspace {
+            position: relative; 
+            width: 95%; 
+            max-width: 1000px; 
+            height: 600px;
+            margin: 0 auto 40px auto; 
+            background: #000 url('pokój docelowy.jpg') no-repeat center;
+            background-size: cover; 
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* Drzwi i Model */
+        #door {
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+            width: 300px; 
+            height: 550px;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+
+        model-viewer {
+            width: 100%; 
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        /* Strzałka kierunkowa */
+        #direction-arrow {
+            position: absolute;
+            width: 80px; 
+            height: 80px;
+            background: url('strzałka.png') no-repeat center;
+            background-size: contain;
+            bottom: -20px; 
+            left: 50%;
+            pointer-events: none;
+            z-index: 20;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            transition: all 0.5s ease;
+        }
+
+        /* Klamka pomocnicza (opcjonalna) */
+        #handle-overlay {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(59, 130, 246, 0.5);
+            border: 2px solid white;
+            border-radius: 50%;
+            top: 50%;
+            z-index: 30;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            font-weight: bold;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Wizualizator Drzwi Premium</h1>
+
+    <div class="ui-panel">
+        <div class="button-group">
+            <button class="btn-side btn-active" id="side-L" onclick="setSide('left')">Lewe (Zawias L)</button>
+            <button class="btn-side" id="side-R" onclick="setSide('right')">Prawe (Zawias P)</button>
+        </div>
+        <div class="button-group">
+            <button class="btn-mode btn-active" id="mode-to" onclick="setMode('toMe')">Do siebie</button>
+            <button class="btn-mode" id="mode-from" onclick="setMode('fromMe')">od siebie</button>
+        </div>
+        <button class="btn-open" onclick="toggleDoor()">Otwórz / Zamknij Drzwi</button>
+    </div>
+
+    <div id="workspace">
+        <div id="door">
+            <model-viewer 
+                id="door-3d" 
+                src="drzwi20.glb" 
+                camera-orbit="0deg 90deg auto" 
+                shadow-intensity="1.5" 
+                exposure="1.2" 
+                environment-image="neutral"
+                interaction-prompt="none">
+                
+                <div id="direction-arrow"></div>
+                <div id="handle-overlay" onclick="event.stopPropagation(); toggleDoor();">CLICK</div>
+            </model-viewer>
+        </div>
+    </div>
+
+    <script>
+        const door = document.getElementById('door');
+        const arrow = document.getElementById('direction-arrow');
+        const handle = document.getElementById('handle-overlay');
+
+        let isOpen = false;
+        let side = 'left'; 
+        let mode = 'toMe'; 
+        let closeTimer = null;
+
+        function setMode(m) {
+            mode = m;
+            document.getElementById('mode-to').classList.toggle('btn-active', m === 'toMe');
+            document.getElementById('mode-from').classList.toggle('btn-active', m === 'fromMe');
+            updateLogic();
+        }
+
+        function setSide(s) {
+            side = s;
+            document.getElementById('side-L').classList.toggle('btn-active', s === 'left');
+            document.getElementById('side-R').classList.toggle('btn-active', s === 'right');
+            updateLogic();
+        }
+
+        function updateLogic() {
+            let visualSide = (mode === 'fromMe') ? (side === 'left' ? 'right' : 'left') : side;
+            door.style.transformOrigin = visualSide;
+
+            // Pozycjonowanie strzałki i klamki pomocniczej
+            if (mode === 'toMe') {
+                if (side === 'left') {
+                    arrow.style.transform = "translateX(-50%) scaleX(-1) scaleY(-1)";
+                    handle.style.left = "auto"; handle.style.right = "15px";
+                } else {
+                    arrow.style.transform = "translateX(-50%) scaleX(1) scaleY(-1)";
+                    handle.style.left = "15px"; handle.style.right = "auto";
+                }
+            } else {
+                if (side === 'left') {
+                    arrow.style.transform = "translateX(-50%) scaleX(-1)";
+                    handle.style.left = "15px"; handle.style.right = "auto";
+                } else {
+                    arrow.style.transform = "translateX(-50%) scaleX(1)";
+                    handle.style.left = "auto"; handle.style.right = "15px";
+                }
+            }
+
+            arrow.style.opacity = isOpen ? "0" : "1";
+            closeDoor();
+        }
+
+        function updateTransform() {
+            let visualSide = (mode === 'fromMe') ? (side === 'left' ? 'right' : 'left') : side;
+            let rotation = "rotateY(0deg)";
+            
+            if (isOpen) {
+                let angle = 85;
+                let finalAngle = (mode === 'toMe') ? (visualSide === 'right' ? angle : -angle) : (visualSide === 'right' ? -angle : angle);
+                rotation = `rotateY(${finalAngle}deg)`;
+            }
+            
+            door.style.transform = `translate(-50%, -50%) ${rotation}`;
+            arrow.style.opacity = isOpen ? "0" : "1";
+        }
+
+        function toggleDoor() { if (!isOpen) openDoor(); else closeDoor(); }
+        function openDoor() {
+            isOpen = true; updateTransform();
+            clearTimeout(closeTimer);
+            closeTimer = setTimeout(() => closeDoor(), 3000);
+        }
+        function closeDoor() { isOpen = false; updateTransform(); }
+
+        updateLogic();
+    </script>
+</body>
+</html>
