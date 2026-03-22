@@ -7,9 +7,7 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #1a202c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
-        
         .header { margin: 20px 0; text-align: center; }
-        
         .controls-panel {
             background: rgba(45, 55, 72, 0.9);
             padding: 20px;
@@ -23,9 +21,7 @@
             z-index: 10;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-
         .btn-group { display: flex; justify-content: center; gap: 10px; }
-        
         button {
             padding: 10px 20px;
             border: none;
@@ -36,17 +32,9 @@
             transition: 0.3s;
             flex: 1;
         }
-
         button.active { background: #3182ce; }
         button:hover { background: #2d3748; }
-
-        .btn-main {
-            background: #38a169;
-            font-weight: bold;
-            text-transform: uppercase;
-            padding: 15px;
-        }
-
+        .btn-main { background: #38a169; font-weight: bold; text-transform: uppercase; padding: 15px; }
         .viewer-container {
             position: relative;
             width: 95%;
@@ -57,20 +45,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             background: #000;
         }
-
-        .bg-image {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 1;
-        }
-
-        model-viewer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2;
-            --poster-color: transparent;
-        }
+        .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        model-viewer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; --poster-color: transparent; }
     </style>
 </head>
 <body>
@@ -88,7 +64,7 @@
             <button class="active" onclick="setSide('pull', this)">Do siebie</button>
             <button onclick="setSide('push', this)">Od siebie</button>
         </div>
-        <button class="btn-main" onclick="toggleDoor()">Otwórz Drzwi</button>
+        <button class="btn-main" onclick="toggleDoor()">OTWÓRZ DRZWI</button>
     </div>
 
     <div class="viewer-container">
@@ -96,16 +72,15 @@
         
         <model-viewer 
             id="door-model"
-            src="drzwi1ruch.glb" 
-            camera-controls 
-            touch-action="pan-y" 
+            src="drzwiztekstura.glb" 
             shadow-intensity="1" 
             exposure="1" 
             environment-image="neutral"
-            camera-orbit="0deg 90deg 3m"
-            field-of-view="25deg"
-            camera-target="0m 1m 0m"
-            alt="Interaktywny model 3D drzwi">
+            camera-orbit="0deg 85deg 4.5m"
+            field-of-view="20deg"
+            camera-target="1.3m 1m 0m"
+            interaction-prompt="none"
+            alt="Interaktywne drzwi">
         </model-viewer>
     </div>
 
@@ -117,54 +92,49 @@
         let isLeft = true;
         let isPull = true;
 
-        // Funkcja otwierania/zamykania
         function toggleDoor() {
+            // Pobiera nazwę pierwszej animacji znalezionej w Twoim pliku .glb
+            const animations = modelViewer.availableAnimations;
+
             if (!isOpen) {
-                // Uruchamia animację z Blendera
-                modelViewer.play();
+                if (animations.length > 0) {
+                    modelViewer.animationName = animations[0];
+                    modelViewer.play();
+                }
                 mainBtn.textContent = "ZAMKNIJ DRZWI";
                 mainBtn.style.background = "#e53e3e";
                 isOpen = true;
             } else {
-                // Resetuje animację do początku (klatka 1)
                 modelViewer.pause();
-                modelViewer.currentTime = 0;
+                modelViewer.currentTime = 0; // Powrót do klatki 1 (zamknięte)
                 mainBtn.textContent = "OTWÓRZ DRZWI";
                 mainBtn.style.background = "#38a169";
                 isOpen = false;
             }
         }
 
-        // Funkcja zmiany strony (Lewe/Prawe) - odbicie lustrzane
         function setHanding(side, btn) {
             document.querySelectorAll('#handing-group button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             isLeft = (side === 'left');
             updateModelScale();
         }
 
-        // Funkcja zmiany kierunku (Do siebie/Od siebie)
         function setSide(dir, btn) {
             document.querySelectorAll('#side-group button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             isPull = (dir === 'pull');
             updateModelScale();
         }
 
         function updateModelScale() {
-            // Skalowanie modelu pozwala na "odbicie" go bez robienia nowych plików w Blenderze
+            // Lustrzane odbicie modelu
             let scaleX = isLeft ? "-1" : "1";
             let scaleZ = isPull ? "1" : "-1";
             modelViewer.scale = `${scaleX} 1 ${scaleZ}`;
         }
 
-        // Inicjalizacja skali na start
-        window.addEventListener('load', () => {
-            updateModelScale();
-            console.log("Wizualizator gotowy!");
-        });
+        window.addEventListener('load', updateModelScale);
     </script>
 </body>
 </html>
