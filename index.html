@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizualizator Drzwi Premium</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; background-color: #1a202c; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
+        
+        .header { margin: 20px 0; text-align: center; }
+        
+        .controls-panel {
+            background: rgba(45, 55, 72, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4a5568;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+        }
+
+        button.active { background: #3182ce; }
+        button:hover { background: #2d3748; }
+
+        .btn-main {
+            background: #38a169;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 15px;
+        }
+
+        .viewer-container {
+            position: relative;
+            width: 95%;
+            max-width: 1100px;
+            height: 700px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #000;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        model-viewer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+            --poster-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Wizualizator Drzwi Premium</h1>
+    </div>
+
+    <div class="controls-panel">
+        <div class="btn-group" id="handing-group">
+            <button class="active" onclick="setHanding('left', this)">Lewe (Zawias L)</button>
+            <button onclick="setHanding('right', this)">Prawe (Zawias P)</button>
+        </div>
+        <div class="btn-group" id="side-group">
+            <button class="active" onclick="setSide('pull', this)">Do siebie</button>
+            <button onclick="setSide('push', this)">Od siebie</button>
+        </div>
+        <button class="btn-main" onclick="toggleDoor()">Otwórz Drzwi</button>
+    </div>
+
+    <div class="viewer-container">
+        <img src="pokoj.jpg" class="bg-image" alt="Tło pokoju">
+        
+        <model-viewer 
+            id="door-model"
+            src="drzwi1ruch.glb" 
+            camera-controls 
+            touch-action="pan-y" 
+            shadow-intensity="1" 
+            exposure="1" 
+            environment-image="neutral"
+            camera-orbit="0deg 90deg 3m"
+            field-of-view="25deg"
+            camera-target="0m 1m 0m"
+            alt="Interaktywny model 3D drzwi">
+        </model-viewer>
+    </div>
+
+    <script>
+        const modelViewer = document.querySelector("#door-model");
+        const mainBtn = document.querySelector(".btn-main");
+        
+        let isOpen = false;
+        let isLeft = true;
+        let isPull = true;
+
+        // Funkcja otwierania/zamykania
+        function toggleDoor() {
+            if (!isOpen) {
+                // Uruchamia animację z Blendera
+                modelViewer.play();
+                mainBtn.textContent = "ZAMKNIJ DRZWI";
+                mainBtn.style.background = "#e53e3e";
+                isOpen = true;
+            } else {
+                // Resetuje animację do początku (klatka 1)
+                modelViewer.pause();
+                modelViewer.currentTime = 0;
+                mainBtn.textContent = "OTWÓRZ DRZWI";
+                mainBtn.style.background = "#38a169";
+                isOpen = false;
+            }
+        }
+
+        // Funkcja zmiany strony (Lewe/Prawe) - odbicie lustrzane
+        function setHanding(side, btn) {
+            document.querySelectorAll('#handing-group button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            isLeft = (side === 'left');
+            updateModelScale();
+        }
+
+        // Funkcja zmiany kierunku (Do siebie/Od siebie)
+        function setSide(dir, btn) {
+            document.querySelectorAll('#side-group button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            isPull = (dir === 'pull');
+            updateModelScale();
+        }
+
+        function updateModelScale() {
+            // Skalowanie modelu pozwala na "odbicie" go bez robienia nowych plików w Blenderze
+            let scaleX = isLeft ? "-1" : "1";
+            let scaleZ = isPull ? "1" : "-1";
+            modelViewer.scale = `${scaleX} 1 ${scaleZ}`;
+        }
+
+        // Inicjalizacja skali na start
+        window.addEventListener('load', () => {
+            updateModelScale();
+            console.log("Wizualizator gotowy!");
+        });
+    </script>
+</body>
+</html>
