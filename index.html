@@ -2,90 +2,152 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>SERWIS-DRZWI.PRO | Główna</title>
+    <title>SERWIS-DRZWI.PRO | Panel Główny</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; margin: 0; padding: 20px; }
-        nav { background: #1e293b; padding: 20px; margin-bottom: 20px; border-radius: 10px; }
-        nav a { color: #38bdf8; text-decoration: none; margin-right: 20px; font-weight: bold; }
-        .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: #1e293b; padding: 20px; border-radius: 20px; border: 1px solid #334155; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        #map { height: 200px; border-radius: 10px; margin-bottom: 10px; }
-        .btn { background: #2563eb; color: white; padding: 15px; border: none; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .service-list { list-style: none; padding: 0; }
-        .service-item { background: rgba(0,0,0,0.2); padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        :root { --blue: #2563eb; --dark: #0f172a; --card: #1e293b; --text: #f8fafc; --green: #10b981; }
+        body { font-family: sans-serif; background: var(--dark); color: var(--text); margin: 0; padding: 0; }
+        
+        /* Menu */
+        nav { background: rgba(30, 41, 59, 0.9); padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; font-size: 14px; }
+        .btn-konfig { background: var(--blue); padding: 10px 20px; border-radius: 5px; }
+
+        .section { padding: 40px 8%; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #334155; }
+
+        /* Kalkulator EKO */
+        .eko-box { background: linear-gradient(135deg, #064e3b, #022c22); border: 1px solid var(--green); }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #0f172a; color: white; }
+
+        /* Video / Forum Area */
+        .video-box { text-align: center; border: 1px solid #334155; border-radius: 15px; overflow: hidden; background: #000; }
+        .video-box img { width: 100%; height: 150px; object-fit: cover; opacity: 0.7; }
+
+        #map { height: 250px; border-radius: 15px; margin-bottom: 20px; }
+        .suma-big { font-size: 32px; color: var(--accent); font-weight: 800; color: #38bdf8; }
+        
+        .service-item { background: rgba(0,0,0,0.3); padding: 10px; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="index.html">Główna</a>
-    <a href="konfigurator.html" style="background: #2563eb; color: white; padding: 10px; border-radius: 5px;">OTWÓRZ KONFIGURATOR</a>
-    <a href="forum.html">Forum</a>
+    <div style="font-weight: 800; color: #38bdf8;">SERWIS-DRZWI.PRO</div>
+    <div>
+        <a href="#eko">Kalkulator EKO</a>
+        <a href="forum.html">FORUM</a> <a href="#poradniki">VIDEO PORADNIKI</a> <a href="konfigurator.html" class="btn-konfig">KONFIGURATOR 3D</a>
+    </div>
 </nav>
 
-<div class="container">
-    <div class="card">
-        <h3>1. Dane klienta</h3>
-        <input type="text" id="cName" placeholder="Imię i Nazwisko">
-        <input type="text" id="cPhone" placeholder="Telefon">
-        <input type="text" id="cStreet" placeholder="Ulica i numer">
-        <input type="text" id="cCity" placeholder="Miasto">
-        <h3>2. Usługi</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button onclick="addService('Montaż standard', 400)">Montaż (400zł)</button>
-            <button onclick="addService('Serwis/Regulacja', 150)">Serwis (150zł)</button>
+<div class="section" id="poradniki">
+    <h2 style="text-align:center">Instrukcje Techniczne (Video)</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+        <div class="video-box"><img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif"><p>Jak mierzyć?</p></div>
+        <div class="video-box"><img src="https://media.giphy.com/media/l41lTjJp9N3S6bXmE/giphy.gif"><p>Montaż progu</p></div>
+        <div class="video-box"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpxVfFv9Yn96/giphy.gif"><p>Regulacja zawiasów</p></div>
+    </div>
+</div>
+
+<div class="section" id="eko">
+    <div class="card eko-box">
+        <h2>Realny Kalkulator Oszczędności (U)</h2>
+        <div class="grid">
+            <div>
+                <label>Twoje obecne drzwi:</label>
+                <select id="uValue" onchange="obliczEko()">
+                    <option value="3.5">Stare, nieszczelne (U=3.5)</option>
+                    <option value="1.8">Standardowe (U=1.8)</option>
+                </select>
+                <label>Czym grzejesz:</label>
+                <select id="heatSource" onchange="obliczEko()">
+                    <option value="1.0">Prąd (Drogo)</option>
+                    <option value="0.6">Gaz (Średnio)</option>
+                    <option value="0.4">Pompa ciepła (Tanio)</option>
+                </select>
+            </div>
+            <div style="text-align: center; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px;">
+                <p>Zaoszczędzisz rocznie:</p>
+                <div id="wynikEko" style="font-size: 40px; color: var(--green); font-weight: bold;">0 zł</div>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="card">
-        <div id="map"></div>
-        <h3>Podsumowanie</h3>
-        <ul id="selectedServices" class="service-list"></ul>
-        <div style="font-size: 20px; font-weight: bold; color: #38bdf8;">SUMA: <span id="sumTotal">0</span> zł</div>
-        <button class="btn" onclick="window.print()">WYDRUKUJ ZLECENIE</button>
+<div class="section" id="zlecenie">
+    <div class="grid">
+        <div class="card">
+            <h3>1. Dane do wizyty</h3>
+            <input type="text" id="cName" placeholder="Imię i Nazwisko">
+            <input type="text" id="cPhone" placeholder="Numer telefonu">
+            <input type="text" id="cAddress" placeholder="Adres montażu">
+            <h3>2. Usługi dodatkowe</h3>
+            <button onclick="dodajUsluge('Montaż Drzwi', 450)" style="padding:10px; cursor:pointer">Montaż (450zł)</button>
+            <button onclick="dodajUsluge('Utylizacja Starych', 100)" style="padding:10px; cursor:pointer">Utylizacja (100zł)</button>
+        </div>
+
+        <div class="card">
+            <h3>3. Lokalizacja (Kliknij na mapie)</h3>
+            <div id="map"></div>
+            <div id="koszyk">
+                <h4>Twoje zestawienie:</h4>
+                <div id="listaUslug"></div>
+                <hr style="border: 0.5px solid #334155; margin: 15px 0;">
+                <div class="suma-big">SUMA: <span id="total">0</span> zł</div>
+                <button onclick="window.print()" style="background:var(--blue); color:white; border:none; padding:15px; width:100%; border-radius:10px; font-weight:bold; cursor:pointer; margin-top:10px;">GENERUJ PROTOKÓŁ</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    let services = [];
-    let distPrice = 0;
+    let uslugi = [];
+    let dojazd = 0;
 
-    // Obsługa mapy
+    // Obsługa Mapy
     const map = L.map('map').setView([52.23, 21.01], 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     let marker;
 
     map.on('click', e => {
         if(marker) marker.setLatLng(e.latlng); else marker = L.marker(e.latlng).addTo(map);
-        distPrice = 50; // stała opłata za dojazd dla uproszczenia
-        update();
+        dojazd = 70; // Uproszczona stawka za dojazd
+        aktualizuj();
     });
 
-    function addService(name, price) {
-        services.push({name, price});
-        update();
+    function dodajUsluge(nazwa, cena) {
+        uslugi.push({nazwa, cena});
+        aktualizuj();
     }
 
-    function update() {
-        const list = document.getElementById('selectedServices');
-        const sSum = services.reduce((a, b) => a + b.price, 0);
-        list.innerHTML = services.map(s => `<li class="service-item">${s.name} <span>${s.price} zł</span></li>`).join('');
-        document.getElementById('sumTotal').innerText = sSum + distPrice;
+    function aktualizuj() {
+        const lista = document.getElementById('listaUslug');
+        const srvSum = uslugi.reduce((sum, item) => sum + item.cena, 0);
+        lista.innerHTML = uslugi.map(i => `<div class="service-item"><span>${i.nazwa}</span> <b>${i.cena} zł</b></div>`).join('');
+        if(dojazd > 0) lista.innerHTML += `<div class="service-item"><span>Dojazd serwisu</span> <b>${dojazd} zł</b></div>`;
+        document.getElementById('total').innerText = srvSum + dojazd;
     }
 
-    // ODBIERANIE DANYCH Z KONFIGURATORA
+    function obliczEko() {
+        const u = parseFloat(document.getElementById('uValue').value);
+        const heat = parseFloat(document.getElementById('heatSource').value);
+        const oszczednosc = (u - 0.9) * 2 * 15 * 4000 / 1000 * 150 * heat; 
+        document.getElementById('wynikEko').innerText = Math.round(oszczednosc / 10) + " zł";
+    }
+
+    // ODBIÓR Z KONFIGURATORA
     window.onload = function() {
-        const saved = localStorage.getItem('zapisaneDrzwi');
-        if (saved) {
-            const dane = JSON.parse(saved);
-            addService("Drzwi: " + dane.kolor, parseInt(dane.cena));
+        obliczEko();
+        const daneZKonfigu = localStorage.getItem('zapisaneDrzwi');
+        if (daneZKonfigu) {
+            const d = JSON.parse(daneZKonfigu);
+            dodajUsluge("DRZWI: " + d.kolor, parseInt(d.cena));
             localStorage.removeItem('zapisaneDrzwi'); // czyścimy pamięć
         }
-    }
+    };
 </script>
 </body>
 </html>
