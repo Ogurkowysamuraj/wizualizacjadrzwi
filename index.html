@@ -2,54 +2,21 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wizualizator Drzwi Premium - Finałowa Poprawka</title>
+    <title>Wizualizator Drzwi - Fizyczny Obrót</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #1a202c; font-family: sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
-        .header { margin: 20px 0; text-align: center; }
-        .controls-panel {
-            background: rgba(45, 55, 72, 0.9);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            width: 90%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 10;
-        }
-        .btn-group { display: flex; justify-content: center; gap: 10px; }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #4a5568;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-            flex: 1;
-        }
+        .controls-panel { background: rgba(45, 55, 72, 0.9); padding: 20px; border-radius: 15px; margin: 20px; width: 90%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; z-index: 10; }
+        .btn-group { display: flex; gap: 10px; }
+        button { padding: 12px; border: none; border-radius: 8px; background: #4a5568; color: white; cursor: pointer; flex: 1; transition: 0.2s; }
         button.active { background: #3182ce; font-weight: bold; }
-        .btn-main { background: #38a169; font-weight: bold; text-transform: uppercase; padding: 18px; font-size: 16px; }
-        .viewer-container {
-            position: relative;
-            width: 95%;
-            max-width: 1100px;
-            height: 75vh;
-            border-radius: 20px;
-            overflow: hidden;
-            background: #000;
-        }
-        .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-        model-viewer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; --poster-color: transparent; }
+        .btn-main { background: #38a169; font-weight: bold; text-transform: uppercase; padding: 18px; font-size: 16px; width: 100%; }
+        .viewer-container { position: relative; width: 95%; max-width: 1100px; height: 75vh; border-radius: 20px; overflow: hidden; }
+        .bg-image { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        model-viewer { position: absolute; width: 100%; height: 100%; z-index: 2; --poster-color: transparent; }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h1>Wizualizator Drzwi Premium</h1>
-    </div>
 
     <div class="controls-panel">
         <div class="btn-group" id="handing-group">
@@ -68,11 +35,10 @@
         <model-viewer 
             id="door-model"
             src="drzwi1ruch.glb" 
-            shadow-intensity="1" 
-            exposure="1" 
             camera-orbit="0deg 88deg 4.2m"
             camera-target="0.1m 1.05m 0m"
-            interaction-prompt="none">
+            interaction-prompt="none"
+            shadow-intensity="1">
         </model-viewer>
     </div>
 
@@ -85,19 +51,19 @@
         let isPull = true;
 
         function updateTransform() {
-            // Logika strony (Lewe/Prawe)
+            // Twoja logika: fizyczny obrót modelu
+            // scaleX steruje lustrem (Lewe/Prawe)
             let sX = isLeft ? "1" : "-1";
             
-            // Logika kierunku (Do/Od siebie) - NAPRAWIONA
-            // Używamy rotateY(180deg) zamiast samej skali Z, aby fizycznie odwrócić model tyłem do nas
+            // Jeśli "Od siebie", obracamy model o 180 stopni (jak przejście na drugą stronę)
+            // Dzięki temu animacja, która zawsze "pcha" drzwi w jedną stronę, teraz pcha je w głąb
             if (isPull) {
-                mv.style.transform = "rotateY(0deg)";
-                mv.scale = `${sX} 1 1`;
+                mv.orientation = "0 0 0deg"; 
             } else {
-                // Obracamy o 180 stopni i korygujemy skalę, by zawias nie przeskoczył na drugą stronę
-                mv.style.transform = "rotateY(180deg)";
-                mv.scale = `${sX} 1 1`;
+                mv.orientation = "0 0 180deg"; 
             }
+            
+            mv.scale = `${sX} 1 1`;
         }
 
         function toggleDoor() {
@@ -105,16 +71,15 @@
             if (anims.length === 0) return;
 
             if (!isOpen) {
-                // OTWIERANIE
                 mv.play();
                 isOpen = true;
                 mainBtn.textContent = "ZAMKNIJ DRZWI";
                 mainBtn.style.background = "#e53e3e";
                 
-                // Zatrzymanie na końcu animacji (2 sekundy dla 60 klatek)
+                // Zatrzymanie na 60 klatce (pełne otwarcie)
                 setTimeout(() => { if(isOpen) mv.pause(); }, 2000);
             } else {
-                // ZAMYKANIE (Powrót do początku klatki 0)
+                // Powrót do klatki 0 (animacja zamykania)
                 mv.pause();
                 mv.currentTime = 0;
                 isOpen = false;
