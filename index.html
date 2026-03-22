@@ -2,150 +2,183 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wizualizator Drzwi - Naprawa Animacji</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wirtualizacja Drzwi | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { margin: 0; background-color: #1a202c; font-family: sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
-        .controls-panel { background: rgba(45, 55, 72, 0.9); padding: 20px; border-radius: 15px; margin: 20px; width: 90%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; z-index: 10; }
-        .btn-group { display: flex; gap: 10px; }
-        button { padding: 12px; border: none; border-radius: 8px; background: #4a5568; color: white; cursor: pointer; flex: 1; transition: 0.2s; }
-        button.active { background: #3182ce; font-weight: bold; }
-        .btn-main { background: #38a169; font-weight: bold; text-transform: uppercase; padding: 18px; font-size: 16px; width: 100%; }
-        .viewer-container { position: relative; width: 95%; max-width: 1100px; height: 75vh; border-radius: 20px; overflow: hidden; }
-        .bg-image { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-        model-viewer { position: absolute; width: 100%; height: 100%; z-index: 2; --poster-color: transparent; }
+        :root {
+            --primary: #2563eb;
+            --dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        nav {
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Slider */
+        .slider-container {
+            position: relative;
+            width: 80%;
+            margin: 50px auto;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--glass);
+            border: none;
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .prev { left: 20px; }
+        .next { right: 20px; }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn-main:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary); }
+
+        /* Calendar Placeholder */
+        .calendar-section {
+            background: var(--glass);
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        input[type="date"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="controls-panel">
-        <div class="btn-group" id="handing-group">
-            <button id="btn-L" class="active" onclick="setHanding('left', this)">Lewe</button>
-            <button id="btn-P" onclick="setHanding('right', this)">Prawe</button>
-        </div>
-        <div class="btn-group" id="side-group">
-            <button id="btn-pull" class="active" onclick="setSide('pull', this)">Do siebie</button>
-            <button id="btn-push" onclick="setSide('push', this)">Od siebie</button>
-        </div>
-        <button class="btn-main" id="main-btn" onclick="toggleDoor()">OTWÓRZ DRZWI</button>
+<nav>
+    <div class="logo"><i class="fas fa-door-open"></i> WIRTUALIZACJA DRZWI</div>
+    <div class="nav-links">
+        <a href="#onas">O nas</a>
+        <a href="forum.html">Forum</a>
+        <a href="#kontakt">Kontakt</a>
     </div>
+</nav>
 
-    <div class="viewer-container">
-        <img src="pokoj.jpg" class="bg-image">
-        <model-viewer 
-            id="door-model"
-            src="drzwi1ruch.glb" 
-            camera-orbit="0deg 88deg 4.2m"
-            camera-target="0.1m 1.05m 0m"
-            interaction-prompt="none"
-            shadow-intensity="1"
-            autoplay="false">
-        </model-viewer>
+<section class="hero">
+    <h1>Zaprojektuj swoje wejście do domu</h1>
+    <p>Użyj naszego zaawansowanego konfiguratora 3D, aby wybrać idealne drzwi.</p>
+    <a href="konfigurator.html" class="btn-main">URUCHOM WIZUALIZACJĘ 3D</a>
+</section>
+
+<div class="slider-container">
+    <div class="slider" id="slider">
+        <img src="https://images.unsplash.com/photo-1506377247377-2a5b3b0ca7df?auto=format&fit=crop&w=1200" class="slide" alt="Drzwi 1">
+        <img src="https://images.unsplash.com/photo-1510076857177-7470076d4098?auto=format&fit=crop&w=1200" class="slide" alt="Drzwi 2">
+        <img src="https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&w=1200" class="slide" alt="Drzwi 3">
     </div>
+    <button class="slider-btn prev" onclick="moveSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button class="slider-btn next" onclick="moveSlide(1)"><i class="fas fa-chevron-right"></i></button>
+</div>
 
-    <script>
-        const mv = document.querySelector("#door-model");
-        const mainBtn = document.querySelector("#main-btn");
-        
-        let isOpen = false;
-        let isLeft = true;
-        let isPull = true;
-        let isDragging = false;
-        let startX = 0;
+<div class="calendar-section">
+    <h3><i class="far fa-calendar-check"></i> Wybierz termin montażu</h3>
+    <input type="date" id="montaz-date">
+    <p id="status"></p>
+</div>
 
-        // Twoje klatki z Blendera: 0-10 klamka, 10-80 otwarcie, reszta zamykanie
-        const FRAME_OPEN_STOP = 80; 
-        const FRAME_TOTAL = 250;
+<script>
+    let currentSlide = 0;
+    const slider = document.getElementById('slider');
+    const slides = document.querySelectorAll('.slide');
 
-        function updateTransform() {
-            let sX = isLeft ? "1" : "-1";
-            mv.orientation = isPull ? "0 0 0deg" : "0 0 180deg";
-            mv.scale = `${sX} 1 1`;
+    function moveSlide(direction) {
+        currentSlide = (currentSlide + direction + slides.length) % slides.length;
+        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    // Auto-swipe co 5 sekund
+    setInterval(() => moveSlide(1), 5000);
+
+    // Prosta logika kalendarza
+    document.getElementById('montaz-date').addEventListener('change', function() {
+        const date = new Date(this.value);
+        const day = date.getDay();
+        if(day === 0 || day === 6) {
+            document.getElementById('status').innerText = "Weekendy zajęte. Wybierz dzień roboczy.";
+            document.getElementById('status').style.color = "#ff4444";
+        } else {
+            document.getElementById('status').innerText = "Termin dostępny!";
+            document.getElementById('status').style.color = "#44ff44";
         }
+    });
+</script>
 
-        // --- INICJALIZACJA ANIMACJI ---
-        mv.addEventListener('load', () => {
-            updateTransform();
-            const anims = mv.availableAnimations;
-            if (anims.length > 0) {
-                mv.animationName = anims[0]; // Aktywujemy pierwszą znalezioną animację
-                mv.pause(); // Zatrzymujemy na klatce 0
-                mv.currentTime = 0;
-            }
-        });
-
-        // --- PRZESUWANIE MYSZKĄ ---
-        mv.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-        });
-
-        window.addEventListener('mouseup', () => { isDragging = false; });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging || !mv.duration) return;
-            const deltaX = e.clientX - startX;
-            const sens = 0.005; // Czułość
-            
-            let targetTime = mv.currentTime + (deltaX * sens);
-            mv.currentTime = Math.max(0, Math.min(targetTime, mv.duration));
-            startX = e.clientX;
-
-            isOpen = mv.currentTime > 0.5;
-            updateButtonUI();
-        });
-
-        function updateButtonUI() {
-            mainBtn.textContent = isOpen ? "ZAMKNIJ DRZWI" : "OTWÓRZ DRZWI";
-            mainBtn.style.background = isOpen ? "#e53e3e" : "#38a169";
-        }
-
-        // --- PRZYCISK ---
-        function toggleDoor() {
-            if (!mv.duration) return;
-
-            if (!isOpen) {
-                // OTWIERANIE
-                mv.currentTime = 0;
-                mv.play();
-                isOpen = true;
-                
-                // Zatrzymanie na pełnym otwarciu (wyliczone z klatek)
-                const stopTime = (FRAME_OPEN_STOP / FRAME_TOTAL) * mv.duration;
-                const check = setInterval(() => {
-                    if (mv.currentTime >= stopTime) {
-                        mv.pause();
-                        clearInterval(check);
-                    }
-                }, 10);
-            } else {
-                // ZAMYKANIE (Dokończenie animacji do klatki 250)
-                mv.play();
-                isOpen = false;
-                const checkEnd = setInterval(() => {
-                    if (mv.currentTime >= mv.duration - 0.05) {
-                        mv.pause();
-                        mv.currentTime = 0;
-                        clearInterval(checkEnd);
-                    }
-                }, 10);
-            }
-            updateButtonUI();
-        }
-
-        function setHanding(side, btn) {
-            document.querySelectorAll('#handing-group button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            isLeft = (side === 'left');
-            updateTransform();
-        }
-
-        function setSide(dir, btn) {
-            document.querySelectorAll('#side-group button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            isPull = (dir === 'pull');
-            updateTransform();
-        }
-    </script>
 </body>
 </html>
