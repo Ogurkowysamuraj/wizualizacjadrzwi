@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wizualizator Drzwi - Pełna Interakcja</title>
+    <title>Wizualizator Drzwi - Naprawa Animacji</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #1a202c; font-family: sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
@@ -38,7 +38,8 @@
             camera-orbit="0deg 88deg 4.2m"
             camera-target="0.1m 1.05m 0m"
             interaction-prompt="none"
-            shadow-intensity="1">
+            shadow-intensity="1"
+            autoplay="false">
         </model-viewer>
     </div>
 
@@ -52,80 +53,75 @@
         let isDragging = false;
         let startX = 0;
 
-        // Ustawienia na podstawie Twoich klatek z Blendera
-        const FRAME_OPEN_END = 80; // Klatka, w której drzwi są w pełni otwarte
-        const FRAME_TOTAL = 250;   // Całkowita liczba klatek w Twoim pliku
-        const FPS = 30;            // Standardowe klatki na sekundę
+        // Twoje klatki z Blendera: 0-10 klamka, 10-80 otwarcie, reszta zamykanie
+        const FRAME_OPEN_STOP = 80; 
+        const FRAME_TOTAL = 250;
 
         function updateTransform() {
             let sX = isLeft ? "1" : "-1";
-            // Fizyczny obrót modelu o 180 stopni
             mv.orientation = isPull ? "0 0 0deg" : "0 0 180deg";
             mv.scale = `${sX} 1 1`;
         }
 
-        // --- RĘCZNE PRZESUWANIE (DRAGGING) ---
+        // --- INICJALIZACJA ANIMACJI ---
+        mv.addEventListener('load', () => {
+            updateTransform();
+            const anims = mv.availableAnimations;
+            if (anims.length > 0) {
+                mv.animationName = anims[0]; // Aktywujemy pierwszą znalezioną animację
+                mv.pause(); // Zatrzymujemy na klatce 0
+                mv.currentTime = 0;
+            }
+        });
+
+        // --- PRZESUWANIE MYSZKĄ ---
         mv.addEventListener('mousedown', (e) => {
             isDragging = true;
             startX = e.clientX;
-            mv.pause();
         });
 
         window.addEventListener('mouseup', () => { isDragging = false; });
 
         window.addEventListener('mousemove', (e) => {
             if (!isDragging || !mv.duration) return;
-
             const deltaX = e.clientX - startX;
-            // Czułość: przesunięcie o 200px na ekranie przejdzie przez połowę animacji
-            const sensitivity = 0.005; 
+            const sens = 0.005; // Czułość
             
-            let newTime = mv.currentTime + (deltaX * sensitivity);
-            
-            // Ograniczamy czas do długości animacji
-            mv.currentTime = Math.min(Math.max(newTime, 0), mv.duration);
+            let targetTime = mv.currentTime + (deltaX * sens);
+            mv.currentTime = Math.max(0, Math.min(targetTime, mv.duration));
             startX = e.clientX;
 
-            // Jeśli przesunięte powyżej 0.5s, uznajemy za otwarte (UI)
             isOpen = mv.currentTime > 0.5;
             updateButtonUI();
         });
 
         function updateButtonUI() {
-            if (isOpen) {
-                mainBtn.textContent = "ZAMKNIJ DRZWI";
-                mainBtn.style.background = "#e53e3e";
-            } else {
-                mainBtn.textContent = "OTWÓRZ DRZWI";
-                mainBtn.style.background = "#38a169";
-            }
+            mainBtn.textContent = isOpen ? "ZAMKNIJ DRZWI" : "OTWÓRZ DRZWI";
+            mainBtn.style.background = isOpen ? "#e53e3e" : "#38a169";
         }
 
-        // --- AUTOMATYCZNY PRZYCISK ---
+        // --- PRZYCISK ---
         function toggleDoor() {
             if (!mv.duration) return;
 
             if (!isOpen) {
-                // START OTWIERANIA (klatka 0 -> klamka -> skrzydło)
+                // OTWIERANIE
                 mv.currentTime = 0;
                 mv.play();
                 isOpen = true;
                 
-                // Obliczamy czas zatrzymania: (klatka 80 / 250 klatek) * całkowity czas w sekundach
-                const stopTime = (FRAME_OPEN_END / FRAME_TOTAL) * mv.duration;
-                
-                const checkStop = setInterval(() => {
+                // Zatrzymanie na pełnym otwarciu (wyliczone z klatek)
+                const stopTime = (FRAME_OPEN_STOP / FRAME_TOTAL) * mv.duration;
+                const check = setInterval(() => {
                     if (mv.currentTime >= stopTime) {
                         mv.pause();
-                        clearInterval(checkStop);
+                        clearInterval(check);
                     }
                 }, 10);
             } else {
-                // ZAMYKANIE (puszczamy animację od obecnego miejsca do końca)
+                // ZAMYKANIE (Dokończenie animacji do klatki 250)
                 mv.play();
                 isOpen = false;
-                
-                // Po dojściu do końca animacji (klatka 250) resetujemy na 0
                 const checkEnd = setInterval(() => {
                     if (mv.currentTime >= mv.duration - 0.05) {
                         mv.pause();
@@ -150,13 +146,6 @@
             isPull = (dir === 'pull');
             updateTransform();
         }
-
-        mv.addEventListener('load', () => {
-            updateTransform();
-            // Ustawiamy pierwszą klatkę jako poster
-            mv.currentTime = 0;
-            mv.pause();
-        });
     </script>
 </body>
 </html>
