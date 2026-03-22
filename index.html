@@ -2,22 +2,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wizualizator Drzwi Premium - Poprawiony</title>
+    <title>Wizualizator Drzwi - Pełna Kontrola</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #1a202c; font-family: sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
-        .controls-panel {
-            background: rgba(45, 55, 72, 0.9);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px;
-            width: 90%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 10;
-        }
+        .controls-panel { background: rgba(45, 55, 72, 0.9); padding: 20px; border-radius: 15px; margin: 20px; width: 90%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; z-index: 10; }
         .btn-group { display: flex; gap: 10px; }
         button { padding: 12px; border: none; border-radius: 8px; background: #4a5568; color: white; cursor: pointer; flex: 1; transition: 0.2s; }
         button.active { background: #3182ce; font-weight: bold; }
@@ -31,14 +20,14 @@
 
     <div class="controls-panel">
         <div class="btn-group" id="handing-group">
-            <button id="btn-L" class="active" onclick="setHanding('left', this)">Lewe (Zawias L)</button>
-            <button id="btn-P" onclick="setHanding('right', this)">Prawe (Zawias P)</button>
+            <button id="btn-L" class="active" onclick="setHanding('left', this)">Lewe</button>
+            <button id="btn-P" onclick="setHanding('right', this)">Prawe</button>
         </div>
         <div class="btn-group" id="side-group">
             <button id="btn-pull" class="active" onclick="setSide('pull', this)">Do siebie</button>
             <button id="btn-push" onclick="setSide('push', this)">Od siebie</button>
         </div>
-        <button class="btn-main" id="main-btn" onclick="handleDoor()">OTWÓRZ DRZWI</button>
+        <button class="btn-main" id="main-btn" onclick="toggleDoor()">OTWÓRZ DRZWI</button>
     </div>
 
     <div class="viewer-container">
@@ -47,9 +36,8 @@
             id="door-model"
             src="drzwi1ruch.glb" 
             shadow-intensity="1" 
-            exposure="1" 
             camera-orbit="0deg 88deg 4.2m"
-            camera-target="0.6m 1.05m 0m"
+            camera-target="0.1m 1.05m 0m"
             interaction-prompt="none">
         </model-viewer>
     </div>
@@ -58,72 +46,74 @@
         const mv = document.querySelector("#door-model");
         const mainBtn = document.querySelector("#main-btn");
         
+        let isOpen = false;
         let isLeft = true;
         let isPull = true;
-        let isMoving = false;
-        let waitTimer;
+        let autoCloseTimer;
 
-        function updateModelTransform() {
-            // Skalowanie X: Lewe = 1, Prawe = -1
-            let scaleX = isLeft ? "1" : "-1";
-            // Skalowanie Z: Do siebie = 1, Od siebie = -1
-            let scaleZ = isPull ? "1" : "-1";
-            
-            mv.scale = `${scaleX} 1 ${scaleZ}`;
+        function updateTransform() {
+            // Skalowanie: Prawe to lustrzane odbicie lewych
+            let sX = isLeft ? "1" : "-1";
+            let sZ = isPull ? "1" : "-1";
+            mv.scale = `${sX} 1 ${sZ}`;
 
-            // KOREKTA KIERUNKU: Jeśli "Od siebie", obracamy model o 180 stopni, 
-            // żeby zawias i kierunek otwierania się nie "odwróciły" błędnie.
-            if (!isPull) {
-                mv.orientation = "0 0 180deg";
+            // Poprawka kierunku dla "Od siebie"
+            mv.orientation = isPull ? "0 0 0deg" : "0 0 180deg";
+        }
+
+        function toggleDoor() {
+            const anims = mv.availableAnimations;
+            if (anims.length === 0) return alert("Błąd: Brak animacji!");
+
+            clearTimeout(autoCloseTimer);
+
+            if (!isOpen) {
+                // OTWIERANIE
+                mv.animationName = anims[0];
+                mv.play();
+                isOpen = true;
+                mainBtn.textContent = "ZAMKNIJ TERAZ";
+                mainBtn.style.background = "#e53e3e";
+
+                // Po 2s zatrzymaj w pozycji otwartej
+                setTimeout(() => {
+                    if(isOpen) mv.pause();
+                }, 2000);
+
+                // Auto-zamykanie po 5 sekundach
+                autoCloseTimer = setTimeout(() => {
+                    if(isOpen) closeDoor();
+                }, 7000); 
+
             } else {
-                mv.orientation = "0 0 0deg";
+                // RĘCZNE ZAMYKANIE
+                closeDoor();
             }
         }
 
-        function handleDoor() {
-            if (isMoving) return;
-            
-            const anims = mv.availableAnimations;
-            if (anims.length > 0) {
-                isMoving = true;
-                mv.animationName = anims[0];
-                mv.play();
-                mainBtn.textContent = "DRZWI SIĘ OTWIERAJĄ...";
-                mainBtn.style.background = "#4a5568";
-
-                clearTimeout(waitTimer);
-                // Zwiększony czas do 2 sekund, aby animacja (60 klatek) dobiegła do końca
-                waitTimer = setTimeout(() => {
-                    mv.pause();
-                    mainBtn.textContent = "DRZWI OTWARTE (5s)";
-                    
-                    // Czekanie 5 sekund w pozycji pełnego otwarcia
-                    waitTimer = setTimeout(() => {
-                        mv.currentTime = 0;
-                        mainBtn.textContent = "OTWÓRZ DRZWI";
-                        mainBtn.style.background = "#38a169";
-                        isMoving = false;
-                    }, 5000);
-
-                }, 2000); 
-            }
+        function closeDoor() {
+            mv.pause();
+            mv.currentTime = 0; // Reset do klatki 1
+            isOpen = false;
+            mainBtn.textContent = "OTWÓRZ DRZWI";
+            mainBtn.style.background = "#38a169";
         }
 
         function setHanding(side, btn) {
             document.querySelectorAll('#handing-group button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             isLeft = (side === 'left');
-            updateModelTransform();
+            updateTransform();
         }
 
         function setSide(dir, btn) {
             document.querySelectorAll('#side-group button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             isPull = (dir === 'pull');
-            updateModelTransform();
+            updateTransform();
         }
 
-        window.addEventListener('load', updateModelTransform);
+        window.addEventListener('load', updateTransform);
     </script>
 </body>
 </html>
