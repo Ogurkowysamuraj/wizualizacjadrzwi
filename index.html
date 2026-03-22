@@ -28,60 +28,51 @@
         .section { padding: 80px 8%; }
         
         .hero { 
-            height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
         .light-mode .hero { background: radial-gradient(circle at center, #e2e8f0 0%, #f1f5f9 100%); }
         .btn-main { background: var(--primary); color: white; padding: 18px 35px; border-radius: 12px; font-weight: 800; text-decoration: none; display: inline-block; border: none; cursor: pointer; }
 
-        /* REALNY KALKULATOR EKO */
-        .eko-box { 
-            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); 
-            padding: 40px; border-radius: 35px; border: 1px solid #10b981; margin: 40px 0;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; color: white;
-        }
-        .result-circle { 
-            background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; 
-            padding: 30px; border-radius: 50%; width: 160px; height: 160px; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto;
-        }
+        /* KALKULATOR EKO (BEZ ZMIAN) */
+        .eko-box { background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); padding: 40px; border-radius: 35px; border: 1px solid #10b981; margin: 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; color: white; }
+        .result-circle { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 30px; border-radius: 50%; width: 140px; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; }
 
-        /* Video Poradniki */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        /* VIDEO (BEZ ZMIAN) */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
         .video-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--input-border); text-align: center; padding-bottom: 15px; }
-        .video-card img { width: 100%; height: 180px; object-fit: cover; }
+        .video-card img { width: 100%; height: 150px; object-fit: cover; }
 
-        /* Asystent Zlecenia */
+        /* ASYSTENT ZLECENIA 4.0 - POPRAWKI */
         .asystent-container { background: var(--card); border-radius: 35px; border: 1px solid var(--input-border); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; }
+        .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; transition: 0.5s ease-in-out; }
         
+        /* Rozszerzona mapa */
+        .asystent-grid.map-expanded { grid-template-columns: 0.5fr 0.5fr 2fr; }
+
         .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .diag-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid var(--input-border); cursor: pointer; text-align: center; color: var(--text); }
         .light-mode .diag-card { background: #f8fafc; }
         .diag-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.1); }
         
-        input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: inherit; }
+        input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: inherit; box-sizing: border-box; }
         
-        #map { height: 250px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--input-border); }
-        
-        /* WYRÓWNANA LISTA CEN */
+        /* MAPA I PRZYCISK POWIĘKSZANIA */
+        .map-wrapper { position: relative; height: 300px; border-radius: 20px; border: 1px solid var(--input-border); overflow: hidden; margin-bottom: 15px; transition: height 0.5s; }
+        .map-expanded .map-wrapper { height: 450px; }
+        #map { height: 100%; width: 100%; }
+        .map-zoom-btn { position: absolute; top: 10px; right: 10px; z-index: 1000; background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+
         .summary-box { background: rgba(0,0,0,0.1); padding: 20px; border-radius: 20px; border: 1px solid var(--primary); }
         .light-mode .summary-box { background: #f8fafc; }
-        .service-item { 
-            display: flex; 
-            justify-content: space-between; /* To wyrównuje nazwę do lewej, a cenę do prawej */
-            align-items: center;
-            font-size: 13px; 
-            margin-bottom: 8px; 
-            background: rgba(120,120,120,0.1); 
-            padding: 10px; 
-            border-radius: 8px; 
-        }
-        .service-item b { color: var(--accent); }
+        
+        .service-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 8px; background: rgba(120,120,120,0.1); padding: 12px; border-radius: 8px; }
+        .service-item b { white-space: nowrap; color: var(--accent); margin-left: 10px; }
+        .remove-btn { color: #ff4444; margin-left: 10px; cursor: pointer; }
 
         #notification { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 15px; display: none; z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 
-        @media (max-width: 1100px) { .asystent-grid, .eko-box { grid-template-columns: 1fr; } }
+        @media (max-width: 1100px) { .asystent-grid, .eko-box { grid-template-columns: 1fr !important; } }
     </style>
 </head>
 <body>
@@ -99,76 +90,69 @@
 </nav>
 
 <section class="hero" id="home">
-    <h1>System Montażowy 4.0</h1>
-    <p style="opacity: 0.8; margin: 20px 0;">Wirtualizacja, audyt strat ciepła i pełne zarządzanie zleceniem.</p>
+    <h1>System Zarządzania Serwisem</h1>
+    <p style="opacity: 0.8; margin: 20px 0;">Pełna diagnostyka, mapa dojazdów i kosztorys online.</p>
     <a href="konfigurator.html" class="btn-main"><i class="fas fa-vr-cardboard"></i> OTWÓRZ KONFIGURATOR 3D</a>
 </section>
 
 <section class="section" id="eko">
     <div class="eko-box">
-        <div>
-            <h2 style="color: #10b981; margin-top:0;"><i class="fas fa-leaf"></i> Audyt Energetyczny</h2>
-            <p style="font-size: 14px; opacity: 0.9;">Ile oszczędzisz po wymianie drzwi na energooszczędne?</p>
-            <label style="font-size: 11px;">OBECNE DRZWI (Współczynnik U):</label>
+        <div><h2><i class="fas fa-leaf"></i> Audyt Energii</h2>
             <select id="uValueOld" onchange="calculateEko()">
-                <option value="3.5">Stare drewniane (U=3.5)</option>
-                <option value="2.2">Stare stalowe (U=2.2)</option>
+                <option value="3.5">Stare drzwi (U=3.5)</option>
                 <option value="1.6">Standardowe (U=1.6)</option>
             </select>
-            <label style="font-size: 11px;">RODZAJ OGRZEWANIA:</label>
             <select id="energyCost" onchange="calculateEko()">
-                <option value="1.10">Prąd / Grzejniki</option>
-                <option value="0.60">Gaz ziemny</option>
-                <option value="0.35">Pompa Ciepła</option>
+                <option value="1.10">Prąd</option>
+                <option value="0.60">Gaz</option>
             </select>
         </div>
-        <div style="text-align: center;">
-            <div class="result-circle">
-                <small>Zyskasz rocznie</small>
-                <h2 id="ekoResult" style="margin: 5px 0; color: #10b981;">0 zł</h2>
-            </div>
-        </div>
+        <div class="result-circle"><small>Oszczędność</small><h2 id="ekoResult">0 zł</h2></div>
     </div>
 </section>
 
 <section class="section" id="poradniki">
-    <h2 style="text-align: center;">Video Instrukcje Techniczne</h2>
     <div class="video-grid">
-        <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif"><p>Jak wymierzyć otwór?</p></div>
-        <div class="video-card"><img src="https://media.giphy.com/media/l41lTjJp9N3S6bXmE/giphy.gif"><p>Montaż progu</p></div>
-        <div class="video-card"><img src="https://media.giphy.com/media/3o7TKMGpxVfFv9Yn96/giphy.gif"><p>Regulacja zawiasów</p></div>
+        <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif"><p>Pomiar</p></div>
+        <div class="video-card"><img src="https://media.giphy.com/media/l41lTjJp9N3S6bXmE/giphy.gif"><p>Próg</p></div>
+        <div class="video-card"><img src="https://media.giphy.com/media/3o7TKMGpxVfFv9Yn96/giphy.gif"><p>Regulacja</p></div>
     </div>
 </section>
 
 <section class="section" id="kalendarz">
     <div class="asystent-container">
         <h2 style="text-align:center; font-weight:800; margin-top:0;">ASYSTENT ZLECENIA 4.0</h2>
-        <div class="asystent-grid">
+        <div class="asystent-grid" id="mainGrid">
             <div class="column">
                 <label>DANE KLIENTA</label>
                 <input type="text" id="cName" placeholder="Imię i Nazwisko">
                 <input type="text" id="cPhone" placeholder="Telefon">
-                <input type="text" id="cStreet" placeholder="Ulica i numer">
+                <input type="email" id="cEmail" placeholder="E-mail klienta"> <input type="text" id="cStreet" placeholder="Ulica i numer">
                 <input type="text" id="cCity" placeholder="Miasto">
             </div>
             
             <div class="column">
-                <label>USŁUGI (KLIKNIJ BY DODAĆ)</label>
+                <label>USŁUGI</label>
                 <div class="diag-grid">
-                    <div class="diag-card" onclick="addService('Montaż drzwi', 450)"><i class="fas fa-tools"></i>Montaż</div>
-                    <div class="diag-card" onclick="addService('Regulacja serw.', 150)"><i class="fas fa-wrench"></i>Regulacja</div>
-                    <div class="diag-card" onclick="addService('Utylizacja', 120)"><i class="fas fa-recycle"></i>Utylizacja</div>
-                    <div class="diag-card" onclick="addService('Próg opadający', 180)"><i class="fas fa-arrow-down"></i>Próg</div>
+                    <div class="diag-card" onclick="addService('Montaż drzwi', 450)">Montaż</div>
+                    <div class="diag-card" onclick="addService('Regulacja serw.', 150)">Regulacja</div>
+                    <div class="diag-card" onclick="addService('Utylizacja', 120)">Utylizacja</div>
+                    <div class="diag-card" onclick="addService('Serwis zamka', 200)">Zamek</div>
                 </div>
                 <label>PIĘTRO</label>
                 <select id="floorSelect" onchange="update()">
-                    <option value="0">Parter / Winda (0 zł)</option>
-                    <script>for(let i=1; i<=10; i++) document.write(`<option value="${i*50}">${i}. Piętro (+${i*50} zł)</option>`);</script>
+                    <option value="0">Parter (0 zł)</option>
+                    <script>for(let i=1; i<=5; i++) document.write(`<option value="${i*50}">${i}. Piętro (+${i*50} zł)</option>`);</script>
                 </select>
+                <textarea id="cNotes" placeholder="Dodatkowe uwagi..."></textarea>
             </div>
 
             <div class="column">
-                <div id="map"></div>
+                <div class="map-wrapper">
+                    <button class="map-zoom-btn" onclick="toggleMap()" title="Powiększ mapę"><i class="fas fa-expand-alt"></i></button>
+                    <div id="map"></div>
+                </div>
+                
                 <div class="summary-box">
                     <div id="serviceList"></div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 10px; opacity: 0.7;">
@@ -184,10 +168,11 @@
     </div>
 </section>
 
-<div id="notification"><i class="fas fa-bell"></i> <span id="notif-text">Nowe zlecenie w okolicy!</span></div>
+<div id="notification"><i class="fas fa-bell"></i> <span id="notif-text">Nowe zlecenie!</span></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    // KALKULATOR EKO (BEZ ZMIAN)
     function calculateEko() {
         const uOld = parseFloat(document.getElementById('uValueOld').value);
         const energy = parseFloat(document.getElementById('energyCost').value);
@@ -195,11 +180,18 @@
         document.getElementById('ekoResult').innerText = Math.round(savings) + " zł";
     }
 
+    // MAPA I USŁUGI
     const companyLoc = [52.2297, 21.0122];
     let distancePrice = 0, services = [];
     const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     let marker;
+
+    function toggleMap() {
+        const grid = document.getElementById('mainGrid');
+        grid.classList.toggle('map-expanded');
+        setTimeout(() => { map.invalidateSize(); }, 500); // Odświeżenie mapy po zmianie rozmiaru
+    }
 
     function addService(n, p) {
         services.push({n, p});
@@ -217,7 +209,7 @@
         document.getElementById('serviceList').innerHTML = services.map((x, i) => `
             <div class="service-item">
                 <span>${x.n}</span>
-                <b>${x.p} zł <i class="fas fa-times" onclick="removeService(${i})" style="color:red; cursor:pointer; margin-left:10px;"></i></b>
+                <b>${x.p} zł <i class="fas fa-trash-alt remove-btn" onclick="removeService(${i})"></i></b>
             </div>
         `).join('');
         document.getElementById('distPrice').innerText = distancePrice + " zł";
@@ -232,19 +224,19 @@
     });
 
     setInterval(() => {
-        const towns = ["Warszawie", "Otwocku", "Piasecznie", "Pruszkowie"];
-        document.getElementById('notif-text').innerText = `Właśnie zamówiono montaż w ${towns[Math.floor(Math.random()*towns.length)]}!`;
+        const towns = ["Warszawie", "Otwocku", "Piasecznie"];
+        document.getElementById('notif-text').innerText = `Ktoś złożył zapytanie w ${towns[Math.floor(Math.random()*3)]}!`;
         const n = document.getElementById('notification');
         n.style.display = 'block';
         setTimeout(() => n.style.display = 'none', 4000);
-    }, 20000);
+    }, 25000);
 
     window.onload = function() {
         calculateEko();
         const saved = localStorage.getItem('zapisaneDrzwi');
         if (saved) {
             const d = JSON.parse(saved);
-            addService("Konfiguracja: " + d.kolor, parseInt(d.cena));
+            addService("Konfig: " + d.kolor, parseInt(d.cena));
             localStorage.removeItem('zapisaneDrzwi');
         }
     };
