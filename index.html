@@ -2,28 +2,65 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wizualizator Drzwi - Finał</title>
+    <title>Wizualizator Drzwi - Pełna Wersja</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #1a202c; font-family: sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
-        .controls-panel { background: rgba(45, 55, 72, 0.9); padding: 20px; border-radius: 15px; margin: 20px; width: 90%; max-width: 600px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
-        .btn-group { display: flex; gap: 10px; }
-        button { padding: 10px; border: none; border-radius: 8px; background: #4a5568; color: white; cursor: pointer; flex: 1; }
+        .header { margin: 15px 0; text-align: center; }
+        .controls-panel {
+            background: rgba(45, 55, 72, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 10;
+        }
+        .btn-group { display: flex; justify-content: center; gap: 10px; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #4a5568;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+        }
         button.active { background: #3182ce; }
-        .btn-main { background: #38a169; font-weight: bold; padding: 15px; text-transform: uppercase; }
-        .viewer-container { position: relative; width: 95%; max-width: 1100px; height: 75vh; border-radius: 20px; overflow: hidden; }
-        .bg-image { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-        model-viewer { position: absolute; width: 100%; height: 100%; z-index: 2; --poster-color: transparent; }
+        .btn-main { background: #38a169; font-weight: bold; text-transform: uppercase; padding: 15px; }
+        .viewer-container {
+            position: relative;
+            width: 95%;
+            max-width: 1100px;
+            height: 700px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+        }
+        .bg-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+        model-viewer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; --poster-color: transparent; }
     </style>
 </head>
 <body>
 
+    <div class="header">
+        <h1>Wizualizator Drzwi Premium</h1>
+    </div>
+
     <div class="controls-panel">
-        <div class="btn-group">
-            <button id="btn-L" class="active" onclick="setHanding('left')">Lewe</button>
-            <button id="btn-P" onclick="setHanding('right')">Prawe</button>
+        <div class="btn-group" id="handing-group">
+            <button id="btn-L" class="active" onclick="setHanding('left', this)">Lewe (Zawias L)</button>
+            <button id="btn-P" onclick="setHanding('right', this)">Prawe (Zawias P)</button>
         </div>
-        <button class="btn-main" id="main-button" onclick="handleDoorAction()">OTWÓRZ DRZWI</button>
+        <div class="btn-group" id="side-group">
+            <button id="btn-pull" class="active" onclick="setSide('pull', this)">Do siebie</button>
+            <button id="btn-push" onclick="setSide('push', this)">Od siebie</button>
+        </div>
+        <button class="btn-main" id="main-btn" onclick="handleDoor()">OTWÓRZ DRZWI</button>
     </div>
 
     <div class="viewer-container">
@@ -31,60 +68,76 @@
         <model-viewer 
             id="door-model"
             src="drzwi1ruch.glb" 
-            camera-orbit="-2deg 88deg 4m" 
-            camera-target="0.1m 1.05m 0m" 
-            field-of-view="22deg"
-            interaction-prompt="none"
-            shadow-intensity="1">
+            shadow-intensity="1" 
+            exposure="1" 
+            environment-image="neutral"
+            camera-orbit="0deg 88deg 4.2m"
+            camera-target="0.5m 1.05m 0m"
+            interaction-prompt="none">
         </model-viewer>
     </div>
 
     <script>
         const mv = document.querySelector("#door-model");
-        const btn = document.querySelector("#main-button");
+        const mainBtn = document.querySelector("#main-btn");
+        
+        let isLeft = true;
+        let isPull = true;
         let isMoving = false;
+        let waitTimer;
 
-        function handleDoorAction() {
+        function updateModelScale() {
+            // Poprawiona logika kierunków:
+            // Jeśli Lewe -> skala X = 1, Jeśli Prawe -> skala X = -1
+            let scaleX = isLeft ? "1" : "-1";
+            let scaleZ = isPull ? "1" : "-1";
+            mv.scale = `${scaleX} 1 ${scaleZ}`;
+        }
+
+        function handleDoor() {
             if (isMoving) return;
-            isMoving = true;
-
+            
             const anims = mv.availableAnimations;
             if (anims.length > 0) {
+                isMoving = true;
                 mv.animationName = anims[0];
                 mv.play();
-                btn.textContent = "DRZWI OTWARTE...";
-                btn.style.background = "#4a5568";
+                mainBtn.textContent = "DRZWI OTWARTE...";
+                mainBtn.style.background = "#4a5568";
 
-                // Po 1.5s (czas animacji) zatrzymaj na 5 sekund
-                setTimeout(() => {
+                // Zatrzymanie na końcu animacji (ok. 1.5s)
+                clearTimeout(waitTimer);
+                waitTimer = setTimeout(() => {
                     mv.pause();
                     
-                    setTimeout(() => {
-                        // Powrót do zamkniętych
+                    // Czekanie 5 sekund w pozycji otwartej
+                    waitTimer = setTimeout(() => {
                         mv.currentTime = 0;
-                        btn.textContent = "OTWÓRZ DRZWI";
-                        btn.style.background = "#38a169";
+                        mainBtn.textContent = "OTWÓRZ DRZWI";
+                        mainBtn.style.background = "#38a169";
                         isMoving = false;
-                    }, 5000); // 5 sekund czekania
+                    }, 5000);
 
-                }, 1500); // Czas trwania animacji otwierania
+                }, 1500); 
             }
         }
 
-        function setHanding(side) {
-            if (side === 'left') {
-                mv.scale = "-1 1 1";
-                document.querySelector("#btn-L").classList.add("active");
-                document.querySelector("#btn-P").classList.remove("active");
-            } else {
-                mv.scale = "1 1 1";
-                document.querySelector("#btn-P").classList.add("active");
-                document.querySelector("#btn-L").classList.remove("active");
-            }
+        function setHanding(side, btn) {
+            document.querySelectorAll('#handing-group button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            isLeft = (side === 'left');
+            updateModelScale();
         }
 
-        // Ustawienie początkowe
-        window.addEventListener('load', () => { mv.scale = "-1 1 1"; });
+        function setSide(dir, btn) {
+            document.querySelectorAll('#side-group button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            isPull = (dir === 'pull');
+            updateModelScale();
+        }
+
+        // Inicjalizacja przy starcie
+        window.addEventListener('load', updateModelScale);
     </script>
 </body>
 </html>
