@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SERWIS-DRZWI.PRO | Audyt i Montaż 4.0</title>
+    <title>SERWIS-DRZWI.PRO | Audyt, Montaż i Społeczność</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -19,120 +19,126 @@
         nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); position: fixed; width: 90%; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .logo { font-size: 22px; font-weight: 800; color: var(--accent); text-decoration: none; }
         .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 13px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
 
-        .section { padding: 80px 8%; }
+        .section { padding: 100px 8% 60px 8%; }
         
-        /* Hero */
         .hero { 
-            height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
         .btn-main { background: var(--primary); color: white; padding: 18px 35px; border-radius: 12px; font-weight: 800; text-decoration: none; transition: 0.3s; display: inline-block; cursor: pointer; border: none; }
         .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4); }
 
-        /* REALNY KALKULATOR EKO */
+        /* Kalkulator EKO */
         .eko-box { 
             background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); 
             padding: 40px; border-radius: 35px; border: 1px solid #10b981; margin: 40px 0;
             display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
         }
-        .eko-inputs { display: grid; gap: 15px; }
         .result-circle { 
             background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; 
-            padding: 30px; border-radius: 50%; width: 200px; height: 200px; 
+            padding: 30px; border-radius: 50%; width: 180px; height: 180px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto;
-            text-align: center;
         }
 
-        /* Asystent Zlecenia */
+        /* Asystent */
         .asystent-container { background: var(--card); border-radius: 35px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; backdrop-filter: blur(20px); }
         .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; }
         .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .diag-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid transparent; cursor: pointer; transition: 0.2s; text-align: center; }
+        .diag-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid transparent; cursor: pointer; transition: 0.2s; text-align: center; font-size: 13px; }
         .diag-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.1); }
-        
-        /* Video Poradniki */
+        .diag-card i { display: block; margin-bottom: 8px; color: var(--accent); font-size: 18px; }
+
         .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 30px; }
         .video-card { background: var(--card); border-radius: 25px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
         .video-card img { width: 100%; height: 200px; object-fit: cover; }
 
         input, select, textarea { width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 10px; box-sizing: border-box; margin-bottom: 10px; font-family: inherit; }
         #map { height: 250px; border-radius: 20px; margin-bottom: 15px; }
-        .summary-box { background: rgba(0,0,0,0.3); padding: 25px; border-radius: 20px; border: 1px solid var(--primary); }
+        
+        .service-item { display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 8px; margin-bottom: 5px; font-size: 13px; }
+        .remove-svc { color: #ef4444; cursor: pointer; font-weight: bold; }
+
+        #notification { position: fixed; bottom: 30px; right: 30px; background: var(--card); border: 1px solid var(--accent); padding: 20px; border-radius: 20px; display: none; z-index: 2000; }
 
         @media (max-width: 1100px) { .asystent-grid, .eko-box { grid-template-columns: 1fr; } }
+        @media print { nav, .hero, .eko-box, .video-grid, button, #map { display: none !important; } .asystent-container { background: white; color: black; border: none; } input { color: black !important; border: 1px solid #000; } }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="#" class="logo"><i class="fas fa-bolt"></i> SERWIS-DRZWI.PRO</a>
+    <a href="#" class="logo"><i class="fas fa-microchip"></i> SERWIS-DRZWI.PRO</a>
     <div class="nav-links">
         <a href="#home">Start</a>
         <a href="#eko">Audyt EKO</a>
+        <a href="forum.html">Społeczność / Forum</a>
         <a href="#poradniki">Poradniki</a>
         <a href="#kalendarz">Zlecenie</a>
-        <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--accent); cursor:pointer;"><i class="fas fa-moon"></i></button>
+        <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--accent); cursor:pointer;"><i class="fas fa-circle-half-stroke"></i></button>
     </div>
 </nav>
 
 <section class="hero" id="home">
-    <h1>Profesjonalny Montaż & Serwis</h1>
-    <p style="opacity: 0.8; margin: 20px 0;">Nie tylko montujemy. Dbamy o to, by ciepło nie uciekało z Twojego domu.</p>
-    <a href="konfigurator.html" class="btn-main"><i class="fas fa-vr-cardboard"></i> OTWÓRZ WIRTUALIZACJĘ 3D</a>
+    <div style="color:var(--accent); font-weight: bold; letter-spacing: 3px; margin-bottom: 15px;">INŻYNIERIA MONTAŻU</div>
+    <h1>Wizualizacja i Serwis Drzwi</h1>
+    <p style="opacity: 0.8; margin: 20px 0;">Skonfiguruj online, sprawdź straty ciepła i zamów profesjonalną ekipę.</p>
+    <div style="display:flex; gap: 20px;">
+        <a href="konfigurator.html" class="btn-main"><i class="fas fa-vr-cardboard"></i> KONFIGURATOR 3D</a>
+        <a href="#kalendarz" style="color: white; text-decoration: none; padding: 18px; font-weight: bold;">Szybka Wycena</a>
+    </div>
 </section>
 
 <section class="section" id="eko">
     <div class="eko-box">
         <div class="eko-inputs">
-            <h2 style="color: #10b981; margin-top:0;"><i class="fas fa-calculator"></i> Realny Zysk Energetyczny</h2>
-            <p style="font-size: 14px; opacity: 0.8;">Oblicz, ile tracisz pieniędzy przez nieszczelne lub stare drzwi.</p>
+            <h2 style="color: #10b981; margin-top:0;"><i class="fas fa-leaf"></i> Audyt Strat Ciepła</h2>
+            <p style="font-size: 14px; opacity: 0.8;">Oblicz realne oszczędności po profesjonalnym uszczelnieniu lub wymianie.</p>
             
-            <label style="font-size: 12px;">TYP OBECNYCH DRZWI (Współczynnik U):</label>
+            <label style="font-size: 11px;">TYP DRZWI (WSPÓŁCZYNNIK U):</label>
             <select id="uValueOld" onchange="calculateEko()">
-                <option value="3.0">Stare drewniane / PRL (U=3.0)</option>
-                <option value="2.0">Standardowe 10-letnie (U=2.0)</option>
-                <option value="1.5">Współczesne marketowe (U=1.5)</option>
+                <option value="3.5">Stare drzwi drewniane (U=3.5)</option>
+                <option value="2.2">Starsze drzwi stalowe (U=2.2)</option>
+                <option value="1.5">Standardowe drzwi (U=1.5)</option>
             </select>
 
-            <label style="font-size: 12px;">METODA OGRZEWANIA (Koszt 1kWh):</label>
+            <label style="font-size: 11px;">KOSZT ENERGII (1 kWh):</label>
             <select id="energyCost" onchange="calculateEko()">
-                <option value="0.30">Pompa ciepła (0.30 zł)</option>
+                <option value="1.00">Prąd (1.00 zł)</option>
                 <option value="0.55">Gaz (0.55 zł)</option>
-                <option value="1.00">Prąd / Grzejniki (1.00 zł)</option>
+                <option value="0.30">Pompa Ciepła (0.30 zł)</option>
             </select>
 
-            <label style="font-size: 12px;">STAN USZCZELEK (Nieszczelność):</label>
+            <label style="font-size: 11px;">STAN USZCZELEK:</label>
             <select id="leakage" onchange="calculateEko()">
-                <option value="1.0">Szczelne (0% strat dodatkowych)</option>
-                <option value="1.3">Przedmuchy ( +30% strat)</option>
-                <option value="1.6">Widoczne szpary ( +60% strat)</option>
+                <option value="1.0">Szczelne</option>
+                <option value="1.4">Przeciągi (+40% strat)</option>
+                <option value="1.8">Duże nieszczelności (+80% strat)</option>
             </select>
         </div>
         
-        <div class="result-side">
+        <div style="text-align: center;">
             <div class="result-circle">
-                <small>Zaoszczędzisz</small>
+                <small>Zyskasz</small>
                 <h2 id="ekoResult" style="margin: 5px 0; color: #10b981;">0 zł</h2>
                 <small>rocznie</small>
             </div>
-            <p style="text-align: center; font-size: 12px; margin-top: 20px; opacity: 0.7;">
-                *Obliczenia oparte na średniej sezonowej różnicy temp. 15°C i pow. 2m². Nasz profesjonalny montaż obniża współczynnik U do poziomu 0.8 - 1.1.
-            </p>
+            <p style="font-size: 11px; margin-top: 15px; opacity: 0.6;">*Przyjmujemy spadek współczynnika U do 0.9 po serwisie.</p>
         </div>
     </div>
 </section>
 
 <section class="section" id="poradniki">
-    <h2 style="text-align: center; margin-bottom: 40px;">Baza Wiedzy</h2>
+    <h2 style="text-align: center;">Poradniki Video</h2>
     <div class="video-grid">
         <div class="video-card">
             <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif">
-            <p>Prawidłowy pomiar otworu</p>
+            <p>Jak wymierzyć otwór?</p>
         </div>
         <div class="video-card">
             <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJ6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6bmx6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTjJp9N3S6bXmE/giphy.gif">
-            <p>Montaż z ciepłym progiem</p>
+            <p>Prawidłowy montaż uszczelek</p>
         </div>
     </div>
 </section>
@@ -147,79 +153,74 @@
                 <input type="text" id="cPhone" placeholder="Telefon" oninput="update()">
                 <input type="email" id="cEmail" placeholder="E-mail" oninput="update()">
                 <input type="text" id="cStreet" placeholder="Ulica i nr" oninput="update()">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="cZip" placeholder="Kod" style="flex: 1;" oninput="update()">
-                    <input type="text" id="cCity" placeholder="Miasto" style="flex: 2;" oninput="update()">
-                </div>
+                <input type="text" id="cCity" placeholder="Miasto" oninput="update()">
             </div>
             
             <div class="column">
-                <label>WYBIERZ USŁUGĘ</label>
+                <label>USŁUGI (KLIKNIJ BY DODAĆ)</label>
                 <div class="diag-grid">
-                    <div class="diag-card" onclick="addService('Montaż drzwi', 400)"><i class="fas fa-door-open"></i>Montaż</div>
-                    <div class="diag-card" onclick="addService('Serwis/Uszczelnienie', 150)"><i class="fas fa-shield-halved"></i>Uszczelnienie</div>
-                    <div class="diag-card" onclick="addService('Utylizacja', 120)"><i class="fas fa-trash"></i>Utylizacja</div>
-                    <div class="diag-card" onclick="addService('Podcięcie skrzydła', 80)"><i class="fas fa-cut"></i>Podcięcie</div>
+                    <div class="diag-card" onclick="addService('Montaż drzwi', 400)"><i class="fas fa-tools"></i>Montaż</div>
+                    <div class="diag-card" onclick="addService('Regulacja/Serwis', 150)"><i class="fas fa-wrench"></i>Regulacja</div>
+                    <div class="diag-card" onclick="addService('Utylizacja', 120)"><i class="fas fa-recycle"></i>Utylizacja</div>
+                    <div class="diag-card" onclick="addService('Ciepły próg', 200)"><i class="fas fa-fire"></i>Ciepły próg</div>
                 </div>
-                <input type="date" id="visitDate" onchange="update()">
+                <label>PIĘTRO</label>
                 <select id="floorSelect" onchange="update()">
                     <option value="0">Parter / Winda (0 zł)</option>
-                    <script>for(let i=1; i<=10; i++) document.write(`<option value="${i*50}">${i}. Piętro (+${i*50} zł)</option>`);</script>
+                    <script>for(let i=1; i<=15; i++) document.write(`<option value="${i*50}">${i}. Piętro (+${i*50} zł)</option>`);</script>
                 </select>
+                <input type="date" id="visitDate" onchange="update()">
             </div>
 
             <div class="column">
                 <div id="map"></div>
-                <div class="summary-box">
-                    <ul id="selectedServices" style="list-style: none; padding: 0; margin: 0 0 15px 0;"></ul>
-                    <div style="display: flex; justify-content: space-between; font-size: 13px; opacity: 0.7;"><span>Dojazd:</span> <span id="distPrice">0 zł</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 24px; font-weight: 800; color: var(--accent); margin-top:15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; border: 1px solid var(--primary);">
+                    <ul id="selectedServices" style="list-style:none; padding:0; margin-bottom:15px;"></ul>
+                    <div style="display:flex; justify-content:space-between; font-size:12px; opacity:0.7;"><span>Dojazd:</span> <span id="distPrice">0 zł</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:22px; font-weight:800; color:var(--accent); margin-top:10px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
                         <span>SUMA:</span> <span id="sumTotal">0 zł</span>
                     </div>
-                    <button class="btn-main" style="width:100%; margin-top: 20px;" onclick="window.print()">GENERUJ PROTOKÓŁ</button>
+                    <button class="btn-main" style="width:100%; margin-top:15px;" onclick="window.print()">DRUKUJ PROTOKÓŁ</button>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<div id="notification"><i class="fas fa-check-circle"></i> <span id="notif-text">Dodano usługę!</span></div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // FIZYKA KALKULATORA EKO
+    // 1. KALKULATOR EKO
     function calculateEko() {
         const uOld = parseFloat(document.getElementById('uValueOld').value);
-        const uNew = 0.9; // Standard po Twoim profesjonalnym montażu/wymianie
-        const area = 2.0; // m2 drzwi
-        const tempDiff = 15; // Średnia różnica temperatur w sezonie grzewczym (wnętrze 20C vs zewnątrz 5C)
-        const seasonHours = 4800; // Liczba godzin grzewczych w roku
-        const energyPrice = parseFloat(document.getElementById('energyCost').value);
-        const leakMultiplier = parseFloat(document.getElementById('leakage').value);
-
-        // Wzór: Q = U * A * ΔT
-        const lossOld = (uOld * area * tempDiff * seasonHours / 1000) * leakMultiplier; // kWh/rok
-        const lossNew = (uNew * area * tempDiff * seasonHours / 1000); // kWh/rok (nowe drzwi są szczelne)
-        
-        const savings = (lossOld - lossNew) * energyPrice;
+        const energy = parseFloat(document.getElementById('energyCost').value);
+        const leak = parseFloat(document.getElementById('leakage').value);
+        const uNew = 0.9; 
+        const savings = (uOld - uNew) * 2.0 * 15 * 4800 / 1000 * energy * leak;
         document.getElementById('ekoResult').innerText = Math.round(savings) + " zł";
     }
 
-    // ASYSTENT ZLECENIA
+    // 2. MAPA I ZLECENIA
     const companyLoc = [52.2297, 21.0122];
     let distancePrice = 0, services = [];
     const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     let marker;
 
-    function addService(n, p) { services.push({n, p}); update(); }
+    function addService(n, p) { 
+        services.push({n, p}); 
+        showNotif(`Dodano: ${n}`);
+        update(); 
+    }
+    
     function removeService(i) { services.splice(i, 1); update(); }
 
     function update() {
         const floor = parseInt(document.getElementById('floorSelect').value);
         const sSum = services.reduce((s, x) => s + x.p, 0);
         document.getElementById('selectedServices').innerHTML = services.map((x, i) => `
-            <li style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:13px; background:rgba(0,0,0,0.2); padding:5px 10px; border-radius:5px;">
-                ${x.n} <span style="color:#ef4444; cursor:pointer;" onclick="removeService(${i})">×</span>
-            </li>
+            <li class="service-item">${x.n} (${x.p}zł) <span class="remove-svc" onclick="removeService(${i})">×</span></li>
         `).join('');
         document.getElementById('distPrice').innerText = distancePrice + " zł";
         document.getElementById('sumTotal').innerText = (distancePrice + floor + sSum) + " zł";
@@ -231,6 +232,12 @@
         distancePrice = Math.max(50, dist * 3);
         update();
     });
+
+    function showNotif(txt) {
+        document.getElementById('notif-text').innerText = txt;
+        document.getElementById('notification').style.display = 'block';
+        setTimeout(() => document.getElementById('notification').style.display = 'none', 3000);
+    }
 
     // Inicjalizacja
     calculateEko();
