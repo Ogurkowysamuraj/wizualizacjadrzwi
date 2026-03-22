@@ -2,226 +2,39 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfigurator Drzwi 3D | SERWIS-DRZWI.PRO</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <title>Konfigurator</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --accent: #38bdf8;
-            --bg: #0f172a;
-            --card: rgba(30, 41, 59, 0.8);
-            --text: #f8fafc;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Lewy panel - Podgląd */
-        .preview-side {
-            flex: 1;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, #1e293b 0%, #080c14 100%);
-            perspective: 1000px;
-        }
-
-        .door-container {
-            width: 300px;
-            height: 600px;
-            background: #444; /* Kolor bazowy */
-            border: 10px solid #222;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            position: relative;
-            transition: 0.5s transform, 0.5s background-color;
-            transform-style: preserve-3d;
-        }
-
-        .handle {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            width: 15px;
-            height: 80px;
-            background: #silver;
-            border-radius: 5px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-        }
-
-        .glass-panel {
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 40%;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
-            display: none;
-        }
-
-        /* Prawy panel - Opcje */
-        .controls-side {
-            width: 450px;
-            background: var(--card);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(255,255,255,0.1);
-            padding: 40px;
-            overflow-y: auto;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-        }
-
-        h2 { font-weight: 800; color: var(--accent); }
-        .option-group { margin-bottom: 30px; }
-        .option-title { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; opacity: 0.7; }
-        
-        .color-dots { display: flex; gap: 15px; }
-        .dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.3s; }
-        .dot:hover { transform: scale(1.1); }
-        .dot.active { border-color: var(--accent); }
-
-        .btn-action {
-            width: 100%;
-            padding: 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-        .btn-action:hover { background: var(--accent); transform: translateY(-3px); }
-
-        .price-tag {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--accent);
-            margin-top: 10px;
-        }
-
-        /* AR Badge */
-        .ar-badge {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.5);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            border: 1px solid var(--accent);
-        }
+        body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 50px; }
+        .door { width: 200px; height: 400px; background: #444; margin: 20px auto; border: 5px solid #222; transition: 0.3s; }
+        .controls { background: #1e293b; padding: 20px; border-radius: 20px; display: inline-block; }
+        button { padding: 10px 20px; cursor: pointer; margin: 5px; }
     </style>
 </head>
 <body>
-
-<div class="preview-side">
-    <div class="ar-badge"><i class="fas fa-expand"></i> TRYB PODGLĄDU 3D WŁĄCZONY</div>
+    <h1>Zaprojektuj swoje drzwi</h1>
+    <div class="door" id="preview"></div>
     
-    <div class="door-container" id="door">
-        <div class="glass-panel" id="glass"></div>
-        <div class="handle" id="handle"></div>
-    </div>
-</div>
-
-<div class="controls-side">
-    <a href="index.html" style="color: white; text-decoration: none; font-size: 14px;"><i class="fas fa-arrow-left"></i> Powrót do strony głównej</a>
-    <h2>Konfigurator Premium</h2>
-    
-    <div class="option-group">
-        <p class="option-title">Kolor Skrzydła</p>
-        <div class="color-dots">
-            <div class="dot active" style="background: #444;" onclick="changeColor('#444', this, 0)"></div>
-            <div class="dot" style="background: #8b4513;" onclick="changeColor('#8b4513', this, 200)"></div>
-            <div class="dot" style="background: #fff;" onclick="changeColor('#eee', this, 150)"></div>
-            <div class="dot" style="background: #1a365d;" onclick="changeColor('#1a365d', this, 300)"></div>
-        </div>
+    <div class="controls">
+        <p>Wybierz kolor:</p>
+        <button onclick="set('Brązowe', '#8b4513', 1500)">Brązowe (1500zł)</button>
+        <button onclick="set('Antracyt', '#2d3748', 1700)">Antracyt (1700zł)</button>
+        <button onclick="set('Białe', '#f8fafc', 1400)">Białe (1400zł)</button>
+        <br><br>
+        <button onclick="save()" style="background: #22c55e; color: white; font-weight: bold; padding: 15px;">DODAJ DO ZLECENIA</button>
     </div>
 
-    <div class="option-group">
-        <p class="option-title">Przeszklenie</p>
-        <select onchange="toggleGlass(this.value)" style="width:100%; padding:10px; border-radius:8px; background:#0f172a; color:white; border:1px solid #333;">
-            <option value="none">Brak (Pełne)</option>
-            <option value="glass">Lustro weneckie (+450 zł)</option>
-            <option value="glass">Szyba mleczna (+300 zł)</option>
-        </select>
-    </div>
+    <script>
+        let current = { kolor: 'Standard', kod: '#444', cena: 1200 };
 
-    <div class="option-group">
-        <p class="option-title">Okucia (Klamka)</p>
-        <div style="display:flex; gap:10px;">
-            <button onclick="changeHandle('silver', 0)" style="flex:1; padding:10px; cursor:pointer;">Srebrna</button>
-            <button onclick="changeHandle('black', 50)" style="flex:1; padding:10px; cursor:pointer; background:black; color:white;">Czarna</button>
-            <button onclick="changeHandle('gold', 100)" style="flex:1; padding:10px; cursor:pointer; background:gold; color:black;">Złota</button>
-        </div>
-    </div>
-
-    <div style="background: rgba(0,0,0,0.2); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); margin-top: 40px;">
-        <p style="margin:0; opacity:0.6;">Szacowany koszt materiału:</p>
-        <div class="price-tag" id="price">1200 zł</div>
-        <button class="btn-action" onclick="orderNow()">ZAMÓW Z MONTAŻEM</button>
-    </div>
-</div>
-
-<script>
-    let basePrice = 1200;
-    let extraColor = 0;
-    let extraGlass = 0;
-    let extraHandle = 0;
-
-    function updatePrice() {
-        document.getElementById('price').innerText = (basePrice + extraColor + extraGlass + extraHandle) + " zł";
-    }
-
-    function changeColor(hex, el, price) {
-        document.getElementById('door').style.backgroundColor = hex;
-        extraColor = price;
-        // Aktywacja kropki
-        document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-        el.classList.add('active');
-        updatePrice();
-        // Efekt obrotu przy zmianie
-        document.getElementById('door').style.transform = "rotateY(10deg)";
-        setTimeout(() => document.getElementById('door').style.transform = "rotateY(0deg)", 300);
-    }
-
-    function toggleGlass(val) {
-        const glass = document.getElementById('glass');
-        if(val === 'none') {
-            glass.style.display = 'none';
-            extraGlass = 0;
-        } else {
-            glass.style.display = 'block';
-            extraGlass = 350;
+        function set(k, hex, c) {
+            current = { kolor: k, kod: hex, cena: c };
+            document.getElementById('preview').style.background = hex;
         }
-        updatePrice();
-    }
 
-    function changeHandle(color, price) {
-        const h = document.getElementById('handle');
-        h.style.background = color;
-        extraHandle = price;
-        updatePrice();
-    }
-
-    function orderNow() {
-        const finalPrice = document.getElementById('price').innerText;
-        alert("Konfiguracja zapisana! Przenoszę do formularza zlecenia. Cena drzwi: " + finalPrice);
-        window.location.href = "index.html#kalendarz";
-    }
-</script>
-
+        function save() {
+            localStorage.setItem('zapisaneDrzwi', JSON.stringify(current));
+            window.location.href = "index.html"; // wracamy na główną
+        }
+    </script>
 </body>
 </html>
