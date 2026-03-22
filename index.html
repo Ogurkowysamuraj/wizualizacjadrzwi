@@ -86,7 +86,7 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
         .about-img { width: 100%; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 
-        /* Inteligentny Kalendarz i Mapa */
+        /* Kalendarz i Mapa */
         .config-box {
             background: var(--card);
             padding: 40px;
@@ -108,7 +108,7 @@
             margin-bottom: 20px;
         }
 
-        #map { height: 350px; border-radius: 15px; border: 1px solid var(--accent); }
+        #map { height: 350px; border-radius: 15px; border: 1px solid var(--accent); z-index: 1; }
 
         .summary-card {
             background: rgba(37, 99, 235, 0.1);
@@ -121,7 +121,7 @@
             background: var(--primary); color: white; padding: 18px 40px;
             border-radius: 12px; text-decoration: none; font-weight: bold;
             display: inline-block; transition: 0.3s; border: none; cursor: pointer;
-            width: 100%; font-size: 16px;
+            width: 100%; font-size: 16px; text-align: center;
         }
         .btn-cta:hover { background: var(--accent); transform: translateY(-3px); }
 
@@ -164,4 +164,108 @@
     <div class="grid">
         <div>
             <h2 style="color: var(--accent);">O naszej pasji</h2>
-            <p>Łączymy nowoczesną wizualizację 3D z najwyższą jakością wykonania drzwi premium. Nasz zespół to pas
+            <p>Łączymy nowoczesną wizualizację 3D z najwyższą jakością wykonania drzwi premium. Nasz zespół to pasjonaci, którzy dbają o każdy detal – od klamki po uszczelkę.</p>
+            <p>Dzięki nam nie kupujesz kota w worku. Widzisz, klikasz i sprawdzasz mechanizm, zanim zamówisz pomiar.</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800" class="about-img">
+    </div>
+</section>
+
+<section class="section" id="kalendarz">
+    <div class="config-box">
+        <h2 style="text-align: center;">Zarezerwuj Termin i Transport</h2>
+        <div class="calc-grid">
+            <div>
+                <label><i class="fas fa-calendar-alt"></i> 1. Wybierz datę montażu:</label>
+                <input type="date" id="visitDate">
+                <div id="dateFeedback" style="margin-bottom: 20px; font-size: 14px; font-weight: bold;"></div>
+
+                <label><i class="fas fa-map-marker-alt"></i> 2. Lokalizacja (kliknij na mapie):</label>
+                <input type="text" id="clientAddress" readonly placeholder="Kliknij swoje miejsce zamieszkania na mapie">
+
+                <div class="summary-card" id="costSummary" style="display:none;">
+                    <p style="margin:0;">Dystans od biura: <strong id="displayDist">0 km</strong></p>
+                    <p style="margin:5px 0;">Szacowany koszt dojazdu + pomiar:</p>
+                    <h3 style="margin:0; color:var(--accent);" id="displayCost">0 zł</h3>
+                </div>
+            </div>
+            
+            <div id="map"></div>
+        </div>
+        <button class="btn-cta" style="margin-top: 30px;" onclick="alert('Zgłoszenie wstępne wysłane!')">POTWIERDŹ TERMIN I TRANSPORT</button>
+    </div>
+</section>
+
+<section class="section" id="kontakt">
+    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="info-card">
+            <h3>Dane Kontaktowe</h3>
+            <p><i class="fas fa-phone" style="color:var(--accent)"></i> +48 123 456 789</p>
+            <p><i class="fas fa-envelope" style="color:var(--accent)"></i> kontakt@wirtualizacja-drzwi.pl</p>
+            <p><i class="fas fa-clock" style="color:var(--accent)"></i> Pon-Pt: 8:00 - 16:00</p>
+        </div>
+        <div class="info-card">
+            <h3>Nasza Siedziba</h3>
+            <p>ul. Technologiczna 12, Warszawa</p>
+            <p style="font-size: 14px; opacity: 0.7;">Zapraszamy na kawę i prezentację modeli na żywo!</p>
+        </div>
+    </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // --- SLIDER ---
+    let current = 0;
+    const slider = document.getElementById('mainSlider');
+    const total = document.querySelectorAll('.slide').length;
+    function moveSlide(dir) {
+        current = (current + dir + total) % total;
+        slider.style.transform = `translateX(-${current * 100}%)`;
+    }
+    setInterval(() => moveSlide(1), 6000);
+
+    // --- KALENDARZ ---
+    document.getElementById('visitDate').addEventListener('change', function() {
+        const feedback = document.getElementById('dateFeedback');
+        const day = new Date(this.value).getDay();
+        if(day === 0 || day === 6) {
+            feedback.innerText = "⚠️ Weekendy są niedostępne. Wybierz poniedziałek-piątek.";
+            feedback.style.color = "#fbbf24";
+        } else {
+            feedback.innerText = "✅ Termin wydaje się wolny! Możemy działać.";
+            feedback.style.color = "#4ade80";
+        }
+    });
+
+    // --- MAPA I KALKULATOR KOSZTÓW ---
+    const companyLoc = [52.2297, 21.0122]; // Koordynaty firmy (Warszawa)
+    const map = L.map('map').setView(companyLoc, 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    L.marker(companyLoc).addTo(map).bindPopup('Nasze Biuro').openPopup();
+
+    let clientMarker;
+
+    map.on('click', function(e) {
+        const clientCoords = e.latlng;
+        if (clientMarker) clientMarker.setLatLng(clientCoords);
+        else clientMarker = L.marker(clientCoords).addTo(map);
+
+        const dist = map.distance(companyLoc, clientCoords) / 1000;
+        const finalDist = dist.toFixed(1);
+
+        // Twój Cennik:
+        let price = 0;
+        if (dist <= 10) price = 50;
+        else if (dist <= 20) price = 70;
+        else if (dist <= 100) price = 100;
+        else price = 150;
+
+        document.getElementById('costSummary').style.display = 'block';
+        document.getElementById('displayDist').innerText = finalDist + " km";
+        document.getElementById('displayCost').innerText = price + " zł";
+        document.getElementById('clientAddress').value = "Wybrano lokalizację na mapie";
+    });
+</script>
+
+</body>
+</html>
