@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wizualizator Drzwi - Pełna Kontrola</title>
+    <title>Wizualizator Drzwi - Poprawny Kierunek</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #1a202c; font-family: sans-serif; color: white; display: flex; flex-direction: column; align-items: center; }
@@ -35,10 +35,10 @@
         <model-viewer 
             id="door-model"
             src="drzwi1ruch.glb" 
-            shadow-intensity="1" 
             camera-orbit="0deg 88deg 4.2m"
             camera-target="0.1m 1.05m 0m"
-            interaction-prompt="none">
+            interaction-prompt="none"
+            shadow-intensity="1">
         </model-viewer>
     </div>
 
@@ -49,54 +49,41 @@
         let isOpen = false;
         let isLeft = true;
         let isPull = true;
-        let autoCloseTimer;
 
         function updateTransform() {
-            // Skalowanie: Prawe to lustrzane odbicie lewych
+            // KLUCZOWA ZMIANA:
+            // Jeśli Lewe -> scaleX = 1. Jeśli Prawe -> scaleX = -1 (odbicie lustrzane)
             let sX = isLeft ? "1" : "-1";
+            
+            // Jeśli Do siebie -> scaleZ = 1. Jeśli Od siebie -> scaleZ = -1 (wypchnięcie w głąb)
             let sZ = isPull ? "1" : "-1";
+            
             mv.scale = `${sX} 1 ${sZ}`;
-
-            // Poprawka kierunku dla "Od siebie"
+            
+            // Dodatkowa rotacja dla opcji "Od siebie", aby zawiasy zostały w tym samym miejscu ościeżnicy
             mv.orientation = isPull ? "0 0 0deg" : "0 0 180deg";
         }
 
         function toggleDoor() {
             const anims = mv.availableAnimations;
-            if (anims.length === 0) return alert("Błąd: Brak animacji!");
-
-            clearTimeout(autoCloseTimer);
+            if (anims.length === 0) return;
 
             if (!isOpen) {
-                // OTWIERANIE
-                mv.animationName = anims[0];
                 mv.play();
                 isOpen = true;
-                mainBtn.textContent = "ZAMKNIJ TERAZ";
+                mainBtn.textContent = "ZAMKNIJ DRZWI";
                 mainBtn.style.background = "#e53e3e";
-
-                // Po 2s zatrzymaj w pozycji otwartej
-                setTimeout(() => {
-                    if(isOpen) mv.pause();
-                }, 2000);
-
-                // Auto-zamykanie po 5 sekundach
-                autoCloseTimer = setTimeout(() => {
-                    if(isOpen) closeDoor();
-                }, 7000); 
-
+                
+                // Zatrzymanie na pełnym otwarciu (klatka 60)
+                setTimeout(() => { if(isOpen) mv.pause(); }, 2000);
             } else {
-                // RĘCZNE ZAMYKANIE
-                closeDoor();
+                // Płynny powrót do klatki 0 (zamknięte)
+                mv.pause();
+                mv.currentTime = 0;
+                isOpen = false;
+                mainBtn.textContent = "OTWÓRZ DRZWI";
+                mainBtn.style.background = "#38a169";
             }
-        }
-
-        function closeDoor() {
-            mv.pause();
-            mv.currentTime = 0; // Reset do klatki 1
-            isOpen = false;
-            mainBtn.textContent = "OTWÓRZ DRZWI";
-            mainBtn.style.background = "#38a169";
         }
 
         function setHanding(side, btn) {
