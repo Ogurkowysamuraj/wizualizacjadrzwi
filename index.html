@@ -6,6 +6,7 @@
     <title>Wirtualizacja Drzwi | Oficjalna Strona</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root {
             --primary: #2563eb;
@@ -80,46 +81,52 @@
             width: 50px; height: 50px; border-radius: 50%; cursor: pointer; backdrop-filter: blur(5px);
         }
 
-        /* Sekcja O NAS */
+        /* Sekcje */
         .section { padding: 80px 10%; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
         .about-img { width: 100%; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
 
-        /* Kalendarz Modern */
-        .calendar-box {
+        /* Inteligentny Kalendarz i Mapa */
+        .config-box {
             background: var(--card);
             padding: 40px;
             border-radius: 25px;
-            text-align: center;
             border: 1px solid var(--primary);
         }
 
-        input[type="date"] {
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left; }
+
+        input[type="date"], input[type="text"] {
             background: var(--bg);
             border: 1px solid var(--primary);
             color: white;
-            padding: 15px 25px;
+            padding: 12px 20px;
             border-radius: 10px;
-            font-size: 18px;
-            margin: 20px 0;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 8px;
+            margin-bottom: 20px;
         }
 
-        /* Kontakt */
-        .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; }
-        .info-card { background: var(--card); padding: 30px; border-radius: 20px; }
-        .map-atrapa { 
-            background: #243147; height: 100%; min-height: 300px; 
-            border-radius: 20px; display: flex; align-items: center; justify-content: center;
-            border: 1px dashed var(--accent);
+        #map { height: 350px; border-radius: 15px; border: 1px solid var(--accent); }
+
+        .summary-card {
+            background: rgba(37, 99, 235, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent);
         }
 
         .btn-cta {
             background: var(--primary); color: white; padding: 18px 40px;
             border-radius: 12px; text-decoration: none; font-weight: bold;
-            display: inline-block; transition: 0.3s;
+            display: inline-block; transition: 0.3s; border: none; cursor: pointer;
+            width: 100%; font-size: 16px;
         }
         .btn-cta:hover { background: var(--accent); transform: translateY(-3px); }
 
+        /* Kontakt */
+        .info-card { background: var(--card); padding: 30px; border-radius: 20px; }
     </style>
 </head>
 <body>
@@ -136,9 +143,9 @@
 </nav>
 
 <section class="hero" id="home">
-    <h1>Nowoczesne Drzwi na Twoją Miarę</h1>
-    <p>Przejdź do konfiguratora 3D i zobacz jak klamka i kolor zmieniają wszystko.</p>
-    <a href="konfigurator.html" class="btn-cta">OTWÓRZ WIZUALIZACJĘ 3D</a>
+    <h1>Zaprojektuj Drzwi Marzeń</h1>
+    <p>Użyj konfiguratora 3D, aby sprawdzić model z ruchomą klamką.</p>
+    <a href="konfigurator.html" class="btn-cta" style="width:auto; margin-bottom: 30px;">URUCHOM KONFIGURATOR 3D</a>
 
     <div class="slider-container">
         <div class="slider" id="mainSlider">
@@ -157,67 +164,4 @@
     <div class="grid">
         <div>
             <h2 style="color: var(--accent);">O naszej pasji</h2>
-            <p>Jesteśmy liderami w dostarczaniu innowacyjnych rozwiązań dla Twojego domu. Nasza firma łączy tradycyjne stolarstwo z technologią jutra.</p>
-            <p>Prowadzimy ten projekt z myślą o klientach, którzy chcą "poczuć" produkt przed zakupem. Nasz konfigurator to nie tylko obrazki – to emocje.</p>
-        </div>
-        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800" class="about-img" alt="Zespół przy pracy">
-    </div>
-</section>
-
-<section class="section" id="kalendarz">
-    <div class="calendar-box">
-        <h2>Zarezerwuj montaż</h2>
-        <p>Sprawdź wolne terminy i umów naszych ekspertów.</p>
-        <input type="date" id="visitDate">
-        <div id="dateFeedback" style="margin-top: 10px; font-weight: bold;"></div>
-        <button class="btn-cta" style="margin-top: 20px; font-size: 14px;">Potwierdź wstępną datę</button>
-    </div>
-</section>
-
-<section class="section" id="kontakt">
-    <h2 style="text-align: center; margin-bottom: 40px;">Kontakt</h2>
-    <div class="contact-grid">
-        <div class="info-card">
-            <h3>Biuro Obsługi</h3>
-            <p><i class="fas fa-phone"></i> +48 123 456 789</p>
-            <p><i class="fas fa-envelope"></i> kontakt@wirtualizacja-drzwi.pl</p>
-            <p><i class="fas fa-map-marker-alt"></i> ul. Technologiczna 12, Warszawa</p>
-        </div>
-        <div class="map-atrapa">
-            <p><i class="fas fa-map-marked-alt" style="font-size: 40px; color: var(--accent);"></i><br>Tutaj pojawi się Twoja mapa</p>
-        </div>
-    </div>
-</section>
-
-<script>
-    // Obsługa Slidera
-    let current = 0;
-    const slider = document.getElementById('mainSlider');
-    const total = document.querySelectorAll('.slide').length;
-
-    function moveSlide(dir) {
-        current = (current + dir + total) % total;
-        slider.style.transform = `translateX(-${current * 100}%)`;
-    }
-
-    // Obsługa Kalendarza
-    document.getElementById('visitDate').addEventListener('change', function() {
-        const val = this.value;
-        const feedback = document.getElementById('dateFeedback');
-        const day = new Date(val).getDay();
-
-        if(day === 0 || day === 6) {
-            feedback.innerText = "⚠️ Weekendy są niedostępne. Wybierz poniedziałek-piątek.";
-            feedback.style.color = "#fbbf24";
-        } else {
-            feedback.innerText = "✅ Termin wydaje się wolny! Możemy działać.";
-            feedback.style.color = "#4ade80";
-        }
-    });
-
-    // Auto slider co 6 sekund
-    setInterval(() => moveSlide(1), 6000);
-</script>
-
-</body>
-</html>
+            <p>Łączymy nowoczesną wizualizację 3D z najwyższą jakością wykonania drzwi premium. Nasz zespół to pas
