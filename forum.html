@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum | Wirtualizacja Drzwi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #2563eb;
+            --text: #f8fafc;
+            --accent: #38bdf8;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+        }
+
+        nav {
+            padding: 20px 50px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+
+        /* Wyszukiwarka */
+        .search-section {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .search-box {
+            display: flex;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 5px 15px;
+            align-items: center;
+            border: 1px solid var(--primary);
+        }
+
+        .search-box input {
+            background: none;
+            border: none;
+            color: white;
+            padding: 15px;
+            width: 100%;
+            outline: none;
+            font-size: 16px;
+        }
+
+        /* Lista tematów */
+        .forum-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+        .post-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .post-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            background: #243147;
+        }
+
+        .post-meta { font-size: 12px; color: #94a3b8; margin-top: 10px; display: flex; gap: 15px; }
+        .post-meta span { display: flex; align-items: center; gap: 5px; }
+
+        .tag {
+            background: var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* Overlay Logowania (Widoczne po próbie napisania) */
+        .login-notice {
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-login {
+            background: white;
+            color: black;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn-back { color: var(--text); text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Powrót do strony</a>
+    <div style="font-weight: bold; font-size: 20px;">FORUM SPOŁECZNOŚCI</div>
+    <div class="user-info"><i class="fas fa-user-circle"></i> Gość</div>
+</nav>
+
+<div class="container">
+    <div class="search-section">
+        <h2 style="margin-top: 0;">W czym możemy pomóc?</h2>
+        <div class="search-box">
+            <i class="fas fa-search" style="color: var(--primary);"></i>
+            <input type="text" id="forumSearch" placeholder="Wpisz np. montaż, klamka, cena...">
+        </div>
+    </div>
+
+    <div class="forum-header">
+        <h3>Najnowsze dyskusje</h3>
+        <button onclick="alert('Musisz się zalogować, aby dodać post!')" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+            + Nowy temat
+        </button>
+    </div>
+
+    <div id="postsContainer">
+        <div class="post-card">
+            <div class="tag">Montaż</div>
+            <h4 style="margin: 10px 0;">Jak przygotować otwór pod drzwi Premium?</h4>
+            <div class="post-meta">
+                <span><i class="far fa-user"></i> Krzysztof_W</span>
+                <span><i class="far fa-comment"></i> 12 odpowiedzi</span>
+                <span><i class="far fa-clock"></i> 2 godziny temu</span>
+            </div>
+        </div>
+
+        <div class="post-card">
+            <div class="tag">Serwis</div>
+            <h4 style="margin: 10px 0;">Klamka skrzypi po roku użytkowania - co robić?</h4>
+            <div class="post-meta">
+                <span><i class="far fa-user"></i> Marta_Design</span>
+                <span><i class="far fa-comment"></i> 5 odpowiedzi</span>
+                <span><i class="far fa-clock"></i> Wczoraj</span>
+            </div>
+        </div>
+
+        <div class="post-card">
+            <div class="tag">Opinie</div>
+            <h4 style="margin: 10px 0;">Czy kolor 'Dąb Winchester' pasuje do antracytowych okien?</h4>
+            <div class="post-meta">
+                <span><i class="far fa-user"></i> Marek_Buduje</span>
+                <span><i class="far fa-comment"></i> 24 odpowiedzi</span>
+                <span><i class="far fa-clock"></i> 3 dni temu</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-notice">
+        <h3>Dołącz do dyskusji!</h3>
+        <p>Zaloguj się, aby zadawać pytania i pomagać innym użytkownikom.</p>
+        <a href="#" class="btn-login">Zaloguj się / Rejestracja</a>
+    </div>
+</div>
+
+<script>
+    // Prosta symulacja wyszukiwania (wizualna)
+    document.getElementById('forumSearch').addEventListener('input', function(e) {
+        let term = e.target.value.toLowerCase();
+        let posts = document.querySelectorAll('.post-card');
+        
+        posts.forEach(post => {
+            let title = post.querySelector('h4').innerText.toLowerCase();
+            if(title.includes(term)) {
+                post.style.display = "block";
+            } else {
+                post.style.display = "none";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
