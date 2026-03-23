@@ -272,6 +272,23 @@
     }, 25000);
 
     window.onload = calculateEko;
+    // Ten skrypt sprawdza, czy klient wrócił z konfiguratora AR
+window.addEventListener('load', () => {
+    const queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
+    if (queue.length > 0) {
+        queue.forEach(item => {
+            // Dodaje usługę do Twojej listy 'services' z pliku 1.85
+            services.push({ n: item.n, p: item.p });
+        });
+        // Czyści kolejkę, żeby nie dodawać w nieskończoność po odświeżeniu
+        localStorage.removeItem('services_queue');
+        // Wywołuje Twoją funkcję update(), która już jest w kodzie 1.85
+        if (typeof update === "function") update();
+        
+        // Bonus: Scroll do kosztorysu, żeby klient widział, że się dodało
+        document.getElementById('serviceList').scrollIntoView({ behavior: 'smooth' });
+    }
+});
 </script>
 </body>
 </html>
