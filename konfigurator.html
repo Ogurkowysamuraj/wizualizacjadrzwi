@@ -7,48 +7,43 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { margin: 0; background-color: #0f172a; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        model-viewer { width: 100%; height: 100%; background: #1e293b; --poster-color: transparent; }
         .config-panel { position: absolute; left: 20px; top: 20px; width: 280px; background: rgba(30, 41, 59, 0.9); padding: 20px; border-radius: 20px; z-index: 100; border: 1px solid rgba(255,255,255,0.1); }
         .btn-ar { position: absolute; bottom: 30px; right: 30px; background: #2563eb; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 100; }
-        .btn-save { width: 100%; background: #22c55e; color: white; border: none; padding: 12px; border-radius: 10px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        .btn-save { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; margin-top: 20px; cursor: pointer; font-weight: bold; }
         .color-dot { width: 40px; height: 40px; border-radius: 50%; display: inline-block; cursor: pointer; border: 2px solid transparent; margin: 5px; }
-        .color-dot.active { border-color: #38bdf8; }
+        .active { border-color: #38bdf8; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
     <model-viewer id="doorModel"
-        src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/DoorStatus/glTF-Binary/DoorStatus.glb" 
-        ios-src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/DoorStatus/glTF-Binary/DoorStatus.usdz"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls
-        auto-rotate
-        shadow-intensity="1">
-        
+        src="door.glb" 
+        ar ar-modes="webxr scene-viewer quick-look"
+        camera-controls auto-rotate shadow-intensity="1">
         <button slot="ar-button" class="btn-ar">ZOBACZ W POKOJU (AR)</button>
     </model-viewer>
 
     <div class="config-panel">
-        <h2 style="margin-top:0">Projektant 3D</h2>
-        <p>Wybierz kolor:</p>
-        <div class="color-dot active" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb', this)"></div>
-        <div class="color-dot" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt', this)"></div>
-        <div class="color-dot" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech', this)"></div>
+        <h2>Projektant 3D</h2>
+        <p>Wybierz kolor okleiny:</p>
+        <div class="color-dot active" style="background: #3d3d3d;" onclick="changeColor('#3d3d3d', 'Antracyt', this)"></div>
+        <div class="color-dot" style="background: #7d5a44;" onclick="changeColor('#7d5a44', 'Orzech', this)"></div>
+        <div class="color-dot" style="background: #c19a6b;" onclick="changeColor('#c19a6b', 'Dąb', this)"></div>
         
         <button class="btn-save" onclick="saveToOrder()">DODAJ DO WYCENY</button>
     </div>
 
     <script>
-        let selectedColor = "Dąb";
+        let selectedColorName = "Antracyt";
 
         function changeColor(hex, name, el) {
-            selectedColor = name;
+            selectedColorName = name;
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
-                // Szukamy materiału o nazwie Door (w tym konkretnym modelu Google)
-                const mat = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
-                if (mat) mat.pbrMetallicRoughness.setBaseColorFactor(hex);
+                // Szukamy materiału "Door" w pobranym modelu
+                const material = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
+                if (material) material.pbrMetallicRoughness.setBaseColorFactor(hex);
             }
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
@@ -56,11 +51,11 @@
 
         function saveToOrder() {
             const data = {
-                nazwa: "Drzwi Modern",
-                opis: "Kolor: " + selectedColor,
+                nazwa: "Drzwi Skonfigurowane",
+                opis: "Kolor: " + selectedColorName,
                 cena: 3100
             };
-            // Używamy klucza 'nowyElementKosztorysu', aby index.html to "złapał"
+            // Używamy klucza 'nowyElementKosztorysu', aby index.html go rozpoznał
             localStorage.setItem('nowyElementKosztorysu', JSON.stringify(data));
             window.location.href = 'index.html';
         }
