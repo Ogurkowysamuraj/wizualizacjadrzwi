@@ -11,7 +11,14 @@
     <style>
         :root { --primary: #2563eb; --bg: #0f172a; --panel: rgba(30, 41, 59, 0.95); --accent: #38bdf8; }
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: white; overflow: hidden; height: 100vh; display: flex; }
-        model-viewer { width: 100%; height: 100%; background: radial-gradient(circle, #1e293b 0%, #0f172a 100%); }
+        
+        /* Kontener modelu 3D */
+        model-viewer { 
+            width: 100%; 
+            height: 100%; 
+            background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
+            --poster-color: transparent;
+        }
         
         .config-panel {
             position: absolute; left: 20px; top: 20px; bottom: 20px; width: 300px;
@@ -21,12 +28,13 @@
 
         .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
         .color-dot { width: 100%; aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
-        .color-dot.active { border-color: var(--accent); transform: scale(1.1); }
+        .color-dot.active { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 0 10px var(--accent); }
 
         .btn-ar {
             position: absolute; bottom: 30px; right: 30px; background: var(--primary);
             color: white; border: none; padding: 15px 25px; border-radius: 50px;
             font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .btn-save {
@@ -34,70 +42,88 @@
             padding: 15px; border-radius: 12px; font-weight: 800; cursor: pointer; margin-top: auto;
         }
 
-        .back-link { position: absolute; top: 20px; right: 20px; color: white; text-decoration: none; z-index: 100; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 50px; }
+        .back-link { position: absolute; top: 20px; right: 20px; color: white; text-decoration: none; z-index: 100; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 50px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Wróć do panelu</a>
+    <a href="index.html" class="back-link"><i class="fas fa-times"></i> ZAMKNIJ</a>
 
     <model-viewer id="doorModel"
-        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Door/glTF-Binary/Door.glb?v=2" 
-        ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1" auto-rotate>
-        <button slot="ar-button" class="btn-ar"><i class="fas fa-camera"></i> ZOBACZ W POKOJU (AR)</button>
+        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Door/glTF-Binary/Door.glb?reload=1" 
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-controls 
+        shadow-intensity="1" 
+        exposure="1.2"
+        auto-rotate>
+        <button slot="ar-button" class="btn-ar"><i class="fas fa-vr-cardboard"></i> ZOBACZ W AR</button>
     </model-viewer>
 
     <div class="config-panel">
-        <h2 style="color:var(--accent)">Projektant 3D</h2>
+        <h2 style="color:var(--accent); margin-bottom:5px;">Projektant 3D</h2>
+        <p style="font-size: 11px; opacity: 0.6; margin-bottom: 20px;">SKONFIGURUJ SWOJE DRZWI</p>
         
-        <p style="font-size: 12px; opacity: 0.7;">MODEL SKRZYDŁA</p>
-        <select id="modelSelect" onchange="updatePrice()" style="width:100%; padding:10px; border-radius:8px; background:#1e293b; color:white;">
-            <option value="Model Premium" data-price="2900">Model Premium</option>
-            <option value="Model Standard" data-price="2100">Model Standard</option>
+        <label style="font-size: 12px; font-weight: 700;">MODEL</label>
+        <select id="modelSelect" onchange="updatePrice()" style="width:100%; padding:12px; border-radius:10px; background:#1e293b; color:white; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;">
+            <option value="Modern Loft" data-price="3100">Modern Loft (3100 zł)</option>
+            <option value="Classic Wood" data-price="2600">Classic Wood (2600 zł)</option>
+            <option value="Premium Steel" data-price="4200">Premium Steel (4200 zł)</option>
         </select>
 
-        <p style="font-size: 12px; opacity: 0.7; margin-top: 20px;">KOLOR OKLEINY</p>
+        <label style="font-size: 12px; font-weight: 700;">KOLOR OKLEINY</label>
         <div class="color-grid">
-            <div class="color-dot active" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb', this)"></div>
-            <div class="color-dot" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt', this)"></div>
-            <div class="color-dot" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech', this)"></div>
-            <div class="color-dot" style="background: #ffffff;" onclick="changeColor('#ffffff', 'Biały', this)"></div>
+            <div class="color-dot active" title="Dąb" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb Naturalny', this)"></div>
+            <div class="color-dot" title="Antracyt" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt', this)"></div>
+            <div class="color-dot" title="Orzech" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech', this)"></div>
+            <div class="color-dot" title="Biały" style="background: #ffffff;" onclick="changeColor('#ffffff', 'Biały', this)"></div>
         </div>
 
-        <div style="margin-top: 20px; font-size: 20px; font-weight: 800;">
-            CENA: <span id="priceTag" style="color:var(--accent)">2900 zł</span>
+        <div style="margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 15px; text-align: center;">
+            <span style="font-size: 12px; opacity: 0.7; display: block;">CENA ZESTAWU:</span>
+            <span id="priceTag" style="font-size: 24px; font-weight: 800; color:var(--accent)">3100 zł</span>
         </div>
 
         <button class="btn-save" onclick="saveAndExit()">ZAPISZ I DODAJ DO WYCENY</button>
     </div>
 
     <script>
-        let selectedColor = "Dąb";
+        let selectedColorName = "Dąb Naturalny";
 
+        // Funkcja zmieniająca kolor modelu drzwi
         function changeColor(hex, name, el) {
-            selectedColor = name;
+            selectedColorName = name;
             const mv = document.querySelector('#doorModel');
+            
             if (mv.model) {
-                // Szukamy materiału "Door" i zmieniamy mu kolor
-                const mat = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
-                if (mat) mat.pbrMetallicRoughness.setBaseColorFactor(hex);
+                // W tym konkretnym modelu materiał drzwi nazywa się 'Door'
+                const material = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
+                if (material) {
+                    material.pbrMetallicRoughness.setBaseColorFactor(hex);
+                }
             }
+            
+            // Zmiana podświetlenia kropek
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
         }
 
         function updatePrice() {
             const sel = document.getElementById('modelSelect');
-            document.getElementById('priceTag').innerText = sel.options[sel.selectedIndex].dataset.price + " zł";
+            const price = sel.options[sel.selectedIndex].dataset.price;
+            document.getElementById('priceTag').innerText = price + " zł";
         }
 
         function saveAndExit() {
             const sel = document.getElementById('modelSelect');
+            const price = parseInt(sel.options[sel.selectedIndex].dataset.price);
+            
             const data = {
                 nazwa: sel.value,
-                opis: "Kolor: " + selectedColor,
-                cena: parseInt(sel.options[sel.selectedIndex].dataset.price)
+                opis: "Kolor: " + selectedColorName,
+                cena: price
             };
+            
+            // Przesłanie danych do index.html
             localStorage.setItem('nowyElementKosztorysu', JSON.stringify(data));
             window.location.href = 'index.html';
         }
