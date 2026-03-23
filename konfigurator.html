@@ -2,32 +2,155 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Konfigurator Drzwi 3D | SERWIS-DRZWI.PRO</title>
+    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { margin: 0; background: #0f172a; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
-        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
-        .ui-panel { position: absolute; top: 20px; left: 20px; background: rgba(30, 41, 59, 0.95); padding: 25px; border-radius: 20px; color: white; width: 280px; border: 1px solid rgba(255,255,255,0.1); z-index: 10; }
-        .color-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-bottom: 10px; display: block; }
+        :root { 
+            --primary: #2563eb; 
+            --bg: #0f172a; 
+            --panel: rgba(30, 41, 59, 0.95); 
+            --accent: #38bdf8; 
+            --text: #ffffff;
+            --success: #22c55e;
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            color: var(--text);
+        }
+
+        model-viewer { 
+            width: 100%; 
+            flex-grow: 1; 
+            --poster-color: transparent;
+            background: radial-gradient(#2d3748, #0f172a);
+        }
+
+        /* NAGŁÓWEK Z PRZYCISKAMI U GÓRY */
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .btn-back {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Przycisk AR - przeniesiony na górę */
+        .btn-ar { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            backdrop-filter: blur(5px);
+            font-size: 14px;
+        }
+        .btn-ar:hover { background: #1d4ed8; }
+
+        /* Panel sterowania u dołu dla telefonu */
+        .ui-panel { 
+            position: absolute; 
+            bottom: 20px; 
+            left: 20px; 
+            background: var(--panel); 
+            padding: 20px; 
+            border-radius: 20px; 
+            width: 280px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            z-index: 10; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .color-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.7; margin-bottom: 10px; display: block; color: var(--accent); }
         .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .dot { width: 100%; aspect-ratio: 1; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .dot.active { border-color: #38bdf8; transform: scale(1.1); }
-        .btn-ar { position: absolute; bottom: 30px; right: 30px; background: #2563eb; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .btn-save { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .dot { width: 100%; aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; box-sizing: border-box; }
+        .dot.active { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 0 15px var(--accent); }
+        .dot:hover { border-color: white; transform: scale(1.05); }
+
+        .btn-save { 
+            width: 100%; 
+            background: var(--success); 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-save:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3); }
+
+        /* POPRAWKI DLA IPHONE (iPhone 14 Pro Max itp.) */
+        @media (max-width: 768px) {
+            .header-controls {
+                top: calc(env(safe-area-inset-top) + 15px);
+                left: 15px;
+                right: 15px;
+            }
+            .btn-ar { padding: 10px 18px; font-size: 13px; }
+            .btn-back { padding: 8px 15px; font-size: 13px; }
+
+            .ui-panel { 
+                bottom: calc(env(safe-area-inset-bottom) + 15px);
+                left: 15px; 
+                right: 15px; 
+                width: calc(100% - 70px); 
+                padding: 15px; 
+                border-radius: 25px;
+            }
+            h2 { font-size: 18px; margin: 0 0 5px 0; }
+            p { font-size: 12px; margin: 0 0 15px 0; }
+        }
     </style>
 </head>
 <body>
 
-    <model-viewer id="doorModel" src="door.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1.5" auto-rotate exposure="1">
-        <button slot="ar-button" class="btn-ar">📸 ZOBACZ W AR</button>
-    </model-viewer>
+    <div class="header-controls">
+        <a href="index.html" class="btn-back">⬅ WRÓĆ</a>
+        
+        <model-viewer id="doorModel" src="door.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1.5" auto-rotate exposure="1">
+            <button slot="ar-button" class="btn-ar">📸 POKAŻ W AR (APARAT)</button>
+        </model-viewer>
+    </div>
 
     <div class="ui-panel">
-        <h2 style="margin: 0 0 5px 0; color: #38bdf8;">Konfigurator 3D</h2>
-        <p style="font-size: 13px; margin-bottom: 25px;">Personalizacja modelu</p>
+        <h2 style="margin: 0; color: var(--accent); font-weight: 700;">Konfigurator</h2>
+        <p style="font-size: 13px; margin-bottom: 20px; opacity: 0.8;">Wybierz wykończenie:</p>
         
-        <span class="color-label">Kolor skrzydła i ościeżnicy:</span>
+        <span class="color-label">Kolorystyka:</span>
         <div class="color-grid">
             <div class="dot active" style="background: #2c2c2c;" onclick="changeColor('#2c2c2c', 'Antracyt', this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech', this)"></div>
@@ -35,7 +158,7 @@
             <div class="dot" style="background: #f5f5f5;" onclick="changeColor('#f5f5f5', 'Biały', this)"></div>
         </div>
 
-        <button class="btn-save" onclick="save()">DODAJ DO ZLECENIA</button>
+        <button class="btn-save" onclick="save()">✅ DODOAJ DO ZLECENIA</button>
     </div>
 
     <script>
@@ -45,24 +168,36 @@
             selectedColor = name;
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
-                // W tym modelu drewno to materiał "Wood.009"
+                // Ta część maluje tylko skrzydło drzwi (materiał Wood)
+                // Klamka pozostaje metalowa
                 const wood = mv.model.materials.find(m => m.name.includes('Wood'));
                 if (wood) {
                     wood.pbrMetallicRoughness.setBaseColorFactor(hex);
                 }
             }
+            // Zmiana podświetlenia kropek
             document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
         }
 
         function save() {
             const data = {
-                nazwa: "Drzwi Skonfigurowane 3D",
-                opis: "Kolor: " + selectedColor,
+                nazwa: "Drzwi 3D Modern Prestige",
+                opis: "Wykończenie: " + selectedColor,
                 cena: 2850
             };
+            // Upewnij się, że używasz klucza 'nowyElementKosztorysu'
             localStorage.setItem('nowyElementKosztorysu', JSON.stringify(data));
             window.location.href = 'index.html';
+        }
+
+        // Inicjalizacja przy starcie
+        window.onload = function() {
+            const mv = document.querySelector('#doorModel');
+            mv.addEventListener('load', () => {
+                // Wymuś kolor startowy (Antracyt)
+                changeColor('#2c2c2c', 'Antracyt', document.querySelector('.dot.active'));
+            });
         }
     </script>
 </body>
