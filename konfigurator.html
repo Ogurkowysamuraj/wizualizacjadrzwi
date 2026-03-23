@@ -2,38 +2,214 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Konfigurator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfigurator 3D AR | SERWIS-DRZWI.PRO</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 50px; }
-        .door { width: 200px; height: 400px; background: #444; margin: 20px auto; border: 5px solid #222; transition: 0.3s; }
-        .controls { background: #1e293b; padding: 20px; border-radius: 20px; display: inline-block; }
-        button { padding: 10px 20px; cursor: pointer; margin: 5px; }
+        :root {
+            --primary: #2563eb;
+            --bg: #0f172a;
+            --panel: rgba(30, 41, 59, 0.9);
+        }
+        body {
+            margin: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Widok 3D */
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #1e293b;
+            --poster-color: transparent;
+        }
+
+        /* Panel boczny konfiguracji */
+        .config-panel {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            bottom: 20px;
+            width: 320px;
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        h2 { font-weight: 800; margin-top: 0; color: #38bdf8; }
+
+        .section-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px 0 10px;
+            opacity: 0.7;
+        }
+
+        /* Wybór kolorów */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .color-dot {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .color-dot:hover { transform: scale(1.1); }
+        .color-dot.active { border-color: #38bdf8; }
+
+        /* Przyciski akcji */
+        .actions { margin-top: auto; }
+        .btn-ar {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .btn-save {
+            width: 100%;
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Przycisk powrotu */
+        .back-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            text-decoration: none;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .config-panel {
+                left: 10px; right: 10px; bottom: 10px;
+                top: auto; width: auto; height: 40%;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Zaprojektuj swoje drzwi</h1>
-    <div class="door" id="preview"></div>
-    
-    <div class="controls">
-        <p>Wybierz kolor:</p>
-        <button onclick="set('Brązowe', '#8b4513', 1500)">Brązowe (1500zł)</button>
-        <button onclick="set('Antracyt', '#2d3748', 1700)">Antracyt (1700zł)</button>
-        <button onclick="set('Białe', '#f8fafc', 1400)">Białe (1400zł)</button>
-        <br><br>
-        <button onclick="save()" style="background: #22c55e; color: white; font-weight: bold; padding: 15px;">DODAJ DO ZLECENIA</button>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Powrót do panelu</a>
+
+    <model-viewer id="doorModel"
+        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+        ios-src=""
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        camera-controls
+        poster="poster.webp"
+        shadow-intensity="1"
+        exposure="1"
+        auto-rotate>
+        
+        <div slot="progress-bar"></div>
+        
+        <button slot="ar-button" class="btn-ar">
+            <i class="fas fa-camera"></i> ZOBACZ W SWOIM DOMU (AR)
+        </button>
+    </model-viewer>
+
+    <div class="config-panel">
+        <h2>Konfigurator 3D</h2>
+        
+        <div class="section-label">Model Drzwi</div>
+        <select id="modelSelect" style="width:100%; padding:10px; border-radius:10px; background:#1e293b; color:white; border:1px solid #334155;">
+            <option value="modern">Modern Prestige</option>
+            <option value="classic">Classic Wood</option>
+            <option value="loft">Loft Industrial</option>
+        </select>
+
+        <div class="section-label">Kolor Skrzydła</div>
+        <div class="color-grid">
+            <div class="color-dot active" style="background: #3d3d3d;" onclick="changeColor('#3d3d3d', 'Antracyt', this)"></div>
+            <div class="color-dot" style="background: #7d5a44;" onclick="changeColor('#7d5a44', 'Orzech', this)"></div>
+            <div class="color-dot" style="background: #c19a6b;" onclick="changeColor('#c19a6b', 'Dąb złoty', this)"></div>
+            <div class="color-dot" style="background: #ffffff;" onclick="changeColor('#ffffff', 'Biały', this)"></div>
+        </div>
+
+        <div class="section-label">Akcesoria (Klamka)</div>
+        <div class="color-grid">
+            <div class="color-dot" style="background: #000000;" title="Czarny Mat"></div>
+            <div class="color-dot" style="background: #c0c0c0;" title="Srebrny Satyna"></div>
+            <div class="color-dot" style="background: #ffd700;" title="Złoty"></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-save" onclick="saveToOrder()">
+                <i class="fas fa-check"></i> DODAJ DO ZLECENIA
+            </button>
+        </div>
     </div>
 
     <script>
-        let current = { kolor: 'Standard', kod: '#444', cena: 1200 };
+        let selectedColorName = "Antracyt";
+        let basePrice = 2400;
 
-        function set(k, hex, c) {
-            current = { kolor: k, kod: hex, cena: c };
-            document.getElementById('preview').style.background = hex;
+        function changeColor(colorCode, name, element) {
+            selectedColorName = name;
+            // Zmiana koloru na modelu 3D
+            const modelViewer = document.querySelector('#doorModel');
+            // Logika zmiany materiału (wymaga zdefiniowanych nazw materiałów w modelu .glb)
+            // const material = modelViewer.model.materials[0];
+            // material.pbrMetallicRoughness.setBaseColorFactor(colorCode);
+
+            // Wizualna zmiana aktywności kropki
+            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
+            element.classList.add('active');
         }
 
-        function save() {
-            localStorage.setItem('zapisaneDrzwi', JSON.stringify(current));
-            window.location.href = "index.html"; // wracamy na główną
+        function saveToOrder() {
+            const orderData = {
+                nazwa: document.getElementById('modelSelect').value,
+                kolor: selectedColorName,
+                cena: basePrice
+            };
+            
+            // Zapisujemy do localStorage, aby index.html mógł to odczytać
+            localStorage.setItem('zapisaneDrzwi', JSON.stringify(orderData));
+            
+            alert("Konfiguracja zapisana! Przenoszę do asystenta.");
+            window.location.href = 'index.html';
         }
     </script>
 </body>
