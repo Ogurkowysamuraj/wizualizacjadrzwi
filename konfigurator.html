@@ -3,251 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfigurator 3D AR | SERWIS-DRZWI.PRO</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <title>SERWIS-DRZWI.PRO | Profesjonalny Panel Zleceń</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root {
-            --primary: #2563eb;
-            --bg: #0f172a;
-            --panel: rgba(30, 41, 59, 0.95);
-            --accent: #38bdf8;
+        :root { 
+            --primary: #2563eb; --accent: #38bdf8; --bg: #0f172a; 
+            --card: rgba(30, 41, 59, 0.7); --text: #f8fafc; --success: #22c55e;
         }
-        body {
-            margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: white;
-            overflow: hidden;
-            display: flex;
-            height: 100vh;
+        .light-mode { --bg: #f8fafc; --card: rgba(255, 255, 255, 0.9); --text: #0f172a; }
+        
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); scroll-behavior: smooth; transition: 0.5s; }
+        
+        nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); position: fixed; width: 90%; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo { font-size: 22px; font-weight: 800; color: var(--accent); text-decoration: none; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 13px; text-transform: uppercase; font-weight: 700; }
+
+        .section { padding: 100px 8%; }
+        
+        .hero { 
+            height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+        .btn-main { background: var(--primary); color: white; padding: 18px 35px; border-radius: 12px; font-weight: 800; text-decoration: none; transition: 0.3s; display: inline-block; }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4); }
+
+        .asystent-container { 
+            background: var(--card); border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); 
+            padding: 40px; backdrop-filter: blur(20px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
 
-        /* GŁÓWNY WIDOK 3D */
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            --poster-color: transparent;
-        }
+        .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; }
 
-        /* PANEL BOCZNY */
-        .config-panel {
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            bottom: 20px;
-            width: 320px;
-            background: var(--panel);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+        .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .diag-card { 
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid transparent;
+            cursor: pointer; transition: 0.2s; text-align: center; font-size: 14px; color: var(--text);
         }
+        .diag-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.1); }
+        .diag-card i { font-size: 20px; color: var(--accent); margin-bottom: 10px; display: block; }
 
-        h2 { font-weight: 800; margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; opacity: 0.7; font-weight: 700; }
+        input, select, textarea { 
+            width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); 
+            color: white; padding: 12px; border-radius: 10px; box-sizing: border-box; font-family: inherit;
+        }
+        .light-mode input, .light-mode select { color: #000; background: #fff; border: 1px solid #ccc; }
 
-        .section-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 25px 0 12px;
-            color: var(--accent);
-            font-weight: 700;
+        #selectedServices { list-style: none; padding: 0; margin: 15px 0; }
+        .service-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; font-size: 13px;
+            border-left: 4px solid var(--accent);
         }
+        .remove-svc { color: #ef4444; cursor: pointer; font-size: 16px; }
 
-        /* WYBÓR KOLORÓW */
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+        .summary-box { 
+            background: linear-gradient(180deg, rgba(37, 99, 235, 0.1) 0%, rgba(0,0,0,0.3) 100%);
+            padding: 25px; border-radius: 20px; border: 1px solid var(--primary);
         }
-        .color-dot {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.1);
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .color-dot:hover { transform: scale(1.1); border-color: white; }
-        .color-dot.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
-        .color-dot::after { content: attr(title); position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 8px; white-space: nowrap; opacity: 0.6; }
+        .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; opacity: 0.8; }
+        .price-total { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px; display: flex; justify-content: space-between; font-weight: 800; font-size: 24px; color: var(--accent); }
 
-        /* AKCJE */
-        .actions { margin-top: auto; padding-top: 20px; }
-        .btn-ar {
-            position: absolute;
-            bottom: 40px;
-            right: 40px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5);
-            transition: 0.3s;
-            z-index: 90;
-        }
-        .btn-ar:hover { transform: scale(1.05); background: #1d4ed8; }
+        #map { height: 280px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); z-index: 1; }
 
-        .btn-save {
-            width: 100%;
-            background: #22c55e;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 15px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-        .btn-save:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
-
-        .back-link {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            color: white;
-            text-decoration: none;
-            background: rgba(15, 23, 42, 0.8);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 700;
-            z-index: 100;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        @media (max-width: 768px) {
-            .config-panel { width: auto; left: 10px; right: 10px; bottom: 10px; top: auto; height: 35vh; }
-            .btn-ar { bottom: 38vh; right: 20px; padding: 12px 20px; font-size: 12px; }
-            .back-link { top: 10px; right: 10px; padding: 8px 15px; }
-        }
+        @media (max-width: 1100px) { .asystent-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-link"><i class="fas fa-times"></i> Zamknij</a>
+<nav>
+    <a href="#" class="logo"><i class="fas fa-toolbox"></i> SERWIS-DRZWI.PRO</a>
+    <div class="nav-links">
+        <a href="#home">Start</a>
+        <a href="#kalendarz">Zlecenie</a>
+        <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--accent); cursor:pointer;"><i class="fas fa-adjust"></i></button>
+    </div>
+</nav>
 
-    <model-viewer id="doorModel"
-        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Door/glTF-Binary/Door.glb" 
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        camera-controls
-        shadow-intensity="1.5"
-        shadow-softness="1"
-        exposure="1.2"
-        environment-image="neutral"
-        auto-rotate>
+<section class="hero" id="home">
+    <h1>System Zarządzania Serwisem</h1>
+    <p style="margin: 20px 0 30px 0; opacity: 0.8;">Wirtualizacja 3D i automatyczny kosztorys w jednym miejscu.</p>
+    <a href="konfigurator.html" class="btn-main"><i class="fas fa-door-open"></i> OTWÓRZ PROJEKTANT 3D</a>
+</section>
+
+<section class="section" id="kalendarz">
+    <div class="asystent-container">
+        <h2 style="margin-top:0; text-align:center; font-weight:800;"><i class="fas fa-calculator" style="color:var(--accent);"></i> ASYSTENT WYCENY 4.0</h2>
         
-        <button slot="ar-button" class="btn-ar">
-            <i class="fas fa-vr-cardboard"></i> ZOBACZ W SWOIM DOMU
-        </button>
-    </model-viewer>
-
-    <div class="config-panel">
-        <h2><i class="fas fa-sliders-h"></i> Projektant</h2>
-        
-        <div class="section-label">Seria drzwi</div>
-        <select id="modelSelect" onchange="updatePrice()" style="width:100%; padding:14px; border-radius:12px; background:#1e293b; color:white; border:1px solid rgba(255,255,255,0.1); outline:none;">
-            <option value="Modern Prestige" data-price="2800">Modern Prestige (2800 zł)</option>
-            <option value="Classic Wood" data-price="2450">Classic Wood (2450 zł)</option>
-            <option value="Loft Metal" data-price="3200">Loft Metal (3200 zł)</option>
-        </select>
-
-        <div class="section-label">Kolorystyka</div>
-        <div class="color-grid">
-            <div class="color-dot active" title="Dąb" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb Naturalny', this)"></div>
-            <div class="color-dot" title="Orzech" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech Ciemny', this)"></div>
-            <div class="color-dot" title="Antracyt" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt Mat', this)"></div>
-            <div class="color-dot" title="Biel" style="background: #f5f5f5;" onclick="changeColor('#f5f5f5', 'Biały Satyna', this)"></div>
-        </div>
-
-        <div class="section-label">Klamka i okucia</div>
-        <div class="color-grid">
-            <div class="color-dot" title="Czerń" style="background: #1a1a1a;" onclick="changeHardware('#1a1a1a')"></div>
-            <div class="color-dot" title="Srebro" style="background: #b0bec5;" onclick="changeHardware('#b0bec5')"></div>
-            <div class="color-dot" title="Złoto" style="background: #ffd700;" onclick="changeHardware('#ffd700')"></div>
-        </div>
-
-        <div class="actions">
-            <div style="margin-bottom: 15px; font-size: 18px; font-weight: 800; display: flex; justify-content: space-between;">
-                <span>CENA:</span> <span id="displayPrice" style="color:var(--accent);">2800 zł</span>
+        <div class="asystent-grid">
+            <div class="column">
+                <h3 style="font-size: 14px; letter-spacing: 1px;">DANE KLIENTA</h3>
+                <div class="form-group"><input type="text" id="cName" placeholder="Imię i Nazwisko"></div>
+                <div class="form-group"><input type="text" id="cPhone" placeholder="Telefon"></div>
+                <div class="form-group"><input type="email" id="cEmail" placeholder="E-mail"></div>
+                <div class="form-group">
+                    <input type="text" id="cStreet" placeholder="Ulica i nr + ENTER" onkeydown="if(event.key==='Enter') searchLoc()">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="cCity" placeholder="Miejscowość + ENTER" onkeydown="if(event.key==='Enter') searchLoc()">
+                </div>
             </div>
-            <button class="btn-save" onclick="saveToOrder()">
-                <i class="fas fa-shopping-cart"></i> Zapisz i wróć
-            </button>
+
+            <div class="column">
+                <h3 style="font-size: 14px; letter-spacing: 1px;">USŁUGI SERWISOWE</h3>
+                <div class="diag-grid">
+                    <div class="diag-card" onclick="addService('Regulacja serwisowa', 150)"><i class="fas fa-tools"></i>Regulacja</div>
+                    <div class="diag-card" onclick="addService('Montaż kompletny', 450)"><i class="fas fa-box"></i>Montaż</div>
+                    <div class="diag-card" onclick="addService('Wymiana zamka', 200)"><i class="fas fa-key"></i>Zamek</div>
+                    <div class="diag-card" onclick="addService('Utylizacja oścież.', 100)"><i class="fas fa-trash"></i>Utylizacja</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Wybierz Piętro</label>
+                    <select id="floorSelect" onchange="updateSummary()">
+                        <option value="0">Parter / Winda (0 zł)</option>
+                        <script>for(let i=1; i<=10; i++) document.write(`<option value="${i*50}">${i}. Piętro (+${i*50} zł)</option>`);</script>
+                    </select>
+                </div>
+                <textarea id="cNotes" rows="3" placeholder="Dodatkowe uwagi techniczne..."></textarea>
+            </div>
+
+            <div class="column">
+                <div id="map"></div>
+                <div class="summary-box">
+                    <div id="selectedServices"></div>
+                    <div class="price-row"><span>Dojazd:</span> <span id="distPrice">0 zł</span></div>
+                    <div class="price-row"><span>Wnoszenie:</span> <span id="floorPrice">0 zł</span></div>
+                    <div class="price-total"><span>SUMA:</span> <span id="sumTotal">0 zł</span></div>
+                    <button class="btn-main" style="width:100%; margin-top:15px; border:none;" onclick="window.print()">GENERUJ PROTOKÓŁ PDF</button>
+                </div>
+            </div>
         </div>
     </div>
+</section>
 
-    <script>
-        let selectedColorName = "Dąb Naturalny";
-        const modelViewer = document.querySelector('#doorModel');
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    const companyLoc = [52.2297, 21.0122];
+    let distancePrice = 0, selectedServices = [];
+    const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    let marker;
 
-        // FUNKCJA ZMIANY KOLORU SKRZYDŁA (PBR)
-        function changeColor(colorCode, name, element) {
-            selectedColorName = name;
-            
-            if (modelViewer.model) {
-                // Znajdujemy materiał drzwi (zazwyczaj indeks 0 lub 1 w zależności od modelu)
-                const material = modelViewer.model.materials.find(m => m.name.toLowerCase().includes('door') || m.name.toLowerCase().includes('wood'));
-                if (material) {
-                    material.pbrMetallicRoughness.setBaseColorFactor(colorCode);
-                }
+    // SZUKANIE ADRESU
+    async function searchLoc() {
+        const addr = document.getElementById('cStreet').value + " " + document.getElementById('cCity').value;
+        if(addr.length < 5) return;
+        try {
+            const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}`);
+            const d = await r.json();
+            if(d.length > 0) {
+                const pos = [d[0].lat, d[0].lon];
+                if(marker) marker.setLatLng(pos); else marker = L.marker(pos).addTo(map);
+                map.setView(pos, 14);
+                distancePrice = Math.max(50, Math.round((map.distance(companyLoc, pos)/1000) * 3));
+                updateSummary();
             }
+        } catch(e) {}
+    }
 
-            document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
-            element.classList.add('active');
+    function addService(name, price) {
+        selectedServices.push({ name, price });
+        updateSummary();
+    }
+
+    function removeService(i) {
+        selectedServices.splice(i, 1);
+        updateSummary();
+    }
+
+    function updateSummary() {
+        const floor = parseInt(document.getElementById('floorSelect').value);
+        const sSum = selectedServices.reduce((a, b) => a + b.price, 0);
+        
+        document.getElementById('selectedServices').innerHTML = selectedServices.map((s, i) => `
+            <div class="service-item">
+                <span>${s.name}</span>
+                <b>${s.price} zł <i class="fas fa-times-circle remove-svc" onclick="removeService(${i})"></i></b>
+            </div>
+        `).join('');
+
+        document.getElementById('distPrice').innerText = distancePrice + " zł";
+        document.getElementById('floorPrice').innerText = floor + " zł";
+        document.getElementById('sumTotal').innerText = (distancePrice + floor + sSum) + " zł";
+    }
+
+    // POBIERANIE DANYCH Z KONFIGURATORA
+    window.addEventListener('load', () => {
+        const saved = localStorage.getItem('nowyElementKosztorysu');
+        if(saved) {
+            const data = JSON.parse(saved);
+            addService(data.nazwa + " (" + data.opis + ")", data.cena);
+            localStorage.removeItem('nowyElementKosztorysu'); // Czyścimy, żeby nie dodawało przy każdym odświeżeniu
         }
+    });
 
-        // FUNKCJA ZMIANY KOLORU OKUĆ
-        function changeHardware(colorCode) {
-            if (modelViewer.model) {
-                const hardware = modelViewer.model.materials.find(m => m.name.toLowerCase().includes('handle') || m.name.toLowerCase().includes('metal'));
-                if (hardware) {
-                    hardware.pbrMetallicRoughness.setBaseColorFactor(colorCode);
-                    hardware.pbrMetallicRoughness.setMetallicFactor(1); // Pełny metal
-                }
-            }
-        }
-
-        function updatePrice() {
-            const select = document.getElementById('modelSelect');
-            const price = select.options[select.selectedIndex].dataset.price;
-            document.getElementById('displayPrice').innerText = price + " zł";
-        }
-
-        function saveToOrder() {
-            const select = document.getElementById('modelSelect');
-            const orderData = {
-                nazwa: "Drzwi: " + select.value,
-                opis: "Kolor: " + selectedColorName,
-                cena: parseInt(select.options[select.selectedIndex].dataset.price)
-            };
-            
-            // Przesłanie do Asystenta przez localStorage
-            localStorage.setItem('nowyElementKosztorysu', JSON.stringify(orderData));
-            
-            window.location.href = 'index.html';
-        }
-
-        // Inicjalizacja ceny
-        window.onload = updatePrice;
-    </script>
+    map.on('click', e => {
+        if(marker) marker.setLatLng(e.latlng); else marker = L.marker(e.latlng).addTo(map);
+        distancePrice = Math.max(50, Math.round((map.distance(companyLoc, e.latlng)/1000) * 3));
+        updateSummary();
+    });
+</script>
 </body>
 </html>
