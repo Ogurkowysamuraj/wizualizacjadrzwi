@@ -4,157 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Konfigurator 3D AR | SERWIS-DRZWI.PRO</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --primary: #2563eb; --bg: #0f172a; --panel: rgba(30, 41, 59, 0.95); --accent: #38bdf8; }
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: white; overflow: hidden; height: 100vh; display: flex; }
-        
-        /* Kontener modelu 3D z gradientem tła */
-        model-viewer { 
-            width: 100%; 
-            height: 100%; 
-            background: radial-gradient(circle, #1e293b 0%, #0f172a 100%);
-            --poster-color: transparent;
-        }
-        
-        /* Panel sterowania */
-        .config-panel {
-            position: absolute; left: 20px; top: 20px; bottom: 20px; width: 300px;
-            background: var(--panel); backdrop-filter: blur(20px); border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.1); padding: 25px; display: flex; flex-direction: column; z-index: 100;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
-        }
-
-        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0; }
-        .color-dot { width: 100%; aspect-ratio: 1; border-radius: 12px; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); transition: 0.3s; position: relative; }
-        .color-dot.active { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 0 15px var(--accent); }
-        .color-dot:hover { border-color: white; transform: scale(1.05); }
-
-        /* Przycisk AR dla iPhone i Android */
-        .btn-ar {
-            position: absolute; bottom: 40px; right: 40px; background: var(--primary);
-            color: white; border: none; padding: 15px 30px; border-radius: 50px;
-            font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5); z-index: 90;
-        }
-        .btn-ar:hover { transform: translateY(-3px); background: #1d4ed8; }
-
-        .btn-save {
-            width: 100%; background: #22c55e; color: white; border: none;
-            padding: 18px; border-radius: 15px; font-weight: 800; cursor: pointer; margin-top: auto;
-            text-transform: uppercase; font-size: 13px; letter-spacing: 1px;
-        }
-        .btn-save:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
-
-        .back-link { position: absolute; top: 30px; right: 30px; color: white; text-decoration: none; z-index: 100; background: rgba(15, 23, 42, 0.8); padding: 12px 24px; border-radius: 50px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); font-size: 13px; }
-
-        @media (max-width: 768px) {
-            .config-panel { width: auto; left: 10px; right: 10px; bottom: 10px; top: auto; height: 35vh; }
-            .btn-ar { bottom: 38vh; right: 20px; padding: 10px 20px; font-size: 12px; }
-            .back-link { top: 10px; right: 10px; padding: 8px 15px; }
-        }
+        body { margin: 0; background-color: #0f172a; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        .config-panel { position: absolute; left: 20px; top: 20px; width: 280px; background: rgba(30, 41, 59, 0.9); padding: 20px; border-radius: 20px; z-index: 100; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-ar { position: absolute; bottom: 30px; right: 30px; background: #2563eb; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 100; }
+        .btn-save { width: 100%; background: #22c55e; color: white; border: none; padding: 12px; border-radius: 10px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        .color-dot { width: 40px; height: 40px; border-radius: 50%; display: inline-block; cursor: pointer; border: 2px solid transparent; margin: 5px; }
+        .color-dot.active { border-color: #38bdf8; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-link"><i class="fas fa-times"></i> ZAMKNIJ</a>
-
     <model-viewer id="doorModel"
-        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Door/glTF-Binary/Door.glb?reload=1" 
-        ios-src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Door/glTF-Binary/Door.usdz?reload=1"
+        src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/DoorStatus/glTF-Binary/DoorStatus.glb" 
+        ios-src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/DoorStatus/glTF-Binary/DoorStatus.usdz"
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
-        shadow-intensity="1.5"
-        exposure="1.2"
-        environment-image="neutral"
         auto-rotate
-        style="width: 100%; height: 100%;">
+        shadow-intensity="1">
         
-        <button slot="ar-button" class="btn-ar">
-            <i class="fas fa-camera"></i> ZOBACZ W POKOJU (AR)
-        </button>
+        <button slot="ar-button" class="btn-ar">ZOBACZ W POKOJU (AR)</button>
     </model-viewer>
 
     <div class="config-panel">
-        <h2 style="color:var(--accent); font-weight: 800; margin-bottom: 5px;"><i class="fas fa-magic"></i> Projektant</h2>
-        <p style="font-size: 10px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; margin-bottom: 25px;">SKONFIGURUJ SWOJE DRZWI</p>
+        <h2 style="margin-top:0">Projektant 3D</h2>
+        <p>Wybierz kolor:</p>
+        <div class="color-dot active" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb', this)"></div>
+        <div class="color-dot" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt', this)"></div>
+        <div class="color-dot" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech', this)"></div>
         
-        <label style="font-size: 11px; font-weight: 700; color:var(--accent); text-transform: uppercase; letter-spacing: 1px;">Seria drzwi</label>
-        <select id="modelSelect" onchange="updatePrice()" style="width:100%; padding:14px; border-radius:12px; background:#1e293b; color:white; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; outline:none; font-family:inherit;">
-            <option value="Modern Prestige" data-price="3100">Modern Prestige (3100 zł)</option>
-            <option value="Classic Wood" data-price="2600">Classic Wood (2600 zł)</option>
-            <option value="Loft Industrial" data-price="4200">Loft Industrial (4200 zł)</option>
-        </select>
-
-        <label style="font-size: 11px; font-weight: 700; color:var(--accent); text-transform: uppercase; letter-spacing: 1px;">Kolorystyka skrzydła</label>
-        <div class="color-grid">
-            <div class="color-dot active" title="Dąb" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb Naturalny', this)"></div>
-            <div class="color-dot" title="Antracyt" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt Mat', this)"></div>
-            <div class="color-dot" title="Orzech" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech Ciemny', this)"></div>
-            <div class="color-dot" title="Biel" style="background: #f5f5f5;" onclick="changeColor('#f5f5f5', 'Biały Satyna', this)"></div>
-        </div>
-
-        <div style="margin-top: 30px; padding: 25px; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); text-align: center; box-shadow: inset 0 0 20px rgba(0,0,0,0.3);">
-            <span style="font-size: 12px; opacity: 0.7; display: block; margin-bottom: 5px;">CENA ZESTAWU:</span>
-            <span id="priceTag" style="font-size: 32px; font-weight: 800; color:var(--accent); letter-spacing: -1px;">3100 zł</span>
-        </div>
-
-        <button class="btn-save" onclick="saveToOrder()">
-            <i class="fas fa-shopping-cart"></i> DODAJ DO ZLECENIA
-        </button>
+        <button class="btn-save" onclick="saveToOrder()">DODAJ DO WYCENY</button>
     </div>
 
     <script>
-        let selectedColorName = "Dąb Naturalny";
+        let selectedColor = "Dąb";
 
-        // Funkcja zmieniająca kolor modelu drzwi
         function changeColor(hex, name, el) {
-            selectedColorName = name;
+            selectedColor = name;
             const mv = document.querySelector('#doorModel');
-            
             if (mv.model) {
-                // W tym konkretnym modelu materiał płyty drzwi nazywa się 'Door'
-                const material = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
-                if (material) {
-                    material.pbrMetallicRoughness.setBaseColorFactor(hex);
-                }
+                // Szukamy materiału o nazwie Door (w tym konkretnym modelu Google)
+                const mat = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
+                if (mat) mat.pbrMetallicRoughness.setBaseColorFactor(hex);
             }
-            
-            // Zmiana podświetlenia kropek
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
         }
 
-        function updatePrice() {
-            const sel = document.getElementById('modelSelect');
-            const price = sel.options[sel.selectedIndex].dataset.price;
-            document.getElementById('priceTag').innerText = price + " zł";
-        }
-
         function saveToOrder() {
-            const sel = document.getElementById('modelSelect');
-            const price = parseInt(sel.options[sel.selectedIndex].dataset.price);
-            
-            // Przygotowanie danych dla głównego Asystenta
-            const orderData = {
-                nazwa: sel.options[sel.selectedIndex].text,
-                opis: "Wykończenie: " + selectedColorName,
-                cena: price
+            const data = {
+                nazwa: "Drzwi Modern",
+                opis: "Kolor: " + selectedColor,
+                cena: 3100
             };
-            
-            // Klucz 'nowyElementKosztorysu' jest wymagany przez Twój index.html
-            localStorage.setItem('nowyElementKosztorysu', JSON.stringify(orderData));
-            
-            // Przejście do strony głównej
+            // Używamy klucza 'nowyElementKosztorysu', aby index.html to "złapał"
+            localStorage.setItem('nowyElementKosztorysu', JSON.stringify(data));
             window.location.href = 'index.html';
         }
-
-        // Inicjalizacja ceny przy starcie
-        window.onload = updatePrice;
     </script>
 </body>
 </html>
