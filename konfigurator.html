@@ -3,59 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfigurator 3D AR | SERWIS-DRZWI.PRO</title>
+    <title>Konfigurator Drzwi 3D | SERWIS-DRZWI.PRO</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; background-color: #0f172a; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
-        model-viewer { width: 100%; height: 100%; background: #1e293b; --poster-color: transparent; }
-        .config-panel { position: absolute; left: 20px; top: 20px; width: 280px; background: rgba(30, 41, 59, 0.9); padding: 20px; border-radius: 20px; z-index: 100; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-ar { position: absolute; bottom: 30px; right: 30px; background: #2563eb; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 100; }
-        .btn-save { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; margin-top: 20px; cursor: pointer; font-weight: bold; }
-        .color-dot { width: 40px; height: 40px; border-radius: 50%; display: inline-block; cursor: pointer; border: 2px solid transparent; margin: 5px; }
-        .active { border-color: #38bdf8; transform: scale(1.1); }
+        body { margin: 0; background: #0f172a; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        .ui-panel { position: absolute; top: 20px; left: 20px; background: rgba(30, 41, 59, 0.95); padding: 25px; border-radius: 20px; color: white; width: 280px; border: 1px solid rgba(255,255,255,0.1); z-index: 10; }
+        .color-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-bottom: 10px; display: block; }
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .dot { width: 100%; aspect-ratio: 1; border-radius: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .dot.active { border-color: #38bdf8; transform: scale(1.1); }
+        .btn-ar { position: absolute; bottom: 30px; right: 30px; background: #2563eb; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .btn-save { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <model-viewer id="doorModel"
-        src="door.glb" 
-        ar ar-modes="webxr scene-viewer quick-look"
-        camera-controls auto-rotate shadow-intensity="1">
-        <button slot="ar-button" class="btn-ar">ZOBACZ W POKOJU (AR)</button>
+    <model-viewer id="doorModel" src="door.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls shadow-intensity="1.5" auto-rotate exposure="1">
+        <button slot="ar-button" class="btn-ar">📸 ZOBACZ W AR</button>
     </model-viewer>
 
-    <div class="config-panel">
-        <h2>Projektant 3D</h2>
-        <p>Wybierz kolor okleiny:</p>
-        <div class="color-dot active" style="background: #3d3d3d;" onclick="changeColor('#3d3d3d', 'Antracyt', this)"></div>
-        <div class="color-dot" style="background: #7d5a44;" onclick="changeColor('#7d5a44', 'Orzech', this)"></div>
-        <div class="color-dot" style="background: #c19a6b;" onclick="changeColor('#c19a6b', 'Dąb', this)"></div>
+    <div class="ui-panel">
+        <h2 style="margin: 0 0 5px 0; color: #38bdf8;">Konfigurator 3D</h2>
+        <p style="font-size: 13px; margin-bottom: 25px;">Personalizacja modelu</p>
         
-        <button class="btn-save" onclick="saveToOrder()">DODAJ DO WYCENY</button>
+        <span class="color-label">Kolor skrzydła i ościeżnicy:</span>
+        <div class="color-grid">
+            <div class="dot active" style="background: #2c2c2c;" onclick="changeColor('#2c2c2c', 'Antracyt', this)"></div>
+            <div class="dot" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech', this)"></div>
+            <div class="dot" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb', this)"></div>
+            <div class="dot" style="background: #f5f5f5;" onclick="changeColor('#f5f5f5', 'Biały', this)"></div>
+        </div>
+
+        <button class="btn-save" onclick="save()">DODAJ DO ZLECENIA</button>
     </div>
 
     <script>
-        let selectedColorName = "Antracyt";
+        let selectedColor = "Antracyt";
 
         function changeColor(hex, name, el) {
-            selectedColorName = name;
+            selectedColor = name;
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
-                // Szukamy materiału "Door" w pobranym modelu
-                const material = mv.model.materials.find(m => m.name.toLowerCase().includes('door'));
-                if (material) material.pbrMetallicRoughness.setBaseColorFactor(hex);
+                // W tym modelu drewno to materiał "Wood.009"
+                const wood = mv.model.materials.find(m => m.name.includes('Wood'));
+                if (wood) {
+                    wood.pbrMetallicRoughness.setBaseColorFactor(hex);
+                }
             }
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
         }
 
-        function saveToOrder() {
+        function save() {
             const data = {
-                nazwa: "Drzwi Skonfigurowane",
-                opis: "Kolor: " + selectedColorName,
-                cena: 3100
+                nazwa: "Drzwi Skonfigurowane 3D",
+                opis: "Kolor: " + selectedColor,
+                cena: 2850
             };
-            // Używamy klucza 'nowyElementKosztorysu', aby index.html go rozpoznał
             localStorage.setItem('nowyElementKosztorysu', JSON.stringify(data));
             window.location.href = 'index.html';
         }
