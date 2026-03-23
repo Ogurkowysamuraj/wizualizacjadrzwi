@@ -289,6 +289,52 @@ window.addEventListener('load', () => {
         document.getElementById('serviceList').scrollIntoView({ behavior: 'smooth' });
     }
 });
+    <script>
+    // Sprawdza, czy klient wrócił z konfiguratora AR i dodaje usługi
+    window.addEventListener('load', () => {
+        const queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
+        if (queue.length > 0) {
+            queue.forEach(item => {
+                // Dodaje usługę do Twojej listy 'services' (z Twojego kodu 1.85)
+                services.push({ n: item.n, p: item.p });
+            });
+            // Czyści kolejkę
+            localStorage.removeItem('services_queue');
+            // Wywołuje Twoją funkcję update(), aby odświeżyć widok kosztorysu
+            if (typeof update === "function") update();
+            
+            // Płynny scroll do kosztorysu, żeby klient widział, że się dodało
+            document.getElementById('serviceList').scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+</script>
+
+
+<style>
+    /* Styl niebieskiej strzałki */
+    #backToTop {
+        position: fixed; bottom: 30px; right: 30px;
+        background: #2563eb; color: white; border: none;
+        width: 50px; height: 50px; border-radius: 50%;
+        cursor: pointer; z-index: 1000; display: none; /* Ukryta na starcie */
+        align-items: center; justify-content: center; font-size: 24px;
+        box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); transition: 0.3s;
+    }
+    #backToTop:hover { background: #1d4ed8; transform: translateY(-3px); }
+</style>
+
+<button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆</button>
+
+<script>
+    // Skrypt pokazujący/ukrywający strzałkę podczas przewijania
+    window.onscroll = function() {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            document.getElementById('backToTop').style.display = "flex";
+        } else {
+            document.getElementById('backToTop').style.display = "none";
+        }
+    };
+</script>
 </script>
 </body>
 </html>
