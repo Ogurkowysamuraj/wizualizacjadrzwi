@@ -12,7 +12,8 @@
         :root {
             --primary: #2563eb;
             --bg: #0f172a;
-            --panel: rgba(30, 41, 59, 0.9);
+            --panel: rgba(30, 41, 59, 0.95);
+            --accent: #38bdf8;
         }
         body {
             margin: 0;
@@ -24,15 +25,15 @@
             height: 100vh;
         }
 
-        /* Widok 3D */
+        /* GŁÓWNY WIDOK 3D */
         model-viewer {
             width: 100%;
             height: 100%;
-            background-color: #1e293b;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             --poster-color: transparent;
         }
 
-        /* Panel boczny konfiguracji */
+        /* PANEL BOCZNY */
         .config-panel {
             position: absolute;
             left: 20px;
@@ -47,170 +48,206 @@
             display: flex;
             flex-direction: column;
             z-index: 100;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
         }
 
-        h2 { font-weight: 800; margin-top: 0; color: #38bdf8; }
+        h2 { font-weight: 800; margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 10px; }
 
         .section-label {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 20px 0 10px;
-            opacity: 0.7;
+            letter-spacing: 1.5px;
+            margin: 25px 0 12px;
+            color: var(--accent);
+            font-weight: 700;
         }
 
-        /* Wybór kolorów */
+        /* WYBÓR KOLORÓW */
         .color-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
         .color-dot {
             width: 100%;
             aspect-ratio: 1;
             border-radius: 12px;
-            border: 2px solid transparent;
+            border: 2px solid rgba(255,255,255,0.1);
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
-        .color-dot:hover { transform: scale(1.1); }
-        .color-dot.active { border-color: #38bdf8; }
+        .color-dot:hover { transform: scale(1.1); border-color: white; }
+        .color-dot.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
+        .color-dot::after { content: attr(title); position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 8px; white-space: nowrap; opacity: 0.6; }
 
-        /* Przyciski akcji */
-        .actions { margin-top: auto; }
+        /* AKCJE */
+        .actions { margin-top: auto; padding-top: 20px; }
         .btn-ar {
-            width: 100%;
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 700;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5);
+            transition: 0.3s;
+            z-index: 90;
         }
+        .btn-ar:hover { transform: scale(1.05); background: #1d4ed8; }
+
         .btn-save {
             width: 100%;
             background: #22c55e;
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 700;
+            padding: 18px;
+            border-radius: 15px;
+            font-weight: 800;
             cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            text-transform: uppercase;
         }
+        .btn-save:hover { background: #16a34a; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4); }
 
-        /* Przycisk powrotu */
         .back-link {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 30px;
+            right: 30px;
             color: white;
             text-decoration: none;
-            background: rgba(0,0,0,0.5);
-            padding: 10px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 12px 24px;
             border-radius: 50px;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 700;
             z-index: 100;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .config-panel {
-                left: 10px; right: 10px; bottom: 10px;
-                top: auto; width: auto; height: 40%;
-            }
+            .config-panel { width: auto; left: 10px; right: 10px; bottom: 10px; top: auto; height: 35vh; }
+            .btn-ar { bottom: 38vh; right: 20px; padding: 12px 20px; font-size: 12px; }
+            .back-link { top: 10px; right: 10px; padding: 8px 15px; }
         }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Powrót do panelu</a>
+    <a href="index.html" class="back-link"><i class="fas fa-times"></i> Zamknij</a>
 
     <model-viewer id="doorModel"
-        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-        ios-src=""
+        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Door/glTF-Binary/Door.glb" 
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
-        poster="poster.webp"
-        shadow-intensity="1"
-        exposure="1"
+        shadow-intensity="1.5"
+        shadow-softness="1"
+        exposure="1.2"
+        environment-image="neutral"
         auto-rotate>
         
-        <div slot="progress-bar"></div>
-        
         <button slot="ar-button" class="btn-ar">
-            <i class="fas fa-camera"></i> ZOBACZ W SWOIM DOMU (AR)
+            <i class="fas fa-vr-cardboard"></i> ZOBACZ W SWOIM DOMU
         </button>
     </model-viewer>
 
     <div class="config-panel">
-        <h2>Konfigurator 3D</h2>
+        <h2><i class="fas fa-sliders-h"></i> Projektant</h2>
         
-        <div class="section-label">Model Drzwi</div>
-        <select id="modelSelect" style="width:100%; padding:10px; border-radius:10px; background:#1e293b; color:white; border:1px solid #334155;">
-            <option value="modern">Modern Prestige</option>
-            <option value="classic">Classic Wood</option>
-            <option value="loft">Loft Industrial</option>
+        <div class="section-label">Seria drzwi</div>
+        <select id="modelSelect" onchange="updatePrice()" style="width:100%; padding:14px; border-radius:12px; background:#1e293b; color:white; border:1px solid rgba(255,255,255,0.1); outline:none;">
+            <option value="Modern Prestige" data-price="2800">Modern Prestige (2800 zł)</option>
+            <option value="Classic Wood" data-price="2450">Classic Wood (2450 zł)</option>
+            <option value="Loft Metal" data-price="3200">Loft Metal (3200 zł)</option>
         </select>
 
-        <div class="section-label">Kolor Skrzydła</div>
+        <div class="section-label">Kolorystyka</div>
         <div class="color-grid">
-            <div class="color-dot active" style="background: #3d3d3d;" onclick="changeColor('#3d3d3d', 'Antracyt', this)"></div>
-            <div class="color-dot" style="background: #7d5a44;" onclick="changeColor('#7d5a44', 'Orzech', this)"></div>
-            <div class="color-dot" style="background: #c19a6b;" onclick="changeColor('#c19a6b', 'Dąb złoty', this)"></div>
-            <div class="color-dot" style="background: #ffffff;" onclick="changeColor('#ffffff', 'Biały', this)"></div>
+            <div class="color-dot active" title="Dąb" style="background: #a67c52;" onclick="changeColor('#a67c52', 'Dąb Naturalny', this)"></div>
+            <div class="color-dot" title="Orzech" style="background: #5d4037;" onclick="changeColor('#5d4037', 'Orzech Ciemny', this)"></div>
+            <div class="color-dot" title="Antracyt" style="background: #37474f;" onclick="changeColor('#37474f', 'Antracyt Mat', this)"></div>
+            <div class="color-dot" title="Biel" style="background: #f5f5f5;" onclick="changeColor('#f5f5f5', 'Biały Satyna', this)"></div>
         </div>
 
-        <div class="section-label">Akcesoria (Klamka)</div>
+        <div class="section-label">Klamka i okucia</div>
         <div class="color-grid">
-            <div class="color-dot" style="background: #000000;" title="Czarny Mat"></div>
-            <div class="color-dot" style="background: #c0c0c0;" title="Srebrny Satyna"></div>
-            <div class="color-dot" style="background: #ffd700;" title="Złoty"></div>
+            <div class="color-dot" title="Czerń" style="background: #1a1a1a;" onclick="changeHardware('#1a1a1a')"></div>
+            <div class="color-dot" title="Srebro" style="background: #b0bec5;" onclick="changeHardware('#b0bec5')"></div>
+            <div class="color-dot" title="Złoto" style="background: #ffd700;" onclick="changeHardware('#ffd700')"></div>
         </div>
 
         <div class="actions">
+            <div style="margin-bottom: 15px; font-size: 18px; font-weight: 800; display: flex; justify-content: space-between;">
+                <span>CENA:</span> <span id="displayPrice" style="color:var(--accent);">2800 zł</span>
+            </div>
             <button class="btn-save" onclick="saveToOrder()">
-                <i class="fas fa-check"></i> DODAJ DO ZLECENIA
+                <i class="fas fa-shopping-cart"></i> Zapisz i wróć
             </button>
         </div>
     </div>
 
     <script>
-        let selectedColorName = "Antracyt";
-        let basePrice = 2400;
+        let selectedColorName = "Dąb Naturalny";
+        const modelViewer = document.querySelector('#doorModel');
 
+        // FUNKCJA ZMIANY KOLORU SKRZYDŁA (PBR)
         function changeColor(colorCode, name, element) {
             selectedColorName = name;
-            // Zmiana koloru na modelu 3D
-            const modelViewer = document.querySelector('#doorModel');
-            // Logika zmiany materiału (wymaga zdefiniowanych nazw materiałów w modelu .glb)
-            // const material = modelViewer.model.materials[0];
-            // material.pbrMetallicRoughness.setBaseColorFactor(colorCode);
+            
+            if (modelViewer.model) {
+                // Znajdujemy materiał drzwi (zazwyczaj indeks 0 lub 1 w zależności od modelu)
+                const material = modelViewer.model.materials.find(m => m.name.toLowerCase().includes('door') || m.name.toLowerCase().includes('wood'));
+                if (material) {
+                    material.pbrMetallicRoughness.setBaseColorFactor(colorCode);
+                }
+            }
 
-            // Wizualna zmiana aktywności kropki
             document.querySelectorAll('.color-dot').forEach(dot => dot.classList.remove('active'));
             element.classList.add('active');
         }
 
+        // FUNKCJA ZMIANY KOLORU OKUĆ
+        function changeHardware(colorCode) {
+            if (modelViewer.model) {
+                const hardware = modelViewer.model.materials.find(m => m.name.toLowerCase().includes('handle') || m.name.toLowerCase().includes('metal'));
+                if (hardware) {
+                    hardware.pbrMetallicRoughness.setBaseColorFactor(colorCode);
+                    hardware.pbrMetallicRoughness.setMetallicFactor(1); // Pełny metal
+                }
+            }
+        }
+
+        function updatePrice() {
+            const select = document.getElementById('modelSelect');
+            const price = select.options[select.selectedIndex].dataset.price;
+            document.getElementById('displayPrice').innerText = price + " zł";
+        }
+
         function saveToOrder() {
+            const select = document.getElementById('modelSelect');
             const orderData = {
-                nazwa: document.getElementById('modelSelect').value,
-                kolor: selectedColorName,
-                cena: basePrice
+                nazwa: "Drzwi: " + select.value,
+                opis: "Kolor: " + selectedColorName,
+                cena: parseInt(select.options[select.selectedIndex].dataset.price)
             };
             
-            // Zapisujemy do localStorage, aby index.html mógł to odczytać
-            localStorage.setItem('zapisaneDrzwi', JSON.stringify(orderData));
+            // Przesłanie do Asystenta przez localStorage
+            localStorage.setItem('nowyElementKosztorysu', JSON.stringify(orderData));
             
-            alert("Konfiguracja zapisana! Przenoszę do asystenta.");
             window.location.href = 'index.html';
         }
+
+        // Inicjalizacja ceny
+        window.onload = updatePrice;
     </script>
 </body>
 </html>
