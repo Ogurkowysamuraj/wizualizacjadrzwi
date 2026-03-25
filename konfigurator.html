@@ -11,70 +11,65 @@
     <style>
         :root { --blue: #2563eb; --green: #22c55e; --bg: #0f172a; --text: #f8fafc; }
         
+        /* Kluczowe dla iPhone: pozwalany na scroll całego body */
         html, body { 
-            margin: 0; padding: 0;
-            width: 100%; min-height: 100%;
+            margin: 0; padding: 0; width: 100%; min-height: 100%;
             background: var(--bg); color: var(--text);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            /* WŁĄCZAMY PRZEWIJANIE, ŻEBY MOŻNA BYŁO ODSŁONIĆ DÓŁ */
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
         }
         
-        /* Kontener modelu - ustalona wysokość, aby reszta mogła się przewijać */
+        /* Kontener modelu 3D - sztywna wysokość, by reszta była pod nim */
         .viewer-container {
-            width: 100%;
-            height: 70vh; /* Zajmuje 70% ekranu, reszta na panel */
-            position: relative;
+            width: 100%; height: 60vh; position: relative;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
-
         model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
 
-        /* PASEK NARZĘDZI NA GÓRZE */
+        /* Pasek górny z przyciskami */
         .top-tools {
             position: absolute; top: calc(env(safe-area-inset-top) + 15px);
-            left: 15px; right: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 1000;
+            left: 15px; right: 15px; display: flex; flex-direction: column; gap: 12px; z-index: 1000;
         }
         .row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
 
         .btn-back {
             background: rgba(255,255,255,0.15); color: white; padding: 10px 15px;
-            border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 12px;
+            border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 11px;
             backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* PRZYCISK SAMEJ MIARKI (BEZ MODELU) */
-        .btn-only-measure {
-            background: white; color: black; border: none; padding: 12px 20px;
-            border-radius: 50px; font-weight: 800; font-size: 12px;
-            box-shadow: 0 5px 15px rgba(255,255,255,0.3); cursor: pointer;
+        /* PRZYCISK MIARKI - NAPRAWIONY LINK */
+        .btn-measure-ios {
+            background: #ffffff; color: #000000; border: none; padding: 10px 18px;
+            border-radius: 50px; font-weight: 800; font-size: 11px;
+            box-shadow: 0 5px 15px rgba(255,255,255,0.2); cursor: pointer;
             display: flex; align-items: center; gap: 6px;
         }
 
-        /* PRZYCISK AR (Z MODELEM) */
+        /* PRZYCISK AR (MODEL 3D) */
         .btn-ar-custom {
-            background: var(--blue); color: white; border: none; padding: 15px 25px;
+            background: var(--blue); color: white; border: none; padding: 14px 24px;
             border-radius: 50px; font-weight: 800; font-size: 13px;
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4); cursor: pointer;
         }
 
-        /* PANEL DOLNY - Z DUŻYM MARGINESEM NA SCROLL */
+        /* PANEL DOLNY - WYDŁUŻONY DLA SCROLLA */
         .ui-panel {
-            padding: 30px 25px calc(env(safe-area-inset-bottom) + 120px); 
-            background: #1e293b; border-radius: 40px 40px 0 0;
+            padding: 30px 20px calc(env(safe-area-inset-bottom) + 140px); 
+            background: #1e293b; border-radius: 35px 35px 0 0;
             border-top: 1px solid rgba(255,255,255,0.1);
             margin-top: -30px; position: relative; z-index: 2000;
+            text-align: center;
         }
         
-        .color-label { font-size: 12px; opacity: 0.6; display: block; text-align: center; margin-bottom: 15px; letter-spacing: 1px; }
-        .color-grid { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
-        .dot { width: 55px; height: 55px; border-radius: 15px; cursor: pointer; border: 3px solid transparent; transition: 0.3s; }
-        .dot.active { border-color: var(--blue); transform: scale(1.1); box-shadow: 0 0 15px rgba(37, 99, 235, 0.3); }
+        .color-grid { display: flex; gap: 12px; margin: 20px 0 30px; justify-content: center; }
+        .dot { width: 55px; height: 55px; border-radius: 14px; cursor: pointer; border: 3px solid transparent; transition: 0.3s; }
+        .dot.active { border-color: var(--blue); transform: scale(1.1); }
 
         .btn-main { 
             width: 100%; background: var(--green); color: white; border: none; 
-            padding: 22px; border-radius: 18px; font-weight: 800; font-size: 16px;
+            padding: 20px; border-radius: 16px; font-weight: 800; font-size: 16px;
             box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
         }
     </style>
@@ -85,25 +80,26 @@
         <div class="top-tools">
             <div class="row">
                 <a href="index.html" class="btn-back">⬅ POWRÓT</a>
-                <button class="btn-only-measure" onclick="openIPhoneMeasure()">📏 TYLKO MIARKA</button>
+                <button class="btn-measure-ios" onclick="openIPhoneMeasure()">📏 MIARKA APPLE</button>
             </div>
-            <div style="display:flex; justify-content:center; margin-top:10px;">
+            <div style="display:flex; justify-content:center; margin-top:5px;">
                 <model-viewer id="doorModel" src="door.glb" ios-src="door.usdz" ar ar-modes="webxr scene-viewer quick-look" camera-controls ar-scale="fixed">
-                    <button slot="ar-button" class="btn-ar-custom">🚪 PRZYMIERZ DRZWI W AR</button>
+                    <button slot="ar-button" class="btn-ar-custom">🚪 PRZYMIERZ W POKOJU</button>
                 </model-viewer>
             </div>
         </div>
     </div>
 
     <div class="ui-panel">
-        <span class="color-label">WYBIERZ KOLOR OKLEINY:</span>
+        <p style="font-size: 12px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;">Konfiguracja wyglądu:</p>
         <div class="color-grid">
             <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt', 2850, this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="paint('#5d4037', 'Orzech', 2700, this)"></div>
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
             <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
         </div>
-        <button class="btn-main" onclick="sendToService()">✅ DODAJ DO KOSZTORYSU</button>
+        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ I DODAJ</button>
+        <p style="font-size: 11px; opacity: 0.4; margin-top: 15px;">(Przewiń w dół, jeśli nie widzisz przycisków)</p>
     </div>
 
     <script>
@@ -123,14 +119,13 @@
             el.classList.add('active');
         }
 
-        // Funkcja otwierająca aplikację Miarka (tylko iPhone)
+        // PROFESJONALNE WYWOŁANIE MIARKI
         function openIPhoneMeasure() {
             if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                // To wywołuje natywną aplikację Apple
-                window.location.href = "nt-measure://";
-                setTimeout(() => { window.location.href = "com.apple.measure://"; }, 500);
+                // To jest link do aplikacji w App Store, który iOS rozpoznaje i pyta o otwarcie zainstalowanej aplikacji
+                window.location.href = "https://apps.apple.com/app/measure/id1383422753";
             } else {
-                alert("Funkcja dostępna tylko na iPhone (aplikacja Miarka).");
+                alert("Ta funkcja wymaga iPhone'a z aplikacją Miarka.");
             }
         }
 
@@ -138,7 +133,6 @@
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
             queue.push(currentData);
             localStorage.setItem('services_queue', JSON.stringify(queue));
-            // WAŻNE: Poprawiłem nazwę pliku docelowego na index.html, bo tak masz na GitHubie
             window.location.href = 'index.html'; 
         }
     </script>
