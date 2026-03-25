@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Konfigurator AR | door | SERWIS-DRZWI.PRO</title>
+    <title>Konfigurator AR | SERWIS-DRZWI.PRO</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
         :root { 
             --blue: #2563eb; 
             --green: #22c55e; 
-            --bg: #0f172a; /* Tło spójne z HERO strony głównej. */
+            --bg: #0f172a; 
             --text: #f8fafc;
         }
         
@@ -24,7 +24,7 @@
             flex-direction: column; 
             background: var(--bg); 
             color: var(--text);
-            overflow: hidden; /* Trzyma interfejs na miejscu */
+            overflow: hidden;
         }
         
         /* Obszar 3D z ciemnym gradientem */
@@ -35,57 +35,64 @@
             --poster-color: transparent;
         }
 
-        /* --- PASEK GÓRNY (Przycisk Powrotu i AR) --- */
+        /* --- PASEK GÓRNY (Układ przycisków) --- */
         .top-bar {
             position: absolute;
-            top: calc(env(safe-area-inset-top) + 20px);
-            left: 20px;
-            right: 20px;
+            top: calc(env(safe-area-inset-top) + 15px);
+            left: 0;
+            right: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 20px;
             z-index: 1000;
         }
 
-        /* Przycisk Powrotu (⬅️) */
+        /* Przycisk Powrotu (⬅️) - Z Lewej */
         .btn-back {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
             color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 18px;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 15px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             backdrop-filter: blur(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: 0.3s;
         }
-        .btn-back:hover { background: rgba(255,255,255,0.2); transform: translateX(-3px); }
+        .btn-back:hover { background: rgba(255,255,255,0.15); }
 
-        /* Przycisk AR (📏) u góry z prawej */
+        /* Przycisk AR (📏) - WYŚRODKOWANY NA GÓRZE */
         .btn-ar {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Idealne centrowanie */
             background: var(--blue); 
             color: white;
             border: none; 
-            padding: 15px 25px; 
+            padding: 15px 30px; 
             border-radius: 50px;
             font-weight: 700; 
             cursor: pointer; 
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
             font-size: 14px;
             letter-spacing: 0.5px;
+            backdrop-filter: blur(5px);
         }
-        .btn-ar:hover { background: #1d4ed8; transform: translateY(-2px); }
+        .btn-ar:hover { background: #1d4ed8; }
 
-        /* --- PANEL DOLNY (Kolory i Zatwierdzenie) --- */
+        /* --- PANEL DOLNY (Z poprawką dla iPhone) --- */
         .ui-panel {
-            padding: 25px calc(env(safe-area-inset-bottom) + 25px); /* Bezpieczne dla iPhone bez przycisku home */
-            background: rgba(30, 41, 59, 0.9); /* var(--card) ze strony głównej */
+            /* POPRAWKA DLA IPHONE: env(safe-area-inset-bottom) */
+            padding: 25px 25px calc(env(safe-area-inset-bottom) + 30px); 
+            background: rgba(30, 41, 59, 0.95); /* var(--card) ze strony głównej */
             backdrop-filter: blur(10px);
             border-radius: 30px 30px 0 0;
             border-top: 1px solid rgba(255,255,255,0.1);
             box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+            text-align: center;
         }
         
         .color-label {
@@ -93,10 +100,9 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             opacity: 0.7;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: block;
             color: #38bdf8;
-            text-align: center;
         }
 
         .color-grid { 
@@ -112,7 +118,7 @@
             border-radius: 12px; 
             cursor: pointer; 
             border: 3px solid rgba(255,255,255,0.1); 
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
         .dot.active { 
             border-color: var(--blue); 
@@ -125,13 +131,13 @@
             background: var(--green); 
             color: white; 
             border: none; 
-            padding: 20px; 
+            padding: 18px; 
             border-radius: 15px; 
             font-weight: 800; 
             font-size: 16px;
             cursor: pointer;
-            letter-spacing: 1px;
-            transition: 0.3s;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
             box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
         }
         .btn-main:hover {
@@ -142,10 +148,6 @@
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="index.html" class="btn-back">⬅️ POWRÓT</a>
-        </div>
-
     <model-viewer id="doorModel" 
         src="./door.glb" 
         ios-src="./door.usdz" 
@@ -154,10 +156,14 @@
         ar-scale="fixed"
         shadow-intensity="2"
         environment-image="neutral"
-        alt="Model drzwi 3D dla door">
+        alt="Model drzwi 3D dla SERWIS-DRZWI.PRO">
         
-        <button slot="ar-button" class="btn-ar">📏 MIARKA AR</button>
+        <button slot="ar-button" class="btn-ar">📏 OTWÓRZ APARAT (AR)</button>
     </model-viewer>
+
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">⬅️ POWRÓT</a>
+        </div>
 
     <div class="ui-panel">
         <span class="color-label">Wybierz okleinę:</span>
@@ -167,7 +173,7 @@
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
             <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały Premium', 2600, this)"></div>
         </div>
-        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ I Wróć do Zlecenia</button>
+        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ I DALEJ</button>
     </div>
 
     <script>
@@ -181,6 +187,7 @@
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
                 mv.model.materials.forEach(mat => {
+                    // Maluje wszystko oprócz klamki (o ile klamka ma 'handle' lub 'klamka' w nazwie)
                     if (!mat.name.toLowerCase().includes('handle') && !mat.name.toLowerCase().includes('klamka')) {
                         mat.pbrMetallicRoughness.setBaseColorFactor(hex);
                     }
@@ -195,6 +202,7 @@
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
             queue.push(currentData);
             localStorage.setItem('services_queue', JSON.stringify(queue));
+            // Kieruje na index.html
             window.location.href = 'index.html'; 
         }
     </script>
