@@ -3,102 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Konfigurator AR | PRO-MONTAŻ</title>
-    
+    <title>Konfigurator AR | door</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
-
     <style>
-        :root { --blue: #2563eb; --panel: rgba(255, 255, 255, 0.98); --green: #22c55e; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        :root { --blue: #2563eb; --green: #22c55e; --bg: radial-gradient(circle, #ffffff 0%, #cbd5e1 100%); }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* Tło z gradientem dla lepszego wyglądu modelu */
+        model-viewer { width: 100%; flex-grow: 1; background: var(--bg); --poster-color: transparent; }
 
-        /* WIDOK 3D Z PRZYWRÓCONYM ŁADNYM TŁEM */
-        model-viewer { 
-            width: 100%; flex-grow: 1; --poster-color: transparent;
-            background: radial-gradient(circle, #ffffff 0%, #e2e8f0 100%); /* Ładny gradient */
+        /* Przycisk AR u góry (dostosowany do iPhone 14 Pro Max) */
+        .ar-bar { position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 20px; z-index: 1000; }
+        .btn-ar { 
+            background: var(--blue); color: white; border: none; padding: 15px 25px; 
+            border-radius: 50px; font-weight: bold; cursor: pointer; 
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); font-size: 14px;
         }
 
-        /* PRZYCISK AR NA GÓRZE (Safe Area na iPhone) */
-        .ar-top-bar {
-            position: absolute; top: calc(env(safe-area-inset-top) + 20px);
-            right: 20px; z-index: 1000;
-        }
-        .btn-ar {
-            background: var(--blue); color: white; border: none;
-            padding: 14px 25px; border-radius: 50px; font-weight: 700;
-            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.4); cursor: pointer;
-            display: flex; align-items: center; gap: 10px; font-size: 14px;
-        }
-
-        /* PANEL NA DOLE */
+        /* Panel dolny */
         .ui-panel { 
-            position: absolute; bottom: calc(env(safe-area-inset-bottom) + 20px);
-            left: 20px; right: 20px; background: var(--panel); 
-            padding: 25px; border-radius: 25px; max-width: 450px; margin: 0 auto;
-            border: 1px solid rgba(0,0,0,0.05); z-index: 10;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: absolute; bottom: calc(env(safe-area-inset-bottom) + 20px); 
+            left: 20px; right: 20px; background: white; padding: 25px; 
+            border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.15); 
+            max-width: 480px; margin: 0 auto; 
         }
-
-        .title { margin: 0 0 5px 0; font-weight: 700; font-size: 18px; }
-        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 15px 0; }
-        .dot { width: 100%; aspect-ratio: 1; border-radius: 12px; cursor: pointer; border: 3px solid #f1f5f9; }
+        
+        .color-label { font-size: 12px; font-weight: 700; opacity: 0.6; margin-bottom: 10px; display: block; }
+        .color-grid { display: flex; gap: 12px; margin-bottom: 20px; justify-content: space-between; }
+        .dot { 
+            width: 55px; height: 55px; border-radius: 15px; cursor: pointer; 
+            border: 3px solid #f1f5f9; transition: 0.2s; 
+        }
         .dot.active { border-color: var(--blue); transform: scale(1.1); }
 
-        .btn-action { 
+        .btn-main { 
             width: 100%; background: var(--green); color: white; border: none; 
-            padding: 18px; border-radius: 15px; font-weight: 700; cursor: pointer; 
-            font-size: 15px; letter-spacing: 1px;
+            padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; 
+            font-size: 16px; transition: 0.3s;
         }
+        .btn-main:hover { background: #16a34a; }
     </style>
 </head>
 <body>
 
-    <div class="ar-top-bar">
+    <div class="ar-bar">
         <model-viewer id="doorModel" 
             src="door.glb" 
             ios-src="door.usdz" 
             ar ar-modes="webxr scene-viewer quick-look" 
-            camera-controls shadow-intensity="1.5" auto-rotate
-            ar-scale="fixed"> <button slot="ar-button" class="btn-ar">📏 PRZYMIERZ I ZMIERZ (AR)</button>
+            camera-controls shadow-intensity="2" 
+            ar-scale="fixed">
+            <button slot="ar-button" class="btn-ar">📏 PRZYMIERZ / ZMIERZ W AR</button>
         </model-viewer>
     </div>
 
     <div class="ui-panel">
-        <h2 class="title">PRO-MONTAŻ: Konfigurator</h2>
-        <p style="font-size: 13px; margin: 0 0 15px 0; opacity: 0.7;">Wybierz kolor montażu:</p>
-        
+        <span class="color-label">WYBIERZ KOLOR DRZWI:</span>
         <div class="color-grid">
             <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt', 2850, this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="paint('#5d4037', 'Orzech', 2700, this)"></div>
-            <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złocisty', 2750, this)"></div>
-            <div class="dot" style="background: #f5f5f5;" onclick="paint('#f5f5f5', 'Biały Premium', 2600, this)"></div>
+            <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
+            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
         </div>
 
-        <button class="btn-action" onclick="orderMeasurement()">✅ ZAMÓW BEZPŁATNY POMIAR</button>
+        <button class="btn-main" onclick="sendToService()">✅ DODAJ DO KOSZTORYSU</button>
     </div>
 
     <script>
-        let selectedColor = "Antracyt Mat";
+        let currentSelection = { n: "Montaż drzwi door (Antracyt)", p: 2850 };
+
         function paint(hex, name, price, el) {
-            selectedColor = name;
+            currentSelection = { n: "Montaż drzwi door (" + name + ")", p: price };
             const mv = document.querySelector('#doorModel');
+            
             if (mv.model) {
-                // Maluje tylko skrzydło drzwi (materiał Wood)
-                const wood = mv.model.materials.find(m => m.name.includes('Wood'));
-                if (wood) wood.pbrMetallicRoughness.setBaseColorFactor(hex);
+                // Malowanie wszystkich elementów (skrzydło, ościeżnica)
+                mv.model.materials.forEach(mat => {
+                    const mName = mat.name.toLowerCase();
+                    // Pomija klamkę (Handle), maluje resztę
+                    if (!mName.includes('handle') && !mName.includes('klamka')) {
+                        mat.pbrMetallicRoughness.setBaseColorFactor(hex);
+                    }
+                });
             }
             document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
         }
 
-        function orderMeasurement() {
-            // Przesyłamy wybrane opcje do Asystenta (do index.html)
-            const data = { n: "Drzwi Modern ("+selectedColor+")", p: 2850 };
-            // Używamy kolejki, żeby nie nadpisywać usług
+        function sendToService() {
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
-            queue.push(data);
+            queue.push(currentSelection);
             localStorage.setItem('services_queue', JSON.stringify(queue));
-            window.location.href = 'index.html'; // Zakładam, że Twoja strona główna ma tę nazwę
+            // Powrót do Twojej strony głównej
+            window.location.href = 'wersja 1.85.html'; 
         }
     </script>
 </body>
