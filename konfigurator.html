@@ -6,82 +6,73 @@
     <title>Konfigurator AR | door</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { --blue: #2563eb; --green: #22c55e; --bg: radial-gradient(circle, #ffffff 0%, #cbd5e1 100%); }
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        :root { --blue: #2563eb; --green: #22c55e; }
+        body { margin: 0; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; background: #f1f5f9; }
         
-        /* Tło z gradientem dla lepszego wyglądu modelu */
-        model-viewer { width: 100%; flex-grow: 1; background: var(--bg); --poster-color: transparent; }
+        /* Obszar 3D - przywróciłem ładne tło */
+        model-viewer { 
+            width: 100%; 
+            flex-grow: 1; 
+            background: radial-gradient(circle, #ffffff 0%, #cbd5e1 100%); 
+            --poster-color: transparent;
+        }
 
-        /* Przycisk AR u góry (dostosowany do iPhone 14 Pro Max) */
-        .ar-bar { position: absolute; top: calc(env(safe-area-inset-top) + 20px); right: 20px; z-index: 1000; }
-        .btn-ar { 
-            background: var(--blue); color: white; border: none; padding: 15px 25px; 
-            border-radius: 50px; font-weight: bold; cursor: pointer; 
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); font-size: 14px;
+        /* Przycisk AR - wymuszamy widoczność, gdy AR jest dostępne */
+        .btn-ar {
+            position: absolute; top: calc(env(safe-area-inset-top) + 20px);
+            right: 20px; background: var(--blue); color: white;
+            border: none; padding: 15px 25px; border-radius: 50px;
+            font-weight: bold; cursor: pointer; z-index: 1000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         /* Panel dolny */
-        .ui-panel { 
-            position: absolute; bottom: calc(env(safe-area-inset-bottom) + 20px); 
-            left: 20px; right: 20px; background: white; padding: 25px; 
-            border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.15); 
-            max-width: 480px; margin: 0 auto; 
+        .ui-panel {
+            padding: 25px; background: white; border-radius: 30px 30px 0 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
         }
-        
-        .color-label { font-size: 12px; font-weight: 700; opacity: 0.6; margin-bottom: 10px; display: block; }
-        .color-grid { display: flex; gap: 12px; margin-bottom: 20px; justify-content: space-between; }
-        .dot { 
-            width: 55px; height: 55px; border-radius: 15px; cursor: pointer; 
-            border: 3px solid #f1f5f9; transition: 0.2s; 
-        }
-        .dot.active { border-color: var(--blue); transform: scale(1.1); }
-
+        .color-grid { display: flex; gap: 15px; margin: 15px 0; justify-content: center; }
+        .dot { width: 50px; height: 50px; border-radius: 12px; cursor: pointer; border: 3px solid #eee; }
+        .dot.active { border-color: var(--blue); }
         .btn-main { 
             width: 100%; background: var(--green); color: white; border: none; 
-            padding: 20px; border-radius: 18px; font-weight: 800; cursor: pointer; 
-            font-size: 16px; transition: 0.3s;
+            padding: 20px; border-radius: 15px; font-weight: 800; font-size: 16px;
         }
-        .btn-main:hover { background: #16a34a; }
     </style>
 </head>
 <body>
 
-    <div class="ar-bar">
-        <model-viewer id="doorModel" 
-            src="door.glb" 
-            ios-src="door.usdz" 
-            ar ar-modes="webxr scene-viewer quick-look" 
-            camera-controls shadow-intensity="2" 
-            ar-scale="fixed">
-            <button slot="ar-button" class="btn-ar">📏 PRZYMIERZ / ZMIERZ W AR</button>
-        </model-viewer>
-    </div>
+    <model-viewer id="doorModel" 
+        src="door.glb" 
+        ios-src="door.usdz" 
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-controls 
+        ar-scale="fixed"
+        shadow-intensity="2">
+        
+        <button slot="ar-button" class="btn-ar">📏 OTWÓRZ MIARKĘ AR</button>
+    </model-viewer>
 
     <div class="ui-panel">
-        <span class="color-label">WYBIERZ KOLOR DRZWI:</span>
         <div class="color-grid">
             <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt', 2850, this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="paint('#5d4037', 'Orzech', 2700, this)"></div>
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
             <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
         </div>
-
-        <button class="btn-main" onclick="sendToService()">✅ DODAJ DO KOSZTORYSU</button>
+        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ WYBÓR</button>
     </div>
 
     <script>
-        let currentSelection = { n: "Montaż drzwi door (Antracyt)", p: 2850 };
+        let currentData = { n: "Drzwi door (Antracyt)", p: 2850 };
 
         function paint(hex, name, price, el) {
-            currentSelection = { n: "Montaż drzwi door (" + name + ")", p: price };
+            currentData = { n: "Drzwi door (" + name + ")", p: price };
             const mv = document.querySelector('#doorModel');
-            
             if (mv.model) {
-                // Malowanie wszystkich elementów (skrzydło, ościeżnica)
                 mv.model.materials.forEach(mat => {
-                    const mName = mat.name.toLowerCase();
-                    // Pomija klamkę (Handle), maluje resztę
-                    if (!mName.includes('handle') && !mName.includes('klamka')) {
+                    // Maluje wszystko oprócz klamki (jeśli klamka ma w nazwie 'handle' lub 'klamka')
+                    if (!mat.name.toLowerCase().includes('handle') && !mat.name.toLowerCase().includes('klamka')) {
                         mat.pbrMetallicRoughness.setBaseColorFactor(hex);
                     }
                 });
@@ -92,10 +83,9 @@
 
         function sendToService() {
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
-            queue.push(currentSelection);
+            queue.push(currentData);
             localStorage.setItem('services_queue', JSON.stringify(queue));
-            // Powrót do Twojej strony głównej
-            window.location.href = 'wersja 1.85.html'; 
+            window.location.href = 'wersja 1.85.html';
         }
     </script>
 </body>
