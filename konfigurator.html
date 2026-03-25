@@ -3,89 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Konfigurator AR | door</title>
+    <title>Konfigurator AR | SERWIS-DRZWI.PRO</title>
+    
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root { --blue: #2563eb; --green: #22c55e; }
-        body { margin: 0; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; background: #f1f5f9; }
+        :root { 
+            --blue: #2563eb; 
+            --green: #22c55e; 
+            /* SPÓJNE TŁO ZE STRONĄ GŁÓWNĄ */
+            --bg: #0f172a; 
+            --text: #f8fafc;
+        }
         
-        /* Obszar 3D - przywróciłem ładne tło */
+        body { 
+            margin: 0; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            background: var(--bg); /* Ciemne tło główne */
+            color: var(--text);
+        }
+        
+        /* Obszar 3D z ciemnym gradientem, spójny z HERO */
         model-viewer { 
             width: 100%; 
             flex-grow: 1; 
-            background: radial-gradient(circle, #ffffff 0%, #cbd5e1 100%); 
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             --poster-color: transparent;
         }
 
-        /* Przycisk AR - wymuszamy widoczność, gdy AR jest dostępne */
+        /* Przycisk AR - wymuszamy widoczność na telefonach */
         .btn-ar {
-            position: absolute; top: calc(env(safe-area-inset-top) + 20px);
-            right: 20px; background: var(--blue); color: white;
-            border: none; padding: 15px 25px; border-radius: 50px;
-            font-weight: bold; cursor: pointer; z-index: 1000;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            position: absolute; 
+            top: calc(env(safe-area-inset-top) + 20px);
+            right: 20px; 
+            background: var(--blue); 
+            color: white;
+            border: none; 
+            padding: 15px 25px; 
+            border-radius: 50px;
+            font-weight: 700; 
+            cursor: pointer; 
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+            font-size: 14px;
+            letter-spacing: 0.5px;
         }
 
-        /* Panel dolny */
+        /* Panel dolny z kolorami - lekko przezroczysty, nowoczesny */
         .ui-panel {
-            padding: 25px; background: white; border-radius: 30px 30px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+            padding: 25px; 
+            background: rgba(30, 41, 59, 0.9); /* var(--card) ze strony głównej */
+            backdrop-filter: blur(10px);
+            border-radius: 30px 30px 0 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
         }
-        .color-grid { display: flex; gap: 15px; margin: 15px 0; justify-content: center; }
-        .dot { width: 50px; height: 50px; border-radius: 12px; cursor: pointer; border: 3px solid #eee; }
-        .dot.active { border-color: var(--blue); }
+        
+        .color-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.7;
+            margin-bottom: 12px;
+            display: block;
+            color: #38bdf8; /* var(--accent) ze strony głównej */
+            text-align: center;
+        }
+
+        .color-grid { 
+            display: flex; 
+            gap: 15px; 
+            margin: 0 0 20px 0; 
+            justify-content: center; 
+        }
+        
+        .dot { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            border: 3px solid rgba(255,255,255,0.1); 
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .dot.active { 
+            border-color: var(--blue); 
+            transform: scale(1.1); 
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+        }
+        .dot:hover:not(.active) {
+            border-color: rgba(255,255,255,0.3);
+        }
+
         .btn-main { 
-            width: 100%; background: var(--green); color: white; border: none; 
-            padding: 20px; border-radius: 15px; font-weight: 800; font-size: 16px;
+            width: 100%; 
+            background: var(--green); 
+            color: white; 
+            border: none; 
+            padding: 20px; 
+            border-radius: 15px; 
+            font-weight: 800; 
+            font-size: 16px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+        .btn-main:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
     <model-viewer id="doorModel" 
-        src="door.glb" 
-        ios-src="door.usdz" 
+        src="./door.glb" 
+        ios-src="./door.usdz" 
         ar ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
         ar-scale="fixed"
-        shadow-intensity="2">
+        shadow-intensity="2"
+        environment-image="neutral"
+        alt="Model drzwi 3D dla door">
         
         <button slot="ar-button" class="btn-ar">📏 OTWÓRZ MIARKĘ AR</button>
     </model-viewer>
 
     <div class="ui-panel">
+        <span class="color-label">Wybierz okleinę:</span>
         <div class="color-grid">
-            <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt', 2850, this)"></div>
+            <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt Mat', 2850, this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="paint('#5d4037', 'Orzech', 2700, this)"></div>
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
-            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
+            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały Premium', 2600, this)"></div>
         </div>
-        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ WYBÓR</button>
+        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ WYBÓR DRZWI</button>
     </div>
 
     <script>
-        let currentData = { n: "Drzwi door (Antracyt)", p: 2850 };
+        // Dane startowe (dla pierwszej kropki)
+        let currentData = { n: "Drzwi door (Antracyt Mat)", p: 2850 };
 
+        // Funkcja zmiany kolorów
         function paint(hex, name, price, el) {
+            // Aktualizujemy dane do wysyłki
             currentData = { n: "Drzwi door (" + name + ")", p: price };
+            
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
+                // Przechodzimy przez wszystkie materiały modelu
                 mv.model.materials.forEach(mat => {
-                    // Maluje wszystko oprócz klamki (jeśli klamka ma w nazwie 'handle' lub 'klamka')
+                    // Maluje wszystko, co nie jest klamką (jeśli klamka ma w nazwie 'handle' lub 'klamka')
                     if (!mat.name.toLowerCase().includes('handle') && !mat.name.toLowerCase().includes('klamka')) {
                         mat.pbrMetallicRoughness.setBaseColorFactor(hex);
                     }
                 });
             }
+            
+            // Wizualna obsługa kropek
             document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
             el.classList.add('active');
         }
 
+        // NAPRAWIONA FUNKCJA ZATWIERDZANIA
         function sendToService() {
+            // 1. Pobieramy obecną kolejkę z pamięci (lub tworzymy nową)
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
+            
+            // 2. Dodajemy skonfigurowane drzwi
             queue.push(currentData);
+            
+            // 3. Zapisujemy z powrotem w pamięci
             localStorage.setItem('services_queue', JSON.stringify(queue));
-            window.location.href = 'wersja 1.85.html';
+            
+            // 4. Przekierowujemy do Twojej strony głównej
+            // Jeśli Twoja strona główna nazywa się 'index.html', zmień poniżej.
+            window.location.href = 'index.html'; 
         }
     </script>
 </body>
