@@ -9,185 +9,100 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { 
-            --blue: #2563eb; 
-            --green: #22c55e; 
-            --bg: #0f172a; 
-            --text: #f8fafc;
-        }
-        
+        :root { --blue: #2563eb; --green: #22c55e; --bg: #0f172a; }
         body { 
-            margin: 0; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            background: var(--bg); 
-            color: var(--text);
-            overflow: hidden;
+            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; height: 100vh; 
+            display: flex; flex-direction: column; background: var(--bg); overflow: hidden;
         }
         
-        /* Obszar 3D z ciemnym gradientem */
         model-viewer { 
-            width: 100%; 
-            flex-grow: 1; 
+            width: 100%; flex-grow: 1; 
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             --poster-color: transparent;
         }
 
-        /* --- PASEK GÓRNY (Układ przycisków) --- */
+        /* PASEK GÓRNY */
         .top-bar {
-            position: absolute;
-            top: calc(env(safe-area-inset-top) + 15px);
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
+            position: absolute; top: calc(env(safe-area-inset-top) + 20px);
+            left: 20px; right: 20px; display: flex; justify-content: space-between; z-index: 1000;
         }
 
-        /* Przycisk Powrotu (⬅️) - Z Lewej */
         .btn-back {
-            background: rgba(255,255,255,0.05);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 10px 15px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 13px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: 0.3s;
+            background: rgba(255,255,255,0.15); color: white; padding: 12px 18px;
+            border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 13px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
         }
-        .btn-back:hover { background: rgba(255,255,255,0.15); }
 
-        /* Przycisk AR (📏) - WYŚRODKOWANY NA GÓRZE */
+        /* PRZYCISK AR - WYŚRODKOWANY DLA OBU SYSTEMÓW */
         .btn-ar {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%); /* Idealne centrowanie */
-            background: var(--blue); 
-            color: white;
-            border: none; 
-            padding: 15px 30px; 
-            border-radius: 50px;
-            font-weight: 700; 
-            cursor: pointer; 
-            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(5px);
+            position: absolute; left: 50%; transform: translateX(-50%);
+            background: var(--blue); color: white; border: none; 
+            padding: 15px 30px; border-radius: 50px; font-weight: 800; 
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5); font-size: 14px;
+            display: none; /* Pokazuje się tylko gdy AR jest dostępne */
         }
-        .btn-ar:hover { background: #1d4ed8; }
+        /* Pokazujemy przycisk tylko jeśli przeglądarka wspiera AR */
+        model-viewer[ar-status="not-presenting"] .btn-ar { display: block; }
 
-        /* --- PANEL DOLNY (Z poprawką dla iPhone) --- */
+        /* PANEL DOLNY */
         .ui-panel {
-            /* POPRAWKA DLA IPHONE: env(safe-area-inset-bottom) */
-            padding: 25px 25px calc(env(safe-area-inset-bottom) + 30px); 
-            background: rgba(30, 41, 59, 0.95); /* var(--card) ze strony głównej */
-            backdrop-filter: blur(10px);
-            border-radius: 30px 30px 0 0;
+            padding: 25px 25px calc(env(safe-area-inset-bottom) + 50px); 
+            background: rgba(30, 41, 59, 0.98); border-radius: 40px 40px 0 0;
             border-top: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
-            text-align: center;
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.6);
         }
         
-        .color-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.7;
-            margin-bottom: 12px;
-            display: block;
-            color: #38bdf8;
-        }
-
-        .color-grid { 
-            display: flex; 
-            gap: 15px; 
-            margin-bottom: 25px; 
-            justify-content: center; 
-        }
-        
+        .color-grid { display: flex; gap: 15px; margin-bottom: 25px; justify-content: center; }
         .dot { 
-            width: 50px; 
-            height: 50px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            border: 3px solid rgba(255,255,255,0.1); 
-            transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            width: 50px; height: 50px; border-radius: 12px; cursor: pointer; 
+            border: 3px solid rgba(255,255,255,0.1); transition: 0.3s;
         }
-        .dot.active { 
-            border-color: var(--blue); 
-            transform: scale(1.1); 
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
-        }
+        .dot.active { border-color: var(--blue); transform: scale(1.1); }
 
         .btn-main { 
-            width: 100%; 
-            background: var(--green); 
-            color: white; 
-            border: none; 
-            padding: 18px; 
-            border-radius: 15px; 
-            font-weight: 800; 
-            font-size: 16px;
+            width: 100%; background: var(--green); color: white; border: none; 
+            padding: 20px; border-radius: 18px; font-weight: 800; font-size: 16px;
             cursor: pointer;
-            letter-spacing: 0.5px;
-            transition: 0.2s;
-            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
-        }
-        .btn-main:hover {
-            background: #16a34a;
-            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">⬅ Powrót</a>
+    </div>
+
     <model-viewer id="doorModel" 
-        src="./door.glb" 
-        ios-src="./door.usdz" 
-        ar ar-modes="webxr scene-viewer quick-look" 
+        src="door.glb" 
+        ios-src="door.usdz" 
+        ar 
+        ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
         ar-scale="fixed"
         shadow-intensity="2"
-        environment-image="neutral"
-        alt="Model drzwi 3D dla SERWIS-DRZWI.PRO">
+        environment-image="neutral">
         
-        <button slot="ar-button" class="btn-ar">📏 OTWÓRZ APARAT (AR)</button>
+        <button slot="ar-button" class="btn-ar">📏 OTWÓRZ W TWOIM POKOJU (AR)</button>
     </model-viewer>
 
-    <div class="top-bar">
-        <a href="index.html" class="btn-back">⬅️ POWRÓT</a>
-        </div>
-
     <div class="ui-panel">
-        <span class="color-label">Wybierz okleinę:</span>
         <div class="color-grid">
-            <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt Mat', 2850, this)"></div>
+            <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt', 2850, this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="paint('#5d4037', 'Orzech', 2700, this)"></div>
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
-            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały Premium', 2600, this)"></div>
+            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
         </div>
         <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ I DALEJ</button>
     </div>
 
     <script>
-        // Dane startowe
-        let currentData = { n: "Drzwi door (Antracyt Mat)", p: 2850 };
+        let currentData = { n: "Drzwi door (Antracyt)", p: 2850 };
 
-        // Funkcja zmiany kolorów
         function paint(hex, name, price, el) {
             currentData = { n: "Drzwi door (" + name + ")", p: price };
-            
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
                 mv.model.materials.forEach(mat => {
-                    // Maluje wszystko oprócz klamki (o ile klamka ma 'handle' lub 'klamka' w nazwie)
                     if (!mat.name.toLowerCase().includes('handle') && !mat.name.toLowerCase().includes('klamka')) {
                         mat.pbrMetallicRoughness.setBaseColorFactor(hex);
                     }
@@ -197,12 +112,10 @@
             el.classList.add('active');
         }
 
-        // Funkcja zatwierdzania i powrotu do index.html
         function sendToService() {
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
             queue.push(currentData);
             localStorage.setItem('services_queue', JSON.stringify(queue));
-            // Kieruje na index.html
             window.location.href = 'index.html'; 
         }
     </script>
