@@ -3,82 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Konfigurator AR | SERWIS-DRZWI.PRO</title>
+    <title>Konfigurator AR | door | SERWIS-DRZWI.PRO</title>
     
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --blue: #2563eb; --green: #22c55e; --bg: #0f172a; --text: #f8fafc; }
+        :root { 
+            --blue: #2563eb; 
+            --green: #22c55e; 
+            --bg: #0f172a; 
+            --text: #f8fafc;
+        }
         
         body { 
-            margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; 
-            height: 100vh; display: flex; flex-direction: column; 
-            background: var(--bg); color: var(--text); overflow: hidden;
+            margin: 0; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            height: -webkit-fill-available; /* Naprawa wysokości Safari iOS */
+            height: 100vh;
+            display: flex; 
+            flex-direction: column; 
+            background: var(--bg); 
+            color: var(--text);
+            overflow: hidden; /* Trzyma interfejs w miejscu */
         }
         
+        /* Obszar 3D zajmuje całą dostępną przestrzeń */
         model-viewer { 
-            width: 100%; flex-grow: 1; 
+            width: 100%; 
+            flex-grow: 1; 
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            --poster-color: transparent;
         }
 
-        /* --- PASEK GÓRNY --- */
+        /* PASEK GÓRNY - Profesjonalne rozmieszczenie */
         .top-bar {
-            position: absolute; top: calc(env(safe-area-inset-top) + 15px);
-            left: 20px; right: 20px; display: flex; justify-content: space-between;
-            align-items: center; z-index: 1000;
+            position: absolute;
+            top: calc(env(safe-area-inset-top) + 20px);
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
         }
 
         .btn-back {
-            background: rgba(255,255,255,0.1); color: white; padding: 12px 18px;
-            border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 13px;
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 13px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
         }
+        .btn-back:hover { background: rgba(255,255,255,0.2); }
 
-        /* PRZYCISKI NARZĘDZIOWE NA GÓRZE */
-        .center-tools {
-            position: absolute; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 10px;
-        }
-
+        /* Przycisk AR - wyśrodkowany u góry */
         .btn-ar {
-            background: var(--blue); color: white; border: none; 
-            padding: 14px 22px; border-radius: 50px; font-weight: 800; font-size: 13px;
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4); cursor: pointer;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue); 
+            color: white;
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 50px;
+            font-weight: 800; 
+            cursor: pointer; 
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
+            font-size: 13px;
+            backdrop-filter: blur(5px);
         }
 
-        /* SPECJALNY PRZYCISK DLA IPHONE */
-        .btn-iphone-measure {
-            background: #ffffff; color: #000000; border: none; 
-            padding: 14px 22px; border-radius: 50px; font-weight: 800; font-size: 13px;
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3); cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
-        }
-
-        /* --- PANEL DOLNY (WYSOKI I KLIKALNY NA IPHONE) --- */
+        /* --- PANEL DOLNY (KLUCZOWA POPRAWKA KLIKALNOŚCI) --- */
         .ui-panel {
-            /* Bardzo wysoki margines dolny (100px), żeby ominąć pasek systemowy iOS */
-            padding: 30px 25px calc(env(safe-area-inset-bottom) + 100px); 
+            /* Dodatkowe 80px, żeby ominąć pasek systemowy iPhone */
+            padding: 30px 25px calc(env(safe-area-inset-bottom) + 80px); 
             background: rgba(30, 41, 59, 0.98);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
             border-radius: 40px 40px 0 0;
             border-top: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.6);
             z-index: 2000;
         }
         
-        .color-grid { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
+        .color-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 12px;
+            display: block;
+            text-align: center;
+            color: #38bdf8;
+        }
+
+        .color-grid { 
+            display: flex; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+            justify-content: center; 
+        }
         
         .dot { 
-            width: 55px; height: 55px; border-radius: 15px; cursor: pointer; 
-            border: 3px solid rgba(255,255,255,0.1); transition: 0.3s;
+            width: 50px; 
+            height: 50px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            border: 3px solid rgba(255,255,255,0.1); 
+            transition: 0.3s; 
         }
-        .dot.active { border-color: var(--blue); transform: scale(1.1); }
+        .dot.active { 
+            border-color: var(--blue); 
+            transform: scale(1.1); 
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+        }
 
         .btn-main { 
-            width: 100%; background: var(--green); color: white; border: none; 
-            padding: 22px; border-radius: 18px; font-weight: 800; font-size: 17px;
-            cursor: pointer; box-shadow: 0 5px 20px rgba(34, 197, 94, 0.4);
+            width: 100%; 
+            background: var(--green); 
+            color: white; 
+            border: none; 
+            padding: 20px; 
+            border-radius: 15px; 
+            font-weight: 800; 
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-main:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -86,38 +143,40 @@
 
     <div class="top-bar">
         <a href="index.html" class="btn-back">⬅ POWRÓT</a>
-        <div class="center-tools">
-            <button class="btn-iphone-measure" onclick="triggerIPhoneMeasure()">📏 MIARKA IPHONE</button>
         </div>
-    </div>
 
     <model-viewer id="doorModel" 
-        src="door.glb" 
-        ios-src="door.usdz" 
+        src="./door.glb" 
+        ios-src="./door.usdz" 
         ar ar-modes="webxr scene-viewer quick-look" 
         camera-controls ar-scale="fixed" shadow-intensity="2">
         
-        <button slot="ar-button" class="btn-ar">🚪 PRZYMIERZ DRZWI (AR)</button>
+        <button slot="ar-button" class="btn-ar">📐 OTWÓRZ APARAT AR</button>
     </model-viewer>
 
     <div class="ui-panel">
+        <span class="color-label">Wybierz okleinę:</span>
         <div class="color-grid">
             <div class="dot active" style="background: #2c2c2c;" onclick="paint('#2c2c2c', 'Antracyt', 2850, this)"></div>
             <div class="dot" style="background: #5d4037;" onclick="paint('#5d4037', 'Orzech', 2700, this)"></div>
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
-            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
+            <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały Premium', 2600, this)"></div>
         </div>
         <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ WYBÓR</button>
     </div>
 
     <script>
-        let currentData = { n: "Drzwi door (Antracyt)", p: 2850 };
+        // Dane startowe
+        let currentData = { n: "Drzwi door (Antracyt Mat)", p: 2850 };
 
+        // Funkcja zmiany kolorów
         function paint(hex, name, price, el) {
             currentData = { n: "Drzwi door (" + name + ")", p: price };
+            
             const mv = document.querySelector('#doorModel');
             if (mv.model) {
                 mv.model.materials.forEach(mat => {
+                    // Maluje wszystko oprócz klamki (o ile klamka ma 'handle' lub 'klamka' w nazwie)
                     if (!mat.name.toLowerCase().includes('handle') && !mat.name.toLowerCase().includes('klamka')) {
                         mat.pbrMetallicRoughness.setBaseColorFactor(hex);
                     }
@@ -127,17 +186,18 @@
             el.classList.add('active');
         }
 
-        // FUNKCJA DLA IPHONE - Otwiera systemową aplikację Miarka
+        // NAPRAWIONA MIARKA IPHONE - Otwiera systemową aplikację "Miarka" (Measure)
         function triggerIPhoneMeasure() {
             // Schemat url aplikacji Apple Measure
             window.location.href = "com.apple.measure://"; 
             
-            // Jeśli powyższy nie zadziała (zależy od wersji iOS), próbujemy alternatywny
+            // Rezerwowy url jeśli powyższy nie zadziała w starszych wersjach iOS
             setTimeout(() => {
                 window.location.href = "nt-measure://";
             }, 500);
         }
 
+        // Funkcja zatwierdzania i powrotu do index.html
         function sendToService() {
             let queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
             queue.push(currentData);
