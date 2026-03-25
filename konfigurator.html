@@ -35,7 +35,7 @@
             backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* PRZYCISKI AR I POMIAR NA ŚRODKU */
+        /* PRZYCISKI NARZĘDZIOWE NA GÓRZE */
         .center-tools {
             position: absolute; left: 50%; transform: translateX(-50%);
             display: flex; gap: 10px;
@@ -47,16 +47,18 @@
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4); cursor: pointer;
         }
 
-        .btn-measure {
-            background: white; color: black; border: none; 
+        /* SPECJALNY PRZYCISK DLA IPHONE */
+        .btn-iphone-measure {
+            background: #ffffff; color: #000000; border: none; 
             padding: 14px 22px; border-radius: 50px; font-weight: 800; font-size: 13px;
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2); cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3); cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
         }
 
-        /* --- PANEL DOLNY (KLUCZOWA POPRAWKA KLIKALNOŚCI) --- */
+        /* --- PANEL DOLNY (WYSOKI I KLIKALNY NA IPHONE) --- */
         .ui-panel {
-            /* Dodatkowe 80px marginesu, żeby przyciski były WYŻEJ niż pasek iPhone */
-            padding: 30px 25px calc(env(safe-area-inset-bottom) + 80px); 
+            /* Bardzo wysoki margines dolny (100px), żeby ominąć pasek systemowy iOS */
+            padding: 30px 25px calc(env(safe-area-inset-bottom) + 100px); 
             background: rgba(30, 41, 59, 0.98);
             backdrop-filter: blur(20px);
             border-radius: 40px 40px 0 0;
@@ -85,7 +87,7 @@
     <div class="top-bar">
         <a href="index.html" class="btn-back">⬅ POWRÓT</a>
         <div class="center-tools">
-            <button class="btn-measure" onclick="openMeasure()">📏 POMIAR</button>
+            <button class="btn-iphone-measure" onclick="triggerIPhoneMeasure()">📏 MIARKA IPHONE</button>
         </div>
     </div>
 
@@ -95,7 +97,7 @@
         ar ar-modes="webxr scene-viewer quick-look" 
         camera-controls ar-scale="fixed" shadow-intensity="2">
         
-        <button slot="ar-button" class="btn-ar">🚪 PRZYMIERZ (AR)</button>
+        <button slot="ar-button" class="btn-ar">🚪 PRZYMIERZ DRZWI (AR)</button>
     </model-viewer>
 
     <div class="ui-panel">
@@ -105,7 +107,7 @@
             <div class="dot" style="background: #a67c52;" onclick="paint('#a67c52', 'Dąb Złoty', 2750, this)"></div>
             <div class="dot" style="background: #ffffff;" onclick="paint('#ffffff', 'Biały', 2600, this)"></div>
         </div>
-        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ I DALEJ</button>
+        <button class="btn-main" onclick="sendToService()">✅ ZATWIERDŹ WYBÓR</button>
     </div>
 
     <script>
@@ -125,13 +127,15 @@
             el.classList.add('active');
         }
 
-        function openMeasure() {
-            // Na iPhone otwiera systemową miarkę, na Androidzie aparat
-            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        // FUNKCJA DLA IPHONE - Otwiera systemową aplikację Miarka
+        function triggerIPhoneMeasure() {
+            // Schemat url aplikacji Apple Measure
+            window.location.href = "com.apple.measure://"; 
+            
+            // Jeśli powyższy nie zadziała (zależy od wersji iOS), próbujemy alternatywny
+            setTimeout(() => {
                 window.location.href = "nt-measure://";
-            } else {
-                window.location.href = "intent:///#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end";
-            }
+            }, 500);
         }
 
         function sendToService() {
