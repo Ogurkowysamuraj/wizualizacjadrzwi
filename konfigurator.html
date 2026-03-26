@@ -130,11 +130,23 @@
         }
 
         
-           function runMeasure() {
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        // Używamy linku, który mi podałeś - to najpewniejsza metoda na iOS
-        window.location.href = "https://apps.apple.com/pl/app/miarka/id1383426740?l=pl";
+          function runMeasure() {
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+    if (isIOS) {
+        // Próba 1: Bezpośrednie wywołanie aplikacji Miarka (najszybsze)
+        window.location.href = "apple-measure://";
+
+        // Próba 2: Jeśli powyższe nie zadziała w 500ms (np. stara wersja iOS), 
+        // używamy alternatywnego protokołu systemowego
+        setTimeout(() => {
+            if (document.hasFocus()) {
+                window.location.href = "nt-measure://";
+            }
+        }, 500);
+
     } else {
+        // Obsługa Androida (jeśli chcesz)
         alert("Funkcja Miarka AR jest dostępna na urządzeniach iPhone.");
     }
 }
