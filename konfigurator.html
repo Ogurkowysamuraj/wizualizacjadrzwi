@@ -130,24 +130,31 @@
         }
 
         
-          function runMeasure() {
-    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+         function runMeasure() {
+    // Sprawdzamy, czy to iPhone
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        
+        // Tworzymy niewidzialny link "na chwilę"
+        const link = document.createElement('a');
+        
+        // To jest najnowszy identyfikator dla aplikacji Miarka
+        link.href = "com.apple.measure://"; 
+        
+        // Dodajemy go do dokumentu i klikamy
+        document.body.appendChild(link);
+        link.click();
+        
+        // Usuwamy go zaraz po kliknięciu
+        document.body.removeChild(link);
 
-    if (isIOS) {
-        // Próba 1: Bezpośrednie wywołanie aplikacji Miarka (najszybsze)
-       <a href="apple-measure://">Otwórz Miarkę AR</a>
-
-        // Próba 2: Jeśli powyższe nie zadziała w 500ms (np. stara wersja iOS), 
-        // używamy alternatywnego protokołu systemowego
+        // Fallback: Jeśli po 1 sekundzie nadal jesteśmy na stronie, 
+        // spróbuj drugiego identyfikatora
         setTimeout(() => {
-            if (document.hasFocus()) {
-                window.location.href = "nt-measure://";
-            }
-        }, 500);
+            window.location.href = "apple-measure://";
+        }, 1000);
 
     } else {
-        // Obsługa Androida (jeśli chcesz)
-        alert("Funkcja Miarka AR jest dostępna na urządzeniach iPhone.");
+        alert("Funkcja dostępna tylko na urządzeniach iPhone.");
     }
 }
         function confirmSelection() {
