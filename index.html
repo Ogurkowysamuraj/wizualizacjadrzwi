@@ -50,7 +50,7 @@
         /* USŁUGI ZE SCROLLEM */
         .diag-grid { 
             display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
-            max-height: 250px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; 
+            max-height: 270px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; 
         }
         .diag-grid::-webkit-scrollbar { width: 6px; }
         .diag-grid::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
@@ -157,7 +157,7 @@
                 <input type="email" id="cEmail" placeholder="E-mail klienta">
                 <input type="text" id="cStreet" placeholder="Ulica i numer" onkeydown="if(event.key==='Enter') searchAddress()">
                 <input type="text" id="cCity" placeholder="Miasto" onkeydown="if(event.key==='Enter') searchAddress()">
-                  <input type="text" id="cPostcode" placeholder="kod pocztowy">
+                  <input type="text" id="cPostcode" placeholder="Kod pocztowy">
                 <small style="opacity: 0.6; font-size: 10px;">Wpisz adres i naciśnij ENTER, aby zaznaczyć na mapie.</small>
             </div>
             
