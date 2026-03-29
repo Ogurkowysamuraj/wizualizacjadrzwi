@@ -12,24 +12,55 @@
             --primary: #2563eb; --accent: #38bdf8; --bg: #0f172a; 
             --card: rgba(30, 41, 59, 0.7); --text: #f8fafc; --success: #22c55e;
             --input-bg: rgba(15, 23, 42, 0.6); --input-text: #ffffff; --input-border: rgba(255,255,255,0.1);
+            --nav-bg: rgba(15, 23, 42, 0.9);
         }
         .light-mode { 
             --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; 
             --input-bg: #ffffff; --input-text: #0f172a; --input-border: #cbd5e1;
+            --nav-bg: rgba(255, 255, 255, 0.95);
         }
         
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); scroll-behavior: smooth; transition: 0.5s; }
         
-        nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); position: fixed; width: 90%; top: 0; z-index: 1000; border-bottom: 1px solid var(--input-border); }
-        .light-mode nav { background: rgba(255, 255, 255, 0.8); }
-        .logo { font-size: 22px; font-weight: 800; color: var(--accent); text-decoration: none; }
-        .nav-links a { color: var(--text); text-decoration: none; margin-left: 20px; font-size: 13px; text-transform: uppercase; font-weight: 700; }
+        /* --- NAWIGACJA Z LOGO --- */
+        nav { 
+            padding: 10px 5%; /* Zmniejszony padding pionowy pod logo */
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--nav-bg); backdrop-filter: blur(15px); 
+            position: fixed; width: 90%; top: 0; z-index: 1000; 
+            border-bottom: 1px solid var(--input-border); 
+            transition: background 0.5s;
+        }
+        
+        /* Styl kontenera logo */
+        .logo-link { 
+            display: flex; align-items: center; text-decoration: none; 
+        }
+        
+        /* Styl samej grafiki logo */
+        .firm-logo { 
+            height: 40px; /* Wysokość dopasowana do paska nawigacji */
+            width: auto; /* Zachowuje proporcje */
+            display: block;
+            transition: 0.3s;
+        }
+        
+        /* Delikatny cień pod logo w jasnym trybie dla lepszego kontrastu */
+        .light-mode .firm-logo {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text); text-decoration: none; margin-left: 20px; font-size: 13px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
 
         .section { padding: 80px 8%; }
         
         .hero { 
-            height: 40vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            height: 50vh; /* Zwiększona wysokość hero, bo nav jest niższy */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            padding-top: 60px; /* Offset pod stały nav */
         }
         .light-mode .hero { background: radial-gradient(circle at center, #e2e8f0 0%, #f1f5f9 100%); }
 
@@ -92,26 +123,34 @@
         }
         #backToTop:hover { background: #1d4ed8; transform: translateY(-3px); }
 
-        @media (max-width: 1100px) { .asystent-grid { grid-template-columns: 1fr !important; } .eko-box { grid-template-columns: 1fr; } }
+        @media (max-width: 1100px) { 
+            .asystent-grid { grid-template-columns: 1fr !important; } 
+            .eko-box { grid-template-columns: 1fr; } 
+            .firm-logo { height: 35px; } /* Mniejsze logo na mobile */
+            .nav-links a { margin-left: 10px; font-size: 11px; }
+        }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="#" class="logo"><i class="fas fa-door-open"></i> SERWIS-DRZWI.PRO</a>
+    <a href="#" class="logo-link">
+        <img src="logo-firmowe.png" alt="Logo SERWIS-DRZWI.PRO" class="firm-logo">
+    </a>
     <div class="nav-links">
         <a href="#home">Start</a>
         <a href="#eko">Audyt EKO</a>
         <a href="forum.html">Forum</a>
         <a href="#poradniki">Baza Wiedzy</a>
         <a href="#kalendarz">Zlecenie</a>
-        <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-size: 18px;"><i class="fas fa-adjust"></i></button>
+        <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-size: 18px; margin-left: 15px;"><i class="fas fa-adjust"></i></button>
     </div>
 </nav>
 
 <section class="hero" id="home">
-    <h1>System Zarządzania Serwisem 4.0</h1>
-    <a href="konfigurator.html" class="btn-main" style="margin-top:20px;"><i class="fas fa-cube"></i> KONFIGURATOR 3D</a>
+    <h1 style="font-weight: 800; font-size: 32px; margin-bottom: 10px;">System Zarządzania Serwisem 4.0</h1>
+    <p style="opacity: 0.7; max-width: 600px; margin-bottom: 25px;">Zaprojektuj, zmierz, wyceń i umów serwis w jednym miejscu. Profesjonalne wsparcie dla Twoich drzwi.</p>
+    <a href="konfigurator.html" class="btn-main"><i class="fas fa-cube"></i> OTWÓRZ KONFIGURATOR 3D / AR</a>
 </section>
 
 <section class="section" id="eko">
@@ -286,7 +325,10 @@
             });
             localStorage.removeItem('services_queue');
             update();
-            document.getElementById('serviceList').scrollIntoView({ behavior: 'smooth' });
+            // Przesunięcie do bazy usług po wgraniu danych z konfiguratora
+            setTimeout(() => {
+                document.getElementById('kalendarz').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
         }
     });
 
@@ -303,9 +345,11 @@
     setInterval(() => {
         const towns = ["Warszawie", "Otwocku", "Piasecznie"];
         const n = document.getElementById('notification');
-        document.getElementById('notif-text').innerText = `Nowe zlecenie w ${towns[Math.floor(Math.random()*3)]}!`;
-        n.style.display = 'block';
-        setTimeout(() => n.style.display = 'none', 4000);
+        if (n.style.display === 'none' || n.style.display === '') {
+            document.getElementById('notif-text').innerText = `Nowe zlecenie w ${towns[Math.floor(Math.random()*3)]}!`;
+            n.style.display = 'block';
+            setTimeout(() => n.style.display = 'none', 4000);
+        }
     }, 25000);
 </script>
 </body>
