@@ -22,7 +22,10 @@
         
         nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); position: fixed; width: 90%; top: 0; z-index: 1000; border-bottom: 1px solid var(--input-border); }
         .light-mode nav { background: rgba(255, 255, 255, 0.8); }
-        .logo { font-size: 22px; font-weight: 800; color: var(--accent); text-decoration: none; }
+        
+        /* LOGO PNG */
+        .logo-img { height: 45px; width: auto; display: block; }
+
         .nav-links a { color: var(--text); text-decoration: none; margin-left: 20px; font-size: 13px; text-transform: uppercase; font-weight: 700; }
 
         .section { padding: 80px 8%; }
@@ -37,97 +40,30 @@
         .eko-box { background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); padding: 40px; border-radius: 35px; border: 1px solid #10b981; margin: 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; color: white; }
         .result-circle { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 30px; border-radius: 50%; width: 140px; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; }
 
-        /* --- NOWA, OGROMNA KARUZELA AUTOMATYCZNA (Styl x-kom) --- */
-        #poradniki { background: #080d1a; padding: 100px 0; box-shadow: inset 0 0 100px rgba(0,0,0,0.8); } /* Ciemniejsze tło dla głębi */
-        
-        .video-carousel-container { 
-            position: relative; 
-            max-width: 1400px; /* Maksymalna szerokość kontenera karuzeli */
-            margin: 0 auto;
-            overflow: hidden; /* Ukrywa wystające duże karty */
-            padding: 0 70px; /* Miejsce na duże strzałki */
-        }
-        
-        .video-grid { 
-            display: flex; 
-            overflow-x: auto; 
-            scroll-behavior: smooth; 
-            gap: 40px; /* Większy odstęp między wielkimi kartami */
-            padding: 30px 0; 
-            scrollbar-width: none; -ms-overflow-style: none; /* Ukrycie scrollbara */
-        }
-        .video-grid::-webkit-scrollbar { display: none; } /* Ukrycie scrollbara Chrome/Safari */
-        
-        .video-card { 
-            min-width: 700px; /* OGROMNA SZEROKOŚĆ KARTY - jak baner */
-            flex-shrink: 0; 
-            background: #111827; /* Ciemniejsza karta */
-            border-radius: 30px; /* Większe zaokrąglenie */
-            overflow: hidden; 
-            border: 2px solid rgba(56, 189, 248, 0.1); /* Delikatna niebieska ramka */
-            text-align: center; 
-            padding-bottom: 25px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .video-card img { 
-            width: 100%; 
-            height: 380px; /* OGROMNA WYSOKOŚĆ GIF-a */
-            object-fit: cover; 
-            border-bottom: 2px solid rgba(56, 189, 248, 0.1);
-        }
-        
-        .video-card p {
-            font-weight: 800;
-            font-size: 22px; /* Większy napis */
-            color: var(--text);
-            margin: 20px 0 10px 0;
-            letter-spacing: -1px;
-        }
-
-        /* Duże strzałki na bokach */
-        .carousel-btn {
-            position: absolute; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            background: rgba(37, 99, 235, 0.8); /* Półprzezroczysty niebieski */
-            color: white; 
-            border: none; 
-            width: 60px; /* Większe strzałki */
-            height: 60px; 
-            border-radius: 50%;
-            cursor: pointer; 
-            z-index: 100; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
-            transition: 0.3s;
-            backdrop-filter: blur(5px);
-            font-size: 20px;
-        }
+        /* --- DUŻA KARUZELA AUTO --- */
+        #poradniki { background: #080d1a; padding: 100px 0; }
+        .video-carousel-container { position: relative; max-width: 1400px; margin: 0 auto; overflow: hidden; padding: 0 70px; }
+        .video-grid { display: flex; overflow-x: auto; scroll-behavior: smooth; gap: 40px; padding: 30px 0; scrollbar-width: none; -ms-overflow-style: none; }
+        .video-grid::-webkit-scrollbar { display: none; }
+        .video-card { min-width: 700px; flex-shrink: 0; background: var(--card); border-radius: 30px; overflow: hidden; border: 1px solid var(--input-border); text-align: center; padding-bottom: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        .video-card img { width: 100%; height: 380px; object-fit: cover; }
+        .video-card p { font-weight: 800; font-size: 22px; margin: 20px 0; color: var(--text); }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(37, 99, 235, 0.8); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.3s; }
         .carousel-btn:hover { background: var(--accent); scale: 1.1; color: black; }
         .btn-prev { left: 10px; }
         .btn-next { right: 10px; }
-
-        /* Ukrycie strzałek na mobile, tam przewijamy palcem */
-        @media (max-width: 1100px) { 
-            .video-card { min-width: 300px; } /* Mniejsze na komórce */
-            .video-card img { height: 180px; }
-            .carousel-btn { display: none; } 
-            .video-carousel-container { padding: 0 20px; }
-        }
 
         /* ASYSTENT ZLECENIA 4.0 */
         .asystent-container { background: var(--card); border-radius: 35px; border: 1px solid var(--input-border); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; transition: 0.5s ease-in-out; }
         .asystent-grid.map-expanded { grid-template-columns: 0.5fr 0.5fr 2fr; }
 
-        /* USŁUGI ZE SCROLLEM */
+        /* USŁUGI - FIX ZANIKANIA KRAWĘDZI */
         .diag-grid { 
             display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
-            max-height: 300px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; 
+            max-height: 300px; overflow-y: auto; 
+            padding: 5px 8px 5px 5px; /* Padding zapobiega ucinaniu cieni/krawędzi */
+            margin-bottom: 20px; 
         }
         .diag-grid::-webkit-scrollbar { width: 6px; }
         .diag-grid::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
@@ -139,40 +75,24 @@
         input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: inherit; box-sizing: border-box; outline: none; }
         input:focus { border-color: var(--accent); }
 
-        /* MAPA */
         .map-wrapper { position: relative; height: 320px; border-radius: 20px; border: 1px solid var(--input-border); overflow: hidden; margin-bottom: 15px; transition: height 0.5s; }
-        .map-expanded .map-wrapper { height: 450px; }
         #map { height: 100%; width: 100%; z-index: 1; }
-        .map-zoom-btn { position: absolute; top: 10px; right: 10px; z-index: 1000; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-        /* PODSUMOWANIE I CENY */
+        .map-zoom-btn { position: absolute; top: 10px; right: 10px; z-index: 1000; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; }
         .summary-box { background: rgba(0,0,0,0.1); padding: 20px; border-radius: 20px; border: 1px solid var(--primary); }
-        .light-mode .summary-box { background: #f8fafc; }
-        
         .service-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 8px; background: rgba(120,120,120,0.1); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
-        .service-item b { white-space: nowrap; color: var(--accent); margin-left: 10px; }
-        .remove-btn { color: #ff4444; margin-left: 10px; cursor: pointer; font-size: 16px; }
-
         .btn-main { background: var(--primary); color: white; padding: 18px 35px; border-radius: 12px; font-weight: 800; text-decoration: none; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
-        .btn-main:hover { background: var(--accent); transform: scale(1.02); }
+        #notification { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 15px; display: none; z-index: 2000; }
+        #backToTop { position: fixed; bottom: 30px; right: 30px; background: #2563eb; color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1000; display: none; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
 
-        #notification { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 15px; display: none; z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-
-        #backToTop {
-            position: fixed; bottom: 30px; right: 30px;
-            background: #2563eb; color: white; border: none;
-            width: 50px; height: 50px; border-radius: 50%;
-            cursor: pointer; z-index: 1000; display: none; 
-            align-items: center; justify-content: center; font-size: 24px;
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); transition: 0.3s;
-        }
-        #backToTop:hover { background: #1d4ed8; transform: translateY(-3px); }
+        @media (max-width: 1100px) { .asystent-grid { grid-template-columns: 1fr !important; } .video-card { min-width: 320px; } .video-card img { height: 200px; } .carousel-btn { display: none; } }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="#" class="logo"><i class="fas fa-door-open"></i> SERWIS-DRZWI.PRO</a>
+    <a href="#" class="logo">
+        <img src="logofirmy.png" alt="Logo" class="logo-img">
+    </a>
     <div class="nav-links">
         <a href="#home">Start</a>
         <a href="#eko">Audyt EKO</a>
@@ -192,14 +112,12 @@
     <div class="eko-box">
         <div>
             <h2><i class="fas fa-thermometer-half"></i> Audyt Energii</h2>
-            <label style="font-size: 11px;">TYP DRZWI:</label>
             <select id="uValueOld" onchange="calculateEko()">
                 <option value="3.5">Stare drewniane / nieszczelne (U=3.5)</option>
                 <option value="2.2">Stare stalowe bez przekładki (U=2.2)</option>
                 <option value="1.6">Standardowe 10-letnie (U=1.6)</option>
                 <option value="1.1">Nowoczesne marketowe (U=1.1)</option>
             </select>
-            <label style="font-size: 11px;">RODZAJ OGRZEWANIA:</label>
             <select id="energyCost" onchange="calculateEko()">
                 <option value="1.10">Prąd / Grzejniki</option>
                 <option value="0.90">Olej opałowy</option>
@@ -212,11 +130,9 @@
 </section>
 
 <section class="section" id="poradniki">
-    <h2 style="text-align:center; margin-bottom:50px; font-weight: 800; font-size: 36px; letter-spacing: -2px;">Baza Wiedzy Premium</h2>
-    
+    <h2 style="text-align:center; margin-bottom:50px; font-weight: 800; font-size: 32px;">Baza Wiedzy Premium</h2>
     <div class="video-carousel-container">
         <button class="carousel-btn btn-prev" onclick="scrollVideos(-1)"><i class="fas fa-chevron-left"></i></button>
-        
         <div class="video-grid" id="videoGrid">
             <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif"><p>Prawidłowy Pomiar Otworu</p></div>
             <div class="video-card"><img src="https://media.giphy.com/media/l41lTjJp9N3S6bXmE/giphy.gif"><p>Montaż Ciepłego Progu</p></div>
@@ -225,7 +141,6 @@
             <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVup7F6FjFjJk4/giphy.gif"><p>Smarowanie Zamka Listwowego</p></div>
             <div class="video-card"><img src="https://media.giphy.com/media/l0HlHFRbmaZtBRhXG/giphy.gif"><p>Montaż Samozamykacza</p></div>
         </div>
-        
         <button class="carousel-btn btn-next" onclick="scrollVideos(1)"><i class="fas fa-chevron-right"></i></button>
     </div>
 </section>
@@ -238,11 +153,10 @@
                 <label>DANE KLIENTA</label>
                 <input type="text" id="cName" placeholder="Imię i Nazwisko">
                 <input type="text" id="cPhone" placeholder="Telefon">
-                <input type="email" id="cEmail" placeholder="E-mail klienta">
-                <input type="text" id="cStreet" placeholder="Ulica i numer" onkeydown="if(event.key==='Enter') searchAddress()">
+                <input type="email" id="cEmail" placeholder="E-mail">
+                <input type="text" id="cStreet" placeholder="Ulica" onkeydown="if(event.key==='Enter') searchAddress()">
                 <input type="text" id="cCity" placeholder="Miasto" onkeydown="if(event.key==='Enter') searchAddress()">
-                  <input type="text" id="cPostcode" placeholder="Kod pocztowy">
-                <small style="opacity: 0.6; font-size: 10px;">Wpisz adres i naciśnij ENTER, aby zaznaczyć na mapie.</small>
+                <input type="text" id="cPostcode" placeholder="Kod pocztowy">
             </div>
             
             <div class="column">
@@ -250,35 +164,32 @@
                 <div class="diag-grid">
                     <div class="diag-card" onclick="addService('Montaż drzwi', 450)">Montaż</div>
                     <div class="diag-card" onclick="addService('Regulacja serw.', 150)">Regulacja</div>
-                    <div class="diag-card" onclick="addService('Utylizacja starej ośc.', 120)">Utylizacja</div>
-                    <div class="diag-card" onclick="addService('Wymiana zamka/wkładki', 200)">Zamek</div>
-                    <div class="diag-card" onclick="addService('Podcięcie skrzydła', 130)">Podcięcie</div>
-                    <div class="diag-card" onclick="addService('Samozamykacz montaż', 190)">Samozamykacz</div>
+                    <div class="diag-card" onclick="addService('Utylizacja ośc.', 120)">Utylizacja</div>
+                    <div class="diag-card" onclick="addService('Wymiana zamka', 200)">Zamek</div>
+                    <div class="diag-card" onclick="addService('Podcięcie', 130)">Podcięcie</div>
+                    <div class="diag-card" onclick="addService('Samozamykacz', 190)">Samozamykacz</div>
                     <div class="diag-card" onclick="addService('Próg opadający', 220)">Próg opad.</div>
                     <div class="diag-card" onclick="addService('Wymiana uszczelek', 100)">Uszczelki</div>
                 </div>
-                <label>PIĘTRO</label>
                 <select id="floorSelect" onchange="update()">
                     <option value="0">Parter / Winda (0 zł)</option>
                     <script>for(let i=1; i<=10; i++) document.write(`<option value="${i*50}">${i}. Piętro (+${i*50} zł)</option>`);</script>
                 </select>
-                <textarea id="cNotes" placeholder="Dodatkowe uwagi techniczne..."></textarea>
+                <textarea id="cNotes" placeholder="Dodatkowe uwagi..."></textarea>
             </div>
 
             <div class="column">
                 <div class="map-wrapper">
-                    <button class="map-zoom-btn" onclick="toggleMap()" title="Powiększ mapę"><i class="fas fa-expand-alt"></i></button>
+                    <button class="map-zoom-btn" onclick="toggleMap()"><i class="fas fa-expand-alt"></i></button>
                     <div id="map"></div>
                 </div>
                 <div class="summary-box">
                     <div id="serviceList"></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 10px; opacity: 0.7;">
-                        <span>Koszt dojazdu:</span> <span id="distPrice">0 zł</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 24px; font-weight: 800; color: var(--accent); margin-top:15px; border-top: 1px solid var(--input-border); padding-top:15px;">
+                    <div id="distPrice" style="display:none">0 zł</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 24px; font-weight: 800; color: var(--accent); border-top: 1px solid var(--input-border); padding-top:15px;">
                         <span>SUMA:</span> <span id="sumTotal">0 zł</span>
                     </div>
-                    <button class="btn-main" style="width:100%; margin-top: 15px;" onclick="window.print()"><i class="fas fa-file-pdf"></i> GENERUJ PROTOKÓŁ</button>
+                    <button class="btn-main" style="width:100%; margin-top: 15px;" onclick="window.print()">PROTOKÓŁ PDF</button>
                 </div>
             </div>
         </div>
@@ -286,12 +197,10 @@
 </section>
 
 <div id="notification"><i class="fas fa-bell"></i> <span id="notif-text"></span></div>
-
 <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆</button>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // 1. Audyt EKO
     function calculateEko() {
         const uOld = parseFloat(document.getElementById('uValueOld').value);
         const energy = parseFloat(document.getElementById('energyCost').value);
@@ -299,139 +208,52 @@
         document.getElementById('ekoResult').innerText = Math.round(savings) + " zł";
     }
 
-    // 2. Obsługa Karuzeli Video z AUTOMATEM (Autoplay)
+    // KARUZELA AUTO
     const videoGrid = document.getElementById('videoGrid');
-    const scrollAmount = 740; // Szerokość OGROMNEJ karty (700px) + gap (40px)
-    let autoPlayInterval;
+    const scrollAmount = 740;
+    let autoInterval;
 
     function scrollVideos(dir) {
-        clearInterval(autoPlayInterval); // Zatrzymujemy automat po kliknięciu
-        
-        // Obliczamy nową pozycję
-        let newScrollLeft = videoGrid.scrollLeft + (dir * scrollAmount);
-        
-        // Pętla: Jeśli przewiniemy za daleko w prawo, wracamy na początek
-        if (newScrollLeft >= (videoGrid.scrollWidth - videoGrid.clientWidth)) {
-            newScrollLeft = 0;
-        } 
-        // Jeśli za daleko w lewo, idziemy na koniec (opcjonalnie)
-        else if (newScrollLeft < 0) {
-            newScrollLeft = videoGrid.scrollWidth - videoGrid.clientWidth;
-        }
-
-        videoGrid.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
-        
-        startAutoPlay(); // Restartujemy automat
+        clearInterval(autoInterval);
+        let newPos = videoGrid.scrollLeft + (dir * scrollAmount);
+        if (newPos >= (videoGrid.scrollWidth - videoGrid.clientWidth)) newPos = 0;
+        else if (newPos < 0) newPos = videoGrid.scrollWidth - videoGrid.clientWidth;
+        videoGrid.scrollTo({ left: newPos, behavior: 'smooth' });
+        startAuto();
     }
 
-    // Funkcja automatu
-    function startAutoPlay() {
-        autoPlayInterval = setInterval(() => {
-            // Przesuwamy o jeden w prawo
-            let newScrollLeft = videoGrid.scrollLeft + scrollAmount;
-            
-            // Jeśli dotarliśmy do końca, wracamy na początek
-            if (newScrollLeft >= (videoGrid.scrollWidth - videoGrid.clientWidth)) {
+    function startAuto() {
+        autoInterval = setInterval(() => {
+            if (videoGrid.scrollLeft + videoGrid.clientWidth >= videoGrid.scrollWidth - 10) {
                 videoGrid.scrollTo({ left: 0, behavior: 'smooth' });
             } else {
                 videoGrid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
             }
-        }, 5000); // ZMIENIAJ FILM CO 5 SEKUND
+        }, 5000);
     }
+    window.addEventListener('load', startAuto);
 
-    // Uruchomienie automatu po załadowaniu
-    window.addEventListener('load', startAutoPlay);
-
-    // 3. Mapa i Usługi (BEZ ZMIAN)
     const companyLoc = [52.2297, 21.0122];
     let distancePrice = 0, services = [];
     const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    let marker;
 
-    async function searchAddress() {
-        const street = document.getElementById('cStreet').value;
-        const city = document.getElementById('cCity').value;
-        if (!street || !city) return;
-
-        try {
-            const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(street + ' ' + city)}`);
-            const data = await resp.json();
-            if (data.length > 0) {
-                const pos = [data[0].lat, data[0].lon];
-                if(marker) marker.setLatLng(pos); else marker = L.marker(pos).addTo(map);
-                map.setView(pos, 14);
-                const dist = (map.distance(companyLoc, pos) / 1000).toFixed(0);
-                distancePrice = Math.max(50, dist * 3);
-                update();
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function toggleMap() {
-        document.getElementById('mainGrid').classList.toggle('map-expanded');
-        setTimeout(() => map.invalidateSize(), 500);
-    }
-
-    function addService(n, p) {
-        services.push({n, p});
-        update();
-    }
-
-    function removeService(i) {
-        services.splice(i, 1);
-        update();
-    }
+    function addService(n, p) { services.push({n, p}); update(); }
+    function removeService(i) { services.splice(i, 1); update(); }
+    function toggleMap() { document.getElementById('mainGrid').classList.toggle('map-expanded'); setTimeout(() => map.invalidateSize(), 500); }
 
     function update() {
         const floor = parseInt(document.getElementById('floorSelect').value);
         const sSum = services.reduce((s, x) => s + x.p, 0);
         document.getElementById('serviceList').innerHTML = services.map((x, i) => `
-            <div class="service-item">
-                <span>${x.n}</span>
-                <b>${x.p} zł <i class="fas fa-times-circle remove-btn" onclick="removeService(${i})"></i></b>
-            </div>
+            <div class="service-item"><span>${x.n}</span><b>${x.p} zł <i class="fas fa-times-circle" style="color:red;cursor:pointer" onclick="removeService(${i})"></i></b></div>
         `).join('');
-        document.getElementById('distPrice').innerText = distancePrice + " zł";
         document.getElementById('sumTotal').innerText = (distancePrice + floor + sSum) + " zł";
     }
 
-    map.on('click', e => {
-        if(marker) marker.setLatLng(e.latlng); else marker = L.marker(e.latlng).addTo(map);
-        const dist = (map.distance(companyLoc, e.latlng) / 1000).toFixed(0);
-        distancePrice = Math.max(50, dist * 3);
-        update();
-    });
-
-    window.addEventListener('load', () => {
-        calculateEko();
-        const queue = JSON.parse(localStorage.getItem('services_queue') || "[]");
-        if (queue.length > 0) {
-            queue.forEach(item => {
-                services.push({ n: item.n, p: item.p });
-            });
-            localStorage.removeItem('services_queue');
-            update();
-            document.getElementById('serviceList').scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-
-    window.onscroll = function() {
-        const btn = document.getElementById('backToTop');
-        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-            btn.style.display = "flex";
-        } else {
-            btn.style.display = "none";
-        }
+    window.onscroll = () => {
+        document.getElementById('backToTop').style.display = (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) ? "flex" : "none";
     };
-
-    setInterval(() => {
-        const towns = ["Warszawie", "Otwocku", "Piasecznie"];
-        const n = document.getElementById('notification');
-        document.getElementById('notif-text').innerText = `Nowe zlecenie w ${towns[Math.floor(Math.random()*3)]}!`;
-        n.style.display = 'block';
-        setTimeout(() => n.style.display = 'none', 4000);
-    }, 25000);
 </script>
 </body>
 </html>
