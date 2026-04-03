@@ -327,52 +327,59 @@
         document.getElementById('ekoResult').innerText = Math.round(savings) + " zł";
     }
 
-    const companyLoc = [52.2297, 21.0122];
-    let distancePrice = 0, services = [];
-    const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    let marker;
-
-    async function searchAddress() {
-        const street = document.getElementById('cStreet').value;
-        const city = document.getElementById('cCity').value;
-        if (!street || !city) return;
-        try {
-            const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(street + ' ' + city)}`);
-            const data = await resp.json();
-            if (data.length > 0) {
-                const pos = [data[0].lat, data[0].lon];
-                if(marker) marker.setLatLng(pos); else marker = L.marker(pos).addTo(map);
-                map.setView(pos, 14);
-                const dist = (map.distance(companyLoc, pos) / 1000).toFixed(0);
-                distancePrice = Math.max(50, dist * 3);
-                update();
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function addService(n, p) { services.push({n, p}); update(); }
-    function removeService(i) { services.splice(i, 1); update(); }
-
-    function update() {
-        const floor = parseInt(document.getElementById('floorSelect').value);
-        const sSum = services.reduce((s, x) => s + x.p, 0);
-        document.getElementById('serviceList').innerHTML = services.map((x, i) => `
-            <div class="service-item">
-                <span>${x.n}</span>
-                <b>${x.p} zł <i class="fas fa-times-circle remove-btn" onclick="removeService(${i})"></i></b>
-            </div>
-        `).join('');
-        document.getElementById('distPrice').innerText = distancePrice + " zł";
-        document.getElementById('sumTotal').innerText = (distancePrice + floor + sSum) + " zł";
-    }
-
-    map.on('click', e => {
-        if(marker) marker.setLatLng(e.latlng); else marker = L.marker(e.latlng).addTo(map);
-        const dist = (map.distance(companyLoc, e.latlng) / 1000).toFixed(0);
-        distancePrice = Math.max(50, dist * 3);
-        update();
-    });
+    // 2. Mapa i Usługi
+const companyLoc = [52.2297, 21.0122];
+let distancePrice = 0, services = [];
+const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+let marker;
+async function searchAddress() {
+    const street = document.getElementById('cStreet').value;
+    const city = document.getElementById('cCity').value;
+    if (!street || !city) return;
+    try {
+        const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(street + ' ' + city)}`);
+        const data = await resp.json();
+        if (data.length > 0) {
+            const pos = [data[0].lat, data[0].lon];
+            if(marker) marker.setLatLng(pos); else marker = L.marker(pos).addTo(map);
+            map.setView(pos, 14);
+            const dist = (map.distance(companyLoc, pos) / 1000).toFixed(0);
+            distancePrice = Math.max(50, dist * 3);
+            update();
+        }
+    } catch (e) { console.error(e); }
+}
+function toggleMap() {
+    document.getElementById('mainGrid').classList.toggle('map-expanded');
+    setTimeout(() => map.invalidateSize(), 500);
+}
+function addService(n, p) {
+    services.push({n, p});
+    update();
+}
+function removeService(i) {
+    services.splice(i, 1);
+    update();
+}
+function update() {
+    const floor = parseInt(document.getElementById('floorSelect').value);
+    const sSum = services.reduce((s, x) => s + x.p, 0);
+    document.getElementById('serviceList').innerHTML = services.map((x, i) => `
+        <div class="service-item">
+            <span>${x.n}</span>
+            <b>${x.p} zł <i class="fas fa-times-circle remove-btn" onclick="removeService(${i})"></i></b>
+        </div>
+    `).join('');
+    document.getElementById('distPrice').innerText = distancePrice + " zł";
+    document.getElementById('sumTotal').innerText = (distancePrice + floor + sSum) + " zł";
+}
+map.on('click', e => {
+    if(marker) marker.setLatLng(e.latlng); else marker = L.marker(e.latlng).addTo(map);
+    const dist = (map.distance(companyLoc, e.latlng) / 1000).toFixed(0);
+    distancePrice = Math.max(50, dist * 3);
+    update();
+});
 
     window.addEventListener('load', () => {
         calculateEko();
