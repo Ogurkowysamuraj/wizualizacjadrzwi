@@ -22,30 +22,30 @@
         
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); scroll-behavior: smooth; transition: 0.5s; }
         
-        /* --- NAWIGACJA Z LOGO --- */
+        /* --- NAWIGACJA Z LOGO (POPRAWIONA) --- */
         nav { 
-            padding: 10px 5%; /* Zmniejszony padding pionowy pod logo */
+            padding: 10px 5%; /* Zmniejszony padding pionowy, żeby pasek był smukły */
             display: flex; justify-content: space-between; align-items: center; 
             background: var(--nav-bg); backdrop-filter: blur(15px); 
             position: fixed; width: 90%; top: 0; z-index: 1000; 
             border-bottom: 1px solid var(--input-border); 
-            transition: background 0.5s;
+            transition: background 0.5s, padding 0.3s;
         }
         
-        /* Styl kontenera logo */
+        /* Kontener linku logo */
         .logo-link { 
             display: flex; align-items: center; text-decoration: none; 
         }
         
-        /* Styl samej grafiki logo */
+        /* Styl grafiki logo */
         .firm-logo { 
-            height: 40px; /* Wysokość dopasowana do paska nawigacji */
+            height: 40px; /* Wysokość idealnie dopasowana do paska */
             width: auto; /* Zachowuje proporcje */
             display: block;
-            transition: 0.3s;
+            transition: 0.3s ease;
         }
         
-        /* Delikatny cień pod logo w jasnym trybie dla lepszego kontrastu */
+        /* Cień dla błękitnego logo w jasnym trybie dla kontrastu */
         .light-mode .firm-logo {
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
@@ -57,7 +57,7 @@
         .section { padding: 80px 8%; }
         
         .hero { 
-            height: 50vh; /* Zwiększona wysokość hero, bo nav jest niższy */
+            height: 50vh; /* Zwiększona wysokość, bo nav jest smuklejszy */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             padding-top: 60px; /* Offset pod stały nav */
@@ -126,7 +126,7 @@
         @media (max-width: 1100px) { 
             .asystent-grid { grid-template-columns: 1fr !important; } 
             .eko-box { grid-template-columns: 1fr; } 
-            .firm-logo { height: 35px; } /* Mniejsze logo na mobile */
+            .firm-logo { height: 32px; } /* Mniejsze logo na mobile */
             .nav-links a { margin-left: 10px; font-size: 11px; }
         }
     </style>
@@ -325,7 +325,7 @@
             });
             localStorage.removeItem('services_queue');
             update();
-            // Przesunięcie do bazy usług po wgraniu danych z konfiguratora
+            // Przesunięcie do asystenta po wgraniu danych
             setTimeout(() => {
                 document.getElementById('kalendarz').scrollIntoView({ behavior: 'smooth' });
             }, 500);
