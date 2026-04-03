@@ -59,15 +59,20 @@
         .eko-box { background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); padding: 40px; border-radius: 35px; border: 1px solid #10b981; margin: 20px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; color: white; }
         .result-circle { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 30px; border-radius: 50%; width: 140px; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; }
 
-        .asystent-container { background: var(--card); border-radius: 35px; border: 1px solid var(--input-border); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; transition: 0.5s ease-in-out; }
+       /* POPRAWKA ASYSTENTA - BRAK ZANIKANIA KRAWĘDZI */
+        .asystent-container { background: var(--card); border-radius: 35px; border: 1px solid var(--input-border); padding: 40px; }
+        .asystent-grid { display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 30px; }
         
-        .diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 300px; overflow-y: auto; padding-right: 8px; margin-bottom: 20px; }
+        .diag-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; 
+            max-height: 310px; overflow-y: auto; 
+            padding: 5px 8px 5px 2px; /* Dodany padding góra/dół aby obramowanie nie znikało */
+            margin-bottom: 20px; 
+        }
         .diag-grid::-webkit-scrollbar { width: 6px; }
         .diag-grid::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-        .diag-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid var(--input-border); cursor: pointer; text-align: center; color: var(--text); transition: 0.2s; }
-        .light-mode .diag-card { background: #f8fafc; }
+        .diag-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border: 1px solid var(--input-border); cursor: pointer; text-align: center; transition: 0.2s; }
         .diag-card:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.1); transform: translateY(-2px); }
         
         input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: inherit; box-sizing: border-box; }
