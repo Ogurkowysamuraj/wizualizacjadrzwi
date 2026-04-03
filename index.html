@@ -37,27 +37,87 @@
         .eko-box { background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); padding: 40px; border-radius: 35px; border: 1px solid #10b981; margin: 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; color: white; }
         .result-circle { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; padding: 30px; border-radius: 50%; width: 140px; height: 140px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 0 auto; }
 
-        /* NOWA KARUZELA VIDEO */
-        .video-carousel-container { position: relative; display: flex; align-items: center; }
+        /* --- NOWA, OGROMNA KARUZELA AUTOMATYCZNA (Styl x-kom) --- */
+        #poradniki { background: #080d1a; padding: 100px 0; box-shadow: inset 0 0 100px rgba(0,0,0,0.8); } /* Ciemniejsze tło dla głębi */
+        
+        .video-carousel-container { 
+            position: relative; 
+            max-width: 1400px; /* Maksymalna szerokość kontenera karuzeli */
+            margin: 0 auto;
+            overflow: hidden; /* Ukrywa wystające duże karty */
+            padding: 0 70px; /* Miejsce na duże strzałki */
+        }
+        
         .video-grid { 
-            display: flex; overflow-x: auto; scroll-behavior: smooth; gap: 20px; padding: 20px 5px; 
-            scrollbar-width: none; -ms-overflow-style: none;
+            display: flex; 
+            overflow-x: auto; 
+            scroll-behavior: smooth; 
+            gap: 40px; /* Większy odstęp między wielkimi kartami */
+            padding: 30px 0; 
+            scrollbar-width: none; -ms-overflow-style: none; /* Ukrycie scrollbara */
         }
-        .video-grid::-webkit-scrollbar { display: none; }
+        .video-grid::-webkit-scrollbar { display: none; } /* Ukrycie scrollbara Chrome/Safari */
+        
         .video-card { 
-            min-width: 280px; flex-shrink: 0; background: var(--card); border-radius: 20px; 
-            overflow: hidden; border: 1px solid var(--input-border); text-align: center; padding-bottom: 15px; 
+            min-width: 700px; /* OGROMNA SZEROKOŚĆ KARTY - jak baner */
+            flex-shrink: 0; 
+            background: #111827; /* Ciemniejsza karta */
+            border-radius: 30px; /* Większe zaokrąglenie */
+            overflow: hidden; 
+            border: 2px solid rgba(56, 189, 248, 0.1); /* Delikatna niebieska ramka */
+            text-align: center; 
+            padding-bottom: 25px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .video-card img { width: 100%; height: 150px; object-fit: cover; }
+        
+        .video-card img { 
+            width: 100%; 
+            height: 380px; /* OGROMNA WYSOKOŚĆ GIF-a */
+            object-fit: cover; 
+            border-bottom: 2px solid rgba(56, 189, 248, 0.1);
+        }
+        
+        .video-card p {
+            font-weight: 800;
+            font-size: 22px; /* Większy napis */
+            color: var(--text);
+            margin: 20px 0 10px 0;
+            letter-spacing: -1px;
+        }
+
+        /* Duże strzałki na bokach */
         .carousel-btn {
-            position: absolute; top: 50%; transform: translateY(-50%); background: var(--primary);
-            color: white; border: none; width: 40px; height: 40px; border-radius: 50%;
-            cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s;
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: rgba(37, 99, 235, 0.8); /* Półprzezroczysty niebieski */
+            color: white; 
+            border: none; 
+            width: 60px; /* Większe strzałki */
+            height: 60px; 
+            border-radius: 50%;
+            cursor: pointer; 
+            z-index: 100; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); 
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+            font-size: 20px;
         }
-        .carousel-btn:hover { background: var(--accent); scale: 1.1; }
-        .btn-prev { left: -20px; }
-        .btn-next { right: -20px; }
+        .carousel-btn:hover { background: var(--accent); scale: 1.1; color: black; }
+        .btn-prev { left: 10px; }
+        .btn-next { right: 10px; }
+
+        /* Ukrycie strzałek na mobile, tam przewijamy palcem */
+        @media (max-width: 1100px) { 
+            .video-card { min-width: 300px; } /* Mniejsze na komórce */
+            .video-card img { height: 180px; }
+            .carousel-btn { display: none; } 
+            .video-carousel-container { padding: 0 20px; }
+        }
 
         /* ASYSTENT ZLECENIA 4.0 */
         .asystent-container { background: var(--card); border-radius: 35px; border: 1px solid var(--input-border); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -107,8 +167,6 @@
             box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); transition: 0.3s;
         }
         #backToTop:hover { background: #1d4ed8; transform: translateY(-3px); }
-
-        @media (max-width: 1100px) { .asystent-grid { grid-template-columns: 1fr !important; } .eko-box { grid-template-columns: 1fr; } .carousel-btn { display: none; } }
     </style>
 </head>
 <body>
@@ -154,15 +212,20 @@
 </section>
 
 <section class="section" id="poradniki">
-    <h2 style="text-align:center; margin-bottom:30px;">Instrukcje Techniczne</h2>
+    <h2 style="text-align:center; margin-bottom:50px; font-weight: 800; font-size: 36px; letter-spacing: -2px;">Baza Wiedzy Premium</h2>
+    
     <div class="video-carousel-container">
         <button class="carousel-btn btn-prev" onclick="scrollVideos(-1)"><i class="fas fa-chevron-left"></i></button>
+        
         <div class="video-grid" id="videoGrid">
-            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif"><p>Prawidłowy Pomiar</p></div>
+            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif"><p>Prawidłowy Pomiar Otworu</p></div>
             <div class="video-card"><img src="https://media.giphy.com/media/l41lTjJp9N3S6bXmE/giphy.gif"><p>Montaż Ciepłego Progu</p></div>
-            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKMGpxVfFv9Yn96/giphy.gif"><p>Regulacja Zawiasów</p></div>
-            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKSj06tqZa39768/giphy.gif"><p>Wymiana Uszczelki</p></div>
+            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKMGpxVfFv9Yn96/giphy.gif"><p>Regulacja Zawiasów 3D</p></div>
+            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKSj06tqZa39768/giphy.gif"><p>Wymiana Uszczelki Skrzydła</p></div>
+            <div class="video-card"><img src="https://media.giphy.com/media/3o7TKVup7F6FjFjJk4/giphy.gif"><p>Smarowanie Zamka Listwowego</p></div>
+            <div class="video-card"><img src="https://media.giphy.com/media/l0HlHFRbmaZtBRhXG/giphy.gif"><p>Montaż Samozamykacza</p></div>
         </div>
+        
         <button class="carousel-btn btn-next" onclick="scrollVideos(1)"><i class="fas fa-chevron-right"></i></button>
     </div>
 </section>
@@ -236,13 +299,50 @@
         document.getElementById('ekoResult').innerText = Math.round(savings) + " zł";
     }
 
-    // 2. Obsługa Karuzeli Video
+    // 2. Obsługa Karuzeli Video z AUTOMATEM (Autoplay)
+    const videoGrid = document.getElementById('videoGrid');
+    const scrollAmount = 740; // Szerokość OGROMNEJ karty (700px) + gap (40px)
+    let autoPlayInterval;
+
     function scrollVideos(dir) {
-        const grid = document.getElementById('videoGrid');
-        grid.scrollBy({ left: dir * 300, behavior: 'smooth' });
+        clearInterval(autoPlayInterval); // Zatrzymujemy automat po kliknięciu
+        
+        // Obliczamy nową pozycję
+        let newScrollLeft = videoGrid.scrollLeft + (dir * scrollAmount);
+        
+        // Pętla: Jeśli przewiniemy za daleko w prawo, wracamy na początek
+        if (newScrollLeft >= (videoGrid.scrollWidth - videoGrid.clientWidth)) {
+            newScrollLeft = 0;
+        } 
+        // Jeśli za daleko w lewo, idziemy na koniec (opcjonalnie)
+        else if (newScrollLeft < 0) {
+            newScrollLeft = videoGrid.scrollWidth - videoGrid.clientWidth;
+        }
+
+        videoGrid.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+        
+        startAutoPlay(); // Restartujemy automat
     }
 
-    // 3. Mapa i Usługi
+    // Funkcja automatu
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(() => {
+            // Przesuwamy o jeden w prawo
+            let newScrollLeft = videoGrid.scrollLeft + scrollAmount;
+            
+            // Jeśli dotarliśmy do końca, wracamy na początek
+            if (newScrollLeft >= (videoGrid.scrollWidth - videoGrid.clientWidth)) {
+                videoGrid.scrollTo({ left: 0, behavior: 'smooth' });
+            } else {
+                videoGrid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }, 5000); // ZMIENIAJ FILM CO 5 SEKUND
+    }
+
+    // Uruchomienie automatu po załadowaniu
+    window.addEventListener('load', startAutoPlay);
+
+    // 3. Mapa i Usługi (BEZ ZMIAN)
     const companyLoc = [52.2297, 21.0122];
     let distancePrice = 0, services = [];
     const map = L.map('map', { zoomControl: false }).setView(companyLoc, 10);
