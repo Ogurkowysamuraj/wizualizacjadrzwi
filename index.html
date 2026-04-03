@@ -77,8 +77,11 @@
         
         input, select, textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: var(--input-text); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-family: inherit; box-sizing: border-box; }
 
-        .map-wrapper { position: relative; height: 320px; border-radius: 20px; border: 1px solid var(--input-border); overflow: hidden; margin-bottom: 15px; }
+       /* MAPA */
+        .map-wrapper { position: relative; height: 320px; border-radius: 20px; border: 1px solid var(--input-border); overflow: hidden; margin-bottom: 15px; transition: height 0.5s; }
+        .map-expanded .map-wrapper { height: 450px; }
         #map { height: 100%; width: 100%; z-index: 1; }
+        .map-zoom-btn { position: absolute; top: 10px; right: 10px; z-index: 1000; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         .summary-box { background: rgba(0,0,0,0.1); padding: 20px; border-radius: 20px; border: 1px solid var(--primary); }
         .service-item { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 8px; background: rgba(120,120,120,0.1); padding: 12px; border-radius: 8px; border-left: 3px solid var(--accent); }
