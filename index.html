@@ -160,14 +160,30 @@
         }
         .confirm-loc-btn:hover { background: #16a34a; transform: translateX(-50%) scale(1.05); }
 
-        .map-mega-mode {
-            position: absolute;
-            top: 40px;
-            left: 5%;
-            width: 90%;
-            height: 650px;
-            z-index: 2000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        /* KLASA POWIĘKSZENIA - ZOPTYMALIZOWANA POD IPHONE I INNE TEL. */
+.map-mega-mode {
+    position: fixed !important; /* Przykleja mapę do ekranu, nie do strony */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important; /* Cała szerokość ekranu */
+    height: 100vh !important; /* Cała wysokość ekranu */
+    z-index: 9999 !important; /* Musi być nad menu i wszystkim innym */
+    margin: 0 !important;
+    border-radius: 0 !important; /* Na pełnym ekranie rogi powinny być ostre */
+}
+
+/* Dostosowanie przycisku "OK" w trybie pełnoekranowym */
+.map-mega-mode .confirm-loc-btn {
+    bottom: 40px; /* Wyżej, żeby nie kolidowało z paskiem nawigacji iPhone */
+    width: 80%;
+    max-width: 300px;
+}
+
+/* Dostosowanie przycisku powiększania w trybie pełnoekranowym */
+.map-mega-mode .map-expand-btn {
+    top: 20px;
+    right: 20px;
+}
         }
 
         .summary-box { background: rgba(0,0,0,0.1); padding: 20px; border-radius: 20px; border: 1px solid var(--primary); }
@@ -434,36 +450,43 @@ document.querySelector('.mySwiper').addEventListener('touchstart', function() {
     let currentAddressData = { street: "", city: "", postcode: "" };
 
     function toggleMegaMap() {
-        const wrapper = document.getElementById('mapWrapper');
-        const icon = document.getElementById('mapIcon');
-        wrapper.classList.toggle('map-mega-mode');
-        if(wrapper.classList.contains('map-mega-mode')) {
-            icon.classList.replace('fa-expand-arrows-alt', 'fa-compress-alt');
-        } else {
-            icon.classList.replace('fa-compress-alt', 'fa-expand-arrows-alt');
-            document.getElementById('confirmBtn').style.display = 'none'; 
-        }
-        setTimeout(() => { map.invalidateSize(); }, 600);
-    }
-
-    function confirmLocation() {
-        const wrapper = document.getElementById('mapWrapper');
-        const icon = document.getElementById('mapIcon');
-        document.getElementById('cStreet').value = currentAddressData.street;
-        document.getElementById('cCity').value = currentAddressData.city;
-        document.getElementById('cPostcode').value = currentAddressData.postcode;
-        wrapper.classList.remove('map-mega-mode');
+    const wrapper = document.getElementById('mapWrapper');
+    const icon = document.getElementById('mapIcon');
+    const body = document.body;
+    
+    wrapper.classList.toggle('map-mega-mode');
+    
+    if(wrapper.classList.contains('map-mega-mode')) {
+        icon.classList.replace('fa-expand-arrows-alt', 'fa-compress-alt');
+        body.style.overflow = 'hidden'; // Blokuje scrollowanie strony pod mapą
+    } else {
         icon.classList.replace('fa-compress-alt', 'fa-expand-arrows-alt');
+        body.style.overflow = ''; // Przywraca scrollowanie
         document.getElementById('confirmBtn').style.display = 'none';
-        setTimeout(() => { 
-            map.invalidateSize();
-            if(marker) map.panTo(marker.getLatLng());
-        }, 600);
-        const n = document.getElementById('notification');
-        document.getElementById('notif-text').innerText = "Adres został przeniesiony do formularza!";
-        n.style.display = 'block';
-        setTimeout(() => n.style.display = 'none', 3000);
     }
+    
+    setTimeout(() => { map.invalidateSize(); }, 400);
+}
+
+function confirmLocation() {
+    const wrapper = document.getElementById('mapWrapper');
+    const icon = document.getElementById('mapIcon');
+    
+    // Twoja istniejąca logika wklejania adresu...
+    document.getElementById('cStreet').value = currentAddressData.street;
+    document.getElementById('cCity').value = currentAddressData.city;
+    document.getElementById('cPostcode').value = currentAddressData.postcode;
+
+    wrapper.classList.remove('map-mega-mode');
+    icon.classList.replace('fa-compress-alt', 'fa-expand-arrows-alt');
+    document.body.style.overflow = ''; // Przywrócenie scrolla po zatwierdzeniu
+    document.getElementById('confirmBtn').style.display = 'none';
+
+    setTimeout(() => { 
+        map.invalidateSize();
+        if(marker) map.panTo(marker.getLatLng());
+    }, 400);
+}
 
     function calculateEko() {
         const uOld = parseFloat(document.getElementById('uValueOld').value);
