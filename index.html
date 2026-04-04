@@ -56,17 +56,32 @@
         /* STYLE KARUZELI */
         .swiper { width: 100%; padding: 20px 0 50px 0; }
         .swiper-slide { height: auto; display: flex; justify-content: center; }
-        .video-card { 
-            background: var(--card); 
-            border-radius: 20px; 
-            overflow: hidden; 
-            border: 1px solid var(--input-border); 
-            text-align: center; 
-            padding-bottom: 15px; 
-            transition: 0.3s;
-            width: 100%;
-            max-width: 320px;
-        }
+        /* 1. Powiększamy całą kartę */
+.video-card { 
+    background: var(--card); 
+    border-radius: 20px; 
+    overflow: hidden; 
+    border: 1px solid var(--input-border); 
+    text-align: center; 
+    transition: 0.3s;
+    width: 100%;
+    max-width: 450px; /* Zwiększone z 320px - karta będzie szersza */
+}
+
+/* 2. DODAJ TO: Specyficzne ustawienia dla filmu w środku karty */
+.video-card iframe { 
+    width: 100%; 
+    height: 280px; /* Zwiększone z 180px - film będzie wyższy i wyraźniejszy */
+    border: none;
+    display: block;
+}
+
+/* 3. Opcjonalnie: poprawiamy odstęp tekstu pod dużym filmem */
+.video-card p {
+    padding: 15px;
+    margin: 0;
+    font-weight: 600;
+}
         .video-card:hover { transform: translateY(-5px); border-color: var(--accent); }
         .video-card img { width: 100%; height: 180px; object-fit: cover; }
         .swiper-button-next, .swiper-button-prev { color: var(--accent); }
@@ -404,9 +419,9 @@
             prevEl: ".swiper-button-prev",
         },
         breakpoints: {
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-            1400: { slidesPerView: 4 }
+            640: { slidesPerView: 1 },
+            1024: { slidesPerView: 2 },
+            1400: { slidesPerView: 2 }
         }
     });
 // Zatrzyma autoplay na stałe, gdy tylko ktoś dotknie karuzeli (myszką lub palcem)
