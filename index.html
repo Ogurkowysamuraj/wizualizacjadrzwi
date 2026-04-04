@@ -409,7 +409,13 @@
             1400: { slidesPerView: 4 }
         }
     });
-
+// Zatrzyma autoplay na stałe, gdy tylko ktoś dotknie karuzeli (myszką lub palcem)
+document.querySelector('.mySwiper').addEventListener('mousedown', function() {
+    swiper.autoplay.stop();
+});
+document.querySelector('.mySwiper').addEventListener('touchstart', function() {
+    swiper.autoplay.stop();
+});
     let currentAddressData = { street: "", city: "", postcode: "" };
 
     function toggleMegaMap() {
