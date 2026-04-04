@@ -304,21 +304,21 @@
       }
 
       .confirm-loc-btn {
-        position: absolute;
+        position: fixed;
         bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 2001;
+        z-index: 10000;
         background: var(--success);
         color: white;
-        padding: 15px 30px;
-        border-radius: 12px;
+        padding: 18px 40px;
+        border-radius: 50px;
         border: none;
         font-weight: 800;
         cursor: pointer;
         display: none;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        transition: 0.3s;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        white-space: nowrap;
       }
 
       .confirm-loc-btn:hover {
@@ -1069,12 +1069,9 @@
 
             fillFormFields();
 
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
+           if (document.getElementById("mapWrapper").classList.contains("map-mega-mode")) {
+              const btn = document.getElementById("confirmBtn");
+              btn.style.display = "flex";
             }
           }
         } catch (e) {
