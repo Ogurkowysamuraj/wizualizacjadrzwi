@@ -391,7 +391,9 @@
         loop: true,
         autoplay: {
             delay: 3000,
-            disableOnInteraction: false,
+            disableOnInteraction: true, // Zatrzyma na stałe po ręcznym przesunięciu
+            pauseOnMouseEnter: true,    // Zatrzyma karuzelę, gdy myszka jest nad filmem
+           
         },
         pagination: {
             el: ".swiper-pagination",
