@@ -821,7 +821,7 @@
         const map = L.map('map', { zoomControl: false }).setView(companyLoc, 11);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         // Dodanie stałej pinezki w miejscu firmy na starcie
-        L.marker(companyLoc).addTo(map).bindPopup("<b>Nasza Siedziba</b><br>Jelenia Góra").openPopup();
+        L.marker(companyLoc).addTo(map).bindPopup("<b>SERWIS-DRZWI.PRO - Jelenia Góra</b><br>").openPopup();
         let marker;
 
         async function getAddressFromCoords(lat, lng) {
