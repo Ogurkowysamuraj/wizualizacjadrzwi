@@ -937,6 +937,13 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
+      // --- KLUCZOWE ZMIENNE ---
+      let services = [];
+      let distancePrice = 0;
+      let marker;
+      let currentAddressData = { street: "", city: "", postcode: "" };
+      const companyLoc = [50.90400009142434, 15.719684703649882];
+
       // Nowa funkcja, która wpisuje dane bezpośrednio do inputów
       function fillFormFields() {
         document.getElementById("cStreet").value = currentAddressData.street;
@@ -944,6 +951,7 @@
         document.getElementById("cPostcode").value =
           currentAddressData.postcode;
       }
+
       // INICJALIZACJA KARUZELI
       const swiper = new Swiper(".mySwiper", {
         slidesPerView: 1,
@@ -980,8 +988,6 @@
           swiper.autoplay.stop();
         });
 
-      let currentAddressData = { street: "", city: "", postcode: "" };
-
       function toggleMegaMap() {
         const wrapper = document.getElementById("mapWrapper");
         const icon = document.getElementById("mapIcon");
@@ -1007,10 +1013,7 @@
         const wrapper = document.getElementById("mapWrapper");
         const icon = document.getElementById("mapIcon");
 
-        document.getElementById("cStreet").value = currentAddressData.street;
-        document.getElementById("cCity").value = currentAddressData.city;
-        document.getElementById("cPostcode").value =
-          currentAddressData.postcode;
+        fillFormFields();
 
         wrapper.classList.remove("map-mega-mode");
         icon.classList.replace("fa-compress-alt", "fa-expand-arrows-alt");
@@ -1031,9 +1034,7 @@
           Math.round(savings) + " zł";
       }
 
-      const companyLoc = [50.90400009142434, 15.719684703649882];
-
-      // 1. Definicja wyglądu ikony
+      // KONFIGURACJA MAPY
       const myLogoIcon = L.icon({
         iconUrl: "markerfirmowy.png",
         iconSize: [264, 144],
@@ -1046,9 +1047,7 @@
         map,
       );
 
-      // 2. Postawienie ikony na mapie
       L.marker(companyLoc, { icon: myLogoIcon }).addTo(map);
-      let marker;
 
       async function getAddressFromCoords(lat, lng) {
         try {
@@ -1068,502 +1067,6 @@
               "";
             currentAddressData.postcode = data.address.postcode || "";
 
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
-            fillFormFields();
-
-            if (
-              document
-                .getElementById("mapWrapper")
-                .classList.contains("map-mega-mode")
-            ) {
-              document.getElementById("confirmBtn").style.display = "block";
-            }
-          }
-        } catch (e) {
-          console.error("Błąd pobierania adresu", e);
-        }
-      }
-      async function getAddressFromCoords(lat, lng) {
-        try {
-          const resp = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-          );
-          const data = await resp.json();
-          if (data.address) {
-            const street = data.address.road || "";
-            const houseNum = data.address.house_number || "";
-            currentAddressData.street =
-              street + (houseNum ? " " + houseNum : "");
-            currentAddressData.city =
-              data.address.city ||
-              data.address.town ||
-              data.address.village ||
-              "";
-            currentAddressData.postcode = data.address.postcode || "";
-
-            // TA LINIA JEST KLUCZOWA - wpisuje dane od razu po kliknięciu
             fillFormFields();
 
             if (
@@ -1668,17 +1171,13 @@
       setInterval(() => {
         const towns = ["Jeleniej Górze", "Cieplicach", "Piechowicach"];
         const n = document.getElementById("notification");
-        document.getElementById("notif-text").innerText =
-          `Nowe zlecenie w ${towns[Math.floor(Math.random() * 3)]}!`;
-        n.style.display = "block";
-        setTimeout(() => (n.style.display = "none"), 4000);
+        const notifText = document.getElementById("notif-text");
+        if (notifText) {
+          notifText.innerText = `Nowe zlecenie w ${towns[Math.floor(Math.random() * towns.length)]}!`;
+          n.style.display = "block";
+          setTimeout(() => (n.style.display = "none"), 4000);
+        }
       }, 25000);
-
-      //Funkcja żeby zobaczyć współrzędne mapy
-      //map.on('click', function(e) {
-      // alert("Współrzędne tego punktu to: " + e.latlng.lat + ", " + e.latlng.lng);
-      // console.log(e.latlng.lat, e.latlng.lng);
-      //});
     </script>
   </body>
 </html>
